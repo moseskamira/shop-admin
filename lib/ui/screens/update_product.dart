@@ -16,22 +16,21 @@ import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 
 class UpdateProductScreen extends StatefulWidget {
   ProductModel? singleProductDtaforUpdate;
-  UpdateProductScreen({Key? key, this.singleProductDtaforUpdate})
-      : super(key: key);
+  UpdateProductScreen({super.key, this.singleProductDtaforUpdate});
 
   @override
-  _UpdateProductScreenState createState() => _UpdateProductScreenState();
+  State<UpdateProductScreen> createState() => _UpdateProductScreenState();
 }
 
 class _UpdateProductScreenState extends State<UpdateProductScreen> {
-  var _categories = CategoryModel().getCategories();
+  final _categories = CategoryModel().getCategories();
   final FocusNode _brandFocusNode = FocusNode();
   final FocusNode _priceFocusNode = FocusNode();
   final FocusNode _quantityFocusNode = FocusNode();
   final FocusNode _categoryFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
   final ProductModel _productModel = ProductModel();
-  bool _isLoading = false;
+  final bool _isLoading = false;
   bool _isPopular = false;
   TextEditingController productNameEditingController = TextEditingController();
   TextEditingController productBrandEditingController = TextEditingController();
@@ -447,8 +446,8 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                           items: _categories
                               .map(
                                 (category) => DropdownMenuItem<String>(
-                                  child: Text(category.title),
                                   value: category.title,
+                                  child: Text(category.title),
                                 ),
                               )
                               .toList(),
@@ -464,7 +463,9 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                           ),
                         ),
                         //Gap(2.h),
-                        SizedBox(height: 2.h,),
+                        SizedBox(
+                          height: 2.h,
+                        ),
                         Card(
                           child: Column(
                             children: [
@@ -474,7 +475,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 onChanged: (bool value) {
                                   setState(() {
                                     _isPopular = value;
-                                   });
+                                  });
                                 },
                               ),
                             ],
@@ -502,13 +503,16 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                   ),
 
                   // Upload Product Button
-                  SizedBox(height: 1.5.h,),
-                //  Gap(1.5.h),
+                  SizedBox(
+                    height: 1.5.h,
+                  ),
+                  //  Gap(1.5.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(width: .3.w,),
-
+                      SizedBox(
+                        width: .3.w,
+                      ),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
@@ -530,8 +534,10 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                   size: 22,
                                 ),
                               ),
-                              SizedBox(width: 1.2.w,),
-                            //  Gap(1.2.w),
+                              SizedBox(
+                                width: 1.2.w,
+                              ),
+                              //  Gap(1.2.w),
                               const Center(
                                 child: Text(
                                   "Cancel",
@@ -672,7 +678,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                         ),
                         icon: const Icon(Icons.save_as, size: 24),
                       ),
-
                       SizedBox(width: .3.w),
                     ],
                   ),

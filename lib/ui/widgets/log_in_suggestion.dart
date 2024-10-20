@@ -12,13 +12,13 @@ class LogInSuggestion extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 30.0),
+          const SizedBox(height: 30.0),
           Text(
             'You are not logged in.',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineLarge,
           ),
-          SizedBox(height: 20.0),
+          const SizedBox(height: 20.0),
           Text(
             'There are a lot of great offers and features waiting for you. Join now !',
             textAlign: TextAlign.center,
@@ -35,7 +35,7 @@ class LogInSuggestion extends StatelessWidget {
                     onPressed: () =>
                         Navigator.pushNamed(context, RouteName.logInScreen)),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Expanded(
                   flex: 1,
                   child: MyButton.text(

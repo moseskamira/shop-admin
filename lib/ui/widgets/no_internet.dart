@@ -12,7 +12,7 @@ class NetworkError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            constraints: BoxConstraints(maxHeight: 150, maxWidth: 150),
+            constraints: const BoxConstraints(maxHeight: 150, maxWidth: 150),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(0),
               image: const DecorationImage(

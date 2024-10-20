@@ -8,10 +8,10 @@ import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -19,7 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late FocusNode _emailNode;
   late FocusNode _phoneNumberNode;
   String _pickedImagePath = '';
-  final _formKey = new GlobalKey<FormState>();
+  final _formKey =  GlobalKey<FormState>();
   bool _passwordIsVisible = false;
   late UserModel _userModel;
   late String _password;
@@ -111,7 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: RawMaterialButton(
                           elevation: 5,
                           fillColor: Theme.of(context).primaryColor,
-                          shape: CircleBorder(),
+                          shape: const CircleBorder(),
                           onPressed: () async {
                             MyAlertDialog.imagePicker(context)
                                 .then((pickedImagePath) => setState(

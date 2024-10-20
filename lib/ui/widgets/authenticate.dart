@@ -5,10 +5,10 @@ import 'package:shop_owner_app/ui/widgets/log_in_suggestion.dart';
 
 class Authenticate extends StatefulWidget {
   final Widget child;
-  const Authenticate({Key? key, required this.child}) : super(key: key);
+  const Authenticate({super.key, required this.child});
 
   @override
-  _AuthenticateState createState() => _AuthenticateState();
+  State<Authenticate> createState() => _AuthenticateState();
 }
 
 class _AuthenticateState extends State<Authenticate> {
@@ -16,6 +16,6 @@ class _AuthenticateState extends State<Authenticate> {
   Widget build(BuildContext context) {
     final _isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
     if (_isLoggedIn) return widget.child;
-    return Scaffold(body: LogInSuggestion());
+    return const Scaffold(body: LogInSuggestion());
   }
 }

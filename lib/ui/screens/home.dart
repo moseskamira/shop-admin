@@ -5,8 +5,10 @@ import 'package:shop_owner_app/ui/screens/nav_bar.dart';
 import 'package:shop_owner_app/ui/widgets/category.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -25,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBar(),
+      drawer: const NavBar(),
       appBar: AppBar(
         title: const Text("CATEGORIES"),
         centerTitle: true,
@@ -50,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.of(context).pushNamed(RouteName.searchScreen);
               },
-              child: Icon(
+              child: const Icon(
                 Icons.search,
               ),
             ),

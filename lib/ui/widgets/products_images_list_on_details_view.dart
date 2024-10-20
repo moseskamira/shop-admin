@@ -56,7 +56,7 @@ class _ProductImagesListOnDetailsViewState
             onDoubleTap: () {
               final position = tapDownDetails!.localPosition;
 
-              final double scale = 5;
+              const double scale = 5;
               final x = -position.dx * (scale - 1);
               final y = -position.dy * (scale - 1);
 
@@ -109,7 +109,7 @@ class _ProductImagesListOnDetailsViewState
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Row(
@@ -132,8 +132,8 @@ class _ProductImagesListOnDetailsViewState
       },
       child: AnimatedContainer(
         duration: defaultDuration,
-        margin: EdgeInsets.only(right: 15),
-        padding: EdgeInsets.all(8),
+        margin: const EdgeInsets.only(right: 15),
+        padding: const EdgeInsets.all(8),
         height: 48,
         width: 48,
         decoration: BoxDecoration(

@@ -5,17 +5,17 @@ import 'package:shop_owner_app/core/view_models/auth_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  const ForgotPasswordScreen({super.key});
 
   @override
-  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool _isLoading = false;
   String _noticeText = '';
   String _email = '';
-  final _formKey = new GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   void _submitForm() async {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
@@ -37,11 +37,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Change Password'),
+        title: const Text('Change Password'),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: Container(
-        margin: EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
@@ -49,7 +49,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: TextFormField(
-                  key: ValueKey('Email'),
+                  key: const ValueKey('Email'),
                   validator: (value) => value!.isEmpty || !value.contains('@')
                       ? 'Please enter a valid email address'
                       : null,
@@ -57,9 +57,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   textInputAction: TextInputAction.done,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(mEmailIcon),
+                    prefixIcon: const Icon(mEmailIcon),
                     labelText: 'Email',
-                    contentPadding: EdgeInsets.all(12),
+                    contentPadding: const EdgeInsets.all(12),
                     border: const OutlineInputBorder(),
                     enabledBorder: MyBorder.outlineInputBorder(context),
                     filled: true,
@@ -81,10 +81,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _isLoading
-                            ? CircularProgressIndicator(
+                            ? const CircularProgressIndicator(
                                 color: Colors.white,
                               )
-                            : Text('Change Password'),
+                            : const Text('Change Password'),
                       ]),
                 ),
               ),

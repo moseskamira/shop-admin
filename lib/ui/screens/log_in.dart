@@ -20,7 +20,7 @@ class _LogInScreenState extends State<LogInScreen> {
   bool _passwordIsVisibile = false;
   final UserModel _user = UserModel();
   late String _password;
-  bool _wrongEmailorPassword = false;
+  bool _wrongEmailOrPassword = false;
   bool _isLoading = false;
 
   @override
@@ -39,7 +39,7 @@ class _LogInScreenState extends State<LogInScreen> {
     final isValid = _formKey.currentState!.validate();
 
     FocusScope.of(context).unfocus();
-    setState(() => _wrongEmailorPassword = false);
+    setState(() => _wrongEmailOrPassword = false);
     if (isValid) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       _formKey.currentState!.save();
@@ -51,7 +51,7 @@ class _LogInScreenState extends State<LogInScreen> {
         print(e.toString());
         if (e.toString().contains('wrong-password') ||
             e.toString().contains('user-not-found')) {
-          setState(() => _wrongEmailorPassword = true);
+          setState(() => _wrongEmailOrPassword = true);
         } else if (e.toString().toLowerCase().contains('network')) {
           MyAlertDialog.connectionError(context);
         } else {
@@ -77,7 +77,7 @@ class _LogInScreenState extends State<LogInScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         body: Container(
-          margin: EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -90,7 +90,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       size: 32,
                       color: Theme.of(context).primaryColor,
                     ),
-                    Text(
+                    const Text(
                       ' ShopApp',
                       style: TextStyle(fontSize: 22),
                     )
@@ -100,8 +100,8 @@ class _LogInScreenState extends State<LogInScreen> {
                 //Show Log In error message
                 Container(
                   height: 65,
-                  padding: EdgeInsets.only(top: 14),
-                  child: _wrongEmailorPassword
+                  padding: const EdgeInsets.only(top: 14),
+                  child: _wrongEmailOrPassword
                       ? const Text(
                           'The email or password you entered did not match our records. Please double check and try again',
                           style: TextStyle(color: Colors.redAccent),
@@ -117,7 +117,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         child: TextFormField(
-                          key: ValueKey('Email'),
+                          key: const ValueKey('Email'),
                           validator: (value) =>
                               value!.isEmpty || !value.contains('@')
                                   ? 'Please enter a valid email address'
@@ -127,7 +127,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             labelText: 'Email',
-                            contentPadding: EdgeInsets.all(12),
+                            contentPadding: const EdgeInsets.all(12),
                             border: const OutlineInputBorder(),
                             enabledBorder: MyBorder.outlineInputBorder(context),
                             filled: true,
@@ -143,7 +143,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 14.0),
                         child: TextFormField(
-                          key: ValueKey('Password'),
+                          key: const ValueKey('Password'),
                           validator: (value) => value!.isEmpty
                               ? 'Please enter a valid password'
                               : null,
@@ -154,7 +154,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           obscureText: !_passwordIsVisibile,
                           decoration: InputDecoration(
                             contentPadding:
-                                EdgeInsets.symmetric(horizontal: 12),
+                                const EdgeInsets.symmetric(horizontal: 12),
                             labelText: 'Password',
                             border: const OutlineInputBorder(),
                             enabledBorder: MyBorder.outlineInputBorder(context),
@@ -207,10 +207,10 @@ class _LogInScreenState extends State<LogInScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 _isLoading
-                                    ? CircularProgressIndicator(
+                                    ? const CircularProgressIndicator(
                                         color: Colors.white,
                                       )
-                                    : Text('Log In'),
+                                    : const Text('Log In'),
                               ]),
                         ),
                       ),
@@ -223,10 +223,10 @@ class _LogInScreenState extends State<LogInScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(child: Divider(thickness: 1)),
+                      const Expanded(child: Divider(thickness: 1)),
                       Text('  or   ',
                           style: Theme.of(context).textTheme.titleSmall),
-                      Expanded(child: Divider(thickness: 1)),
+                      const Expanded(child: Divider(thickness: 1)),
                     ],
                   ),
                 ),
@@ -237,14 +237,14 @@ class _LogInScreenState extends State<LogInScreen> {
                   appLogoUrl: ImagePath.googleLogo,
                   title: 'Log in with Google',
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _loginWithButton(
                   onPressed: () {},
                   appLogoUrl: ImagePath.facebookLogo,
                   title: 'Log in with Facebook',
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Row(
@@ -258,7 +258,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         onPressed: () {
                           Navigator.pushNamed(context, RouteName.signUpScreen);
                         },
-                        child: Text('Sign up'))
+                        child: const Text('Sign up'))
                   ],
                 )
               ],
@@ -291,7 +291,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 fit: BoxFit.contain,
                 height: 16,
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 title,
                 style: Theme.of(context).textTheme.bodyMedium,

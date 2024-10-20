@@ -7,6 +7,8 @@ import 'package:shop_owner_app/core/view_models/products_provider.dart';
 import 'package:shop_owner_app/ui/screens/upload_product.dart';
 
 class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
 

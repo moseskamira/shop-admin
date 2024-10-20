@@ -54,7 +54,7 @@ class MyAlertDialog {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              content: Text('Do you want to sign out?'),
+              content: const Text('Do you want to sign out?'),
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context),
@@ -76,7 +76,7 @@ class MyAlertDialog {
   /// picked image path.
   static Future<dynamic> imagePicker(BuildContext context) async {
     return showDialog(
-        context: context, builder: (context) => _ImagePickerDialog());
+        context: context, builder: (context) => const ImagePickerDialog());
   }
 
   ///Show internet connection error dialog
@@ -92,12 +92,12 @@ class MyAlertDialog {
                   fontSize: 20,
                 ),
               ),
-              content: Text(
+              content: const Text(
                   'It seems there is something wrong with your internet connection. Please connect to internet and try again.'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             ));
@@ -120,21 +120,21 @@ class MyAlertDialog {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             ));
   }
 }
 
-class _ImagePickerDialog extends StatefulWidget {
-  const _ImagePickerDialog({Key? key}) : super(key: key);
+class ImagePickerDialog extends StatefulWidget {
+  const ImagePickerDialog({super.key});
 
   @override
-  _ImagePickerDialogState createState() => _ImagePickerDialogState();
+  State<ImagePickerDialog> createState() => _ImagePickerDialogState();
 }
 
-class _ImagePickerDialogState extends State<_ImagePickerDialog> {
+class _ImagePickerDialogState extends State<ImagePickerDialog> {
   Future<void> _pickImageCamera() async {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.camera);
@@ -167,19 +167,19 @@ class _ImagePickerDialogState extends State<_ImagePickerDialog> {
           children: [
             ListTile(
               onTap: _pickImageCamera,
-              leading: Icon(
+              leading: const Icon(
                 Icons.camera,
                 //  color: Theme.of(context).buttonColor
               ),
-              title: Text('Camera'),
+              title: const Text('Camera'),
             ),
             ListTile(
               onTap: _pickImageGallery,
-              leading: Icon(
+              leading: const Icon(
                 Icons.photo,
                 //color: Theme.of(context).buttonColor
               ),
-              title: Text('Gallery'),
+              title: const Text('Gallery'),
             ),
           ],
         ),

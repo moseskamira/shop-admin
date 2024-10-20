@@ -13,6 +13,8 @@ import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 // import 'login_screen.dart';
 
 class NavBar extends StatefulWidget {
+  const NavBar({super.key});
+
   @override
   State<NavBar> createState() => _NavBarState();
 }
@@ -29,7 +31,7 @@ class _NavBarState extends State<NavBar> {
 
   @override
   Widget build(BuildContext context) {
-    final _themeChange = Provider.of<ThemeChangeProvider>(context);
+    final themeChange = Provider.of<ThemeChangeProvider>(context);
 
     return SafeArea(
       child: Drawer(
@@ -39,9 +41,9 @@ class _NavBarState extends State<NavBar> {
           children: [
             UserAccountsDrawerHeader(
               accountName: Text(name,
-                  style: TextStyle(color: Colors.black87, fontSize: 20)),
+                  style: const TextStyle(color: Colors.black87, fontSize: 20)),
               accountEmail:
-                  Text(phone, style: TextStyle(color: Colors.black87)),
+                  Text(phone, style: const TextStyle(color: Colors.black87)),
               currentAccountPicture: CircleAvatar(
                 child: ClipOval(
                   child: Image.asset(
@@ -52,7 +54,7 @@ class _NavBarState extends State<NavBar> {
                   ),
                 ),
               ),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xFFFFFFFF),
                 image: DecorationImage(
                     fit: BoxFit.fill,
@@ -62,23 +64,23 @@ class _NavBarState extends State<NavBar> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.pending_actions),
-              title: Text('Pending Order'),
+              leading: const Icon(Icons.pending_actions),
+              title: const Text('Pending Order'),
               onTap: (() {
                 // Get.to(PendingScreen());
               }),
             ),
             ListTile(
-              leading: Icon(Icons.account_circle_outlined),
-              title: Text('My Profile'),
+              leading: const Icon(Icons.account_circle_outlined),
+              title: const Text('My Profile'),
               onTap: (() {
                 // Get.to(ProfileScreen());
               }),
             ),
-            Divider(),
+            const Divider(),
             ListTile(
-              leading: Icon(Icons.policy_sharp),
-              title: Text('Privacy Policies'),
+              leading: const Icon(Icons.policy_sharp),
+              title: const Text('Privacy Policies'),
               onTap: (() async {
                 // var url = 'https://sites.google.com/view/solutionpro';
                 // if(await canLaunch(url)){
@@ -91,8 +93,8 @@ class _NavBarState extends State<NavBar> {
               }),
             ),
             ListTile(
-              leading: Icon(Icons.description),
-              title: Text('Terms Of Use'),
+              leading: const Icon(Icons.description),
+              title: const Text('Terms Of Use'),
               onTap: (() async {
                 var url = 'https://sites.google.com/view/solutionpro';
                 // if(await canLaunch(url)){
@@ -110,10 +112,10 @@ class _NavBarState extends State<NavBar> {
                   SwitchListTile(
                     title: const Text('Dark Theme'),
                     secondary: _customIcon(Icons.dark_mode),
-                    value: _themeChange.isDarkTheme,
+                    value: themeChange.isDarkTheme,
                     onChanged: (bool value) {
                       setState(() {
-                        _themeChange.isDarkTheme = value;
+                        themeChange.isDarkTheme = value;
                       });
                     },
                   ),
@@ -121,8 +123,8 @@ class _NavBarState extends State<NavBar> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Sign Out'),
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Sign Out'),
               onTap: (() {
                 MyAlertDialog.signOut(context); //    Get.offAll(LoginScreen());
               }),

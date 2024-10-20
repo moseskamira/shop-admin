@@ -20,10 +20,10 @@ import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 import 'package:uuid/uuid.dart';
 
 class UploadProductScreen extends StatefulWidget {
-  const UploadProductScreen({Key? key}) : super(key: key);
+  const UploadProductScreen({super.key});
 
   @override
-  _UploadProductScreenState createState() => _UploadProductScreenState();
+  State<UploadProductScreen> createState() => _UploadProductScreenState();
 }
 
 class _UploadProductScreenState extends State<UploadProductScreen> {
@@ -55,7 +55,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
 
   void _submitForm() async {
     final uploadingPictureProvider =
-    Provider.of<PicturesProvider>(context, listen: false);
+        Provider.of<PicturesProvider>(context, listen: false);
     final isValid = _formKey.currentState!.validate();
 
     if (imageList.length == 1) {
@@ -69,11 +69,9 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
         setState(() {});
       }
 
-
-      var listOfImageUrlLinks = await uploadingPictureProvider
-          .uploadPictures(
-              picturesList: imageChosenForASingleProduct,
-              productsName: _productModel.name);
+      var listOfImageUrlLinks = await uploadingPictureProvider.uploadPictures(
+          picturesList: imageChosenForASingleProduct,
+          productsName: _productModel.name);
 
       setState(() {
         _productModel.imageUrls = listOfImageUrlLinks;
@@ -84,20 +82,18 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
         ];
       });
 
-
       _formKey.currentState!.save();
-       _productModel.id = const Uuid().v4();
-      final productProvider = Provider.of<ProductsProvider>(context, listen: false);
+      _productModel.id = const Uuid().v4();
+      final productProvider =
+          Provider.of<ProductsProvider>(context, listen: false);
       await productProvider.addProduct(_productModel).then((_) {
         MySnackBar().showSnackBar('Success', context);
-       setState(() {
-         _productModel.imageUrls?.clear();
-         imageChosenForASingleProduct.clear();
-         _formKey.currentState?.reset();
-
-       });
-
-       }).catchError((error) {
+        setState(() {
+          _productModel.imageUrls?.clear();
+          imageChosenForASingleProduct.clear();
+          _formKey.currentState?.reset();
+        });
+      }).catchError((error) {
         MyAlertDialog.error(context, error.message);
       }).whenComplete(() => setState(() => _isLoading = false));
     }
@@ -312,11 +308,11 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           7)),
-                                                          child: Column(
+                                                          child: const Column(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .center,
-                                                            children: const [
+                                                            children: [
                                                               Text("ThumbNail"),
                                                               Center(
                                                                   child: Icon(
@@ -343,7 +339,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                             textCapitalization: TextCapitalization.words,
                             textInputAction: TextInputAction.next,
                             validator: (value) =>
-                                value!.isEmpty ? 'Requiered' : null,
+                                value!.isEmpty ? 'Required' : null,
                             decoration: InputDecoration(
                               hintText: 'Add product name...',
                               enabledBorder:
@@ -382,7 +378,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                             //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                             // ],
                             validator: (value) =>
-                                value!.isEmpty ? 'Requiered' : null,
+                                value!.isEmpty ? 'Required' : null,
                             decoration: InputDecoration(
                               hintText: 'Add product price...',
                               enabledBorder:
@@ -424,8 +420,8 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                             items: _categories
                                 .map(
                                   (category) => DropdownMenuItem<String>(
-                                    child: Text(category.title),
                                     value: category.title,
+                                    child: Text(category.title),
                                   ),
                                 )
                                 .toList(),
@@ -448,7 +444,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                             keyboardType: TextInputType.multiline,
                             maxLines: 10,
                             validator: (value) =>
-                                value!.isEmpty ? 'Requiered' : null,
+                                value!.isEmpty ? 'Required' : null,
                             textCapitalization: TextCapitalization.sentences,
                             textInputAction: TextInputAction.done,
                             focusNode: _descriptionFocusNode,
@@ -467,11 +463,16 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                   ),
                   // Is Popular section Section
 
-                   Card(
+                  Card(
                     child: Column(
                       children: [
                         SwitchListTile(
-                          title: const Text('Is popular', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),),
+                          title: const Text(
+                            'Is popular',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
                           value: _isPopular,
                           onChanged: (bool value) {
                             setState(() {
@@ -482,7 +483,6 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                       ],
                     ),
                   ),
-
 
                   // Upload Product Button
                   SizedBox(
@@ -520,7 +520,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   )
                 ],

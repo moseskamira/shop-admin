@@ -141,7 +141,7 @@ class _SearchScreenState extends State<SearchScreen> {
           filled: true,
           isDense: true,
           hintText: 'Search',
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
               //color: Theme.of(context).buttonColor
               ),
           suffixIcon: _searchController.text.isEmpty

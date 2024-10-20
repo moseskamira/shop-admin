@@ -9,8 +9,10 @@ import 'package:shop_owner_app/ui/screens/user_info.dart';
 import 'package:shop_owner_app/ui/widgets/authenticate.dart';
 
 class BottomBarScreen extends StatefulWidget {
+  const BottomBarScreen({super.key});
+
   @override
-  _BottomBarScreenState createState() => _BottomBarScreenState();
+  State<BottomBarScreen> createState() => _BottomBarScreenState();
 }
 
 class _BottomBarScreenState extends State<BottomBarScreen> {
@@ -24,10 +26,10 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   void initState() {
     super.initState();
     _pages = [
-      {'page': HomeScreen(), 'title': 'Home'},
-      {'page': FeedsScreen(), 'title': 'Feeds'},
-      {'page': UploadProductScreen(), 'title': 'Search'},
-      {'page': PendingOrdersList(), 'title': 'Wishlist'},
+      {'page': const HomeScreen(), 'title': 'Home'},
+      {'page': const FeedsScreen(), 'title': 'Feeds'},
+      {'page': const UploadProductScreen(), 'title': 'Search'},
+      {'page': const PendingOrdersList(), 'title': 'Wishlist'},
 
       /// {'page': Authenticate(child: UserInfoScreen()), 'title': 'User'},
     ];
@@ -44,7 +46,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
         notchMargin: 6,
         height: 90,
         clipBehavior: Clip.antiAlias,
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         child: BottomNavigationBar(
           unselectedItemColor: Theme.of(context).unselectedWidgetColor,
           selectedItemColor: Theme.of(context).primaryColor,
@@ -86,7 +88,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
         },
         elevation: 2,
         splashColor: Theme.of(context).primaryColor.withAlpha(2),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -56,7 +56,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               maxLines: 2,
                               style: Theme.of(context).textTheme.headlineMedium,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
 
                             //Product Price
 
@@ -69,7 +69,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 letterSpacing: 0.6,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
 
                             // Product sales and Wishlist Button
                           ],
@@ -100,7 +100,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       ? 'Popular'
                                       : 'Not Popular'),
 
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
 
                               // Description
 
@@ -108,7 +108,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   width: 90.w,
                                   child: Text(
                                     widget.detailsOfProduct?.description ?? "",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 17),
                                   )),
@@ -117,7 +117,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
 
-                      SizedBox(height: 60),
+                      const  SizedBox(height: 60),
                     ],
                   )),
             ],
@@ -130,21 +130,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget _sectionContainer(String title, Widget child) {
     return Container(
       color: Theme.of(context).cardColor,
-      margin: EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(top: 10),
       width: MediaQuery.of(context).size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Text(
               title.toUpperCase(),
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           child,
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -152,7 +152,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   Widget _detailsRow(String key, String value) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           Expanded(flex: 1, child: Text(key)),

@@ -94,7 +94,7 @@ class MyApp extends StatelessWidget {
                             RouteName.feedsScreen: (context) => FeedsScreen(),
                             RouteName.categoryScreen: (context) =>
                                 CategoryScreen(),
-                            RouteName.searchScreen: (context) => SearchScreen(),
+                            RouteName.searchScreen: (context) => const SearchScreen(),
                             RouteName.updateProductScreen: (context) =>
                                 UpdateProductScreen(),
                             RouteName.userInfoScreen: (context) =>

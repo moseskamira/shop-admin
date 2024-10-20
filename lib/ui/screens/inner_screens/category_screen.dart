@@ -8,6 +8,8 @@ import 'package:shop_owner_app/core/view_models/product_provider.dart';
 import 'package:shop_owner_app/ui/widgets/feeds_product.dart';
 
 class CategoryScreen extends StatefulWidget {
+  const CategoryScreen({super.key});
+
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
 }
@@ -53,7 +55,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               }
             }
             return Container(
-              margin: EdgeInsets.symmetric(horizontal: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
               child: GridView.count(
                 crossAxisCount: 2,
                 childAspectRatio: (MediaQuery.of(context).size.width) /

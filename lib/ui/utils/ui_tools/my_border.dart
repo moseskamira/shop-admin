@@ -4,22 +4,22 @@ import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
 
 class MyBorder {
   static OutlineInputBorder outlineInputBorder(BuildContext context) {
-    final _isDarkTheme =
+    final isDarkTheme =
         Provider.of<ThemeChangeProvider>(context, listen: false).isDarkTheme;
 
     return OutlineInputBorder(
       borderSide: BorderSide(
-          color: _isDarkTheme ? Color(0xFF616161) : Color(0xFF616161)),
+          color: isDarkTheme ? const Color(0xFF616161) : const Color(0xFF616161)),
     );
   }
 
   static UnderlineInputBorder underlineInputBorder(BuildContext context) {
-    final _isDarkTheme =
+    final isDarkTheme =
         Provider.of<ThemeChangeProvider>(context, listen: false).isDarkTheme;
 
     return UnderlineInputBorder(
       borderSide: BorderSide(
-          color: _isDarkTheme ? Color(0xFF616161) : Color(0xFF616161)),
+          color: isDarkTheme ? const Color(0xFF616161) : const Color(0xFF616161)),
     );
   }
 }

@@ -9,8 +9,10 @@ import 'package:shop_owner_app/ui/constants/assets_path.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 
 class UserInfoScreen extends StatefulWidget {
+  const UserInfoScreen({super.key});
+
   @override
-  _UserInfoScreenState createState() => _UserInfoScreenState();
+  State<UserInfoScreen> createState() => _UserInfoScreenState();
 }
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
@@ -28,11 +30,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _userDataProvider = Provider.of<UserDataProvider>(context);
+    final userDataProvider = Provider.of<UserDataProvider>(context);
     FirebaseAuth.instance.authStateChanges().listen((firebaseUser) {
-      _userDataProvider.fetchUserData();
+      userDataProvider.fetchUserData();
     });
-    _userData = _userDataProvider.userData;
+    _userData = userDataProvider.userData;
 
     return Scaffold(
       body: Stack(
@@ -126,18 +128,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   Widget _uploadPictureFab() {
     // Starting Fab position
-    final double defaultTopMargin = 200.0 - 20;
+    const double defaultTopMargin = 200.0 - 20;
     // pixels from top where scalling should start
-    final double scaleStart = defaultTopMargin / 2;
+    const double scaleStart = defaultTopMargin / 2;
     // pixels from top where scalling should end
-    final double scaleEnd = scaleStart / 2;
+    const double scaleEnd = scaleStart / 2;
 
-    double _top = defaultTopMargin;
+    double top = defaultTopMargin;
     double scale = 1.0;
 
     if (_scrollController.hasClients) {
       double offset = _scrollController.offset;
-      _top -= offset;
+      top -= offset;
 
       if (offset < defaultTopMargin - scaleStart) {
         //offset small => don't scale down
@@ -152,7 +154,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     }
 
     return Positioned(
-        top: _top,
+        top: top,
         right: 16.0,
         child: Transform(
           transform: Matrix4.identity()..scale(scale),
@@ -161,7 +163,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             mini: true,
             onPressed: () => MyAlertDialog.imagePicker(context),
             heroTag: 'btn1',
-            child: Icon(mCameraIcon),
+            child: const Icon(mCameraIcon),
           ),
         ));
   }

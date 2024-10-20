@@ -8,7 +8,7 @@ class MyButton {
     String text = '',
     double height = 45,
   }) {
-    return Container(
+    return SizedBox(
       height: height,
       child: Material(
         color: Theme.of(context).primaryColor,
@@ -17,7 +17,7 @@ class MyButton {
             child: Center(
               child: Text(
                 text,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -47,8 +47,8 @@ class MyButton {
           child: Center(
             child: Text(
               text,
-              style: TextStyle(
-              //  color: Theme.of(context).buttonColor,
+              style: const TextStyle(
+                //  color: Theme.of(context).buttonColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
@@ -67,11 +67,13 @@ class MyButton {
   }) {
     return SizedBox(
       height: 25,
-
       child: Center(
         child: IconButton(
           onPressed: onPressed,
-          icon: Icon(icon, color: Colors.black,),
+          icon: Icon(
+            icon,
+            color: Colors.black,
+          ),
           iconSize: 25,
           color: color,
           padding: EdgeInsets.zero,
@@ -83,7 +85,7 @@ class MyButton {
 
   static Widget elevatedButton(
       {required context, required child, required Function onPressed}) {
-    return Material(
+    return const Material(
       child: InkWell(),
     );
   }

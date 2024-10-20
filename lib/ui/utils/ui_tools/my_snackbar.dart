@@ -9,7 +9,7 @@ class MySnackBar {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.check_circle, color: Colors.grey[300]),
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           Text(
             content.toUpperCase(),
             textAlign: TextAlign.center,
@@ -23,7 +23,7 @@ class MySnackBar {
       ),
       duration: duration,
       behavior: SnackBarBehavior.floating,
-      backgroundColor: Color.fromRGBO(0, 0, 0, 0.7),
+      backgroundColor: const Color.fromRGBO(0, 0, 0, 0.7),
       margin: EdgeInsets.fromLTRB(horizontalMargin, 0, horizontalMargin,
           MediaQuery.of(context).size.height * 0.5),
     ));
