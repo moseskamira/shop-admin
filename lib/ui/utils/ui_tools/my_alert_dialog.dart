@@ -167,18 +167,17 @@ class _ImagePickerDialogState extends State<ImagePickerDialog> {
           children: [
             ListTile(
               onTap: _pickImageCamera,
-              leading: const Icon(
+              leading:   Icon(
                 Icons.camera,
-                //  color: Theme.of(context).buttonColor
+                color: Theme.of(context).colorScheme.tertiary
               ),
               title: const Text('Camera'),
             ),
             ListTile(
               onTap: _pickImageGallery,
-              leading: const Icon(
+              leading:   Icon(
                 Icons.photo,
-                //color: Theme.of(context).buttonColor
-              ),
+                  color: Theme.of(context).colorScheme.tertiary              ),
               title: const Text('Gallery'),
             ),
           ],

@@ -24,11 +24,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
     categorizedItems?.clear();
 
     final productsProvider = Provider.of<ProductsProvider>(context);
-    final _title = ModalRoute.of(context)!.settings.arguments as String;
+    final title = ModalRoute.of(context)!.settings.arguments as String;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _title,
+          title,
           style: TextStyle(
             color: Theme.of(context).primaryColor,
           ),
@@ -49,7 +49,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
             if (allProducts != null) {
               for (ProductModel category in allProducts!) {
-                if (category.category == _title) {
+                if (category.category == title) {
                   categorizedItems?.add(category);
                 }
               }

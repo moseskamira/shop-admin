@@ -7,18 +7,18 @@ class Category extends StatelessWidget {
   const Category({super.key, required this.category});
   @override
   Widget build(BuildContext context) {
-    double _imageSize = 70;
+    double imageSize = 70;
     return InkWell(
       onTap: () => Navigator.pushNamed(context, RouteName.categoryScreen,
           arguments: category.title),
-      child: Container(
+      child: SizedBox(
         width: 100,
         height: 100,
         child: Column(
           children: [
             Container(
-              height: _imageSize,
-              width: _imageSize,
+              height: imageSize,
+              width: imageSize,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(5)),
                 color: Colors.deepPurple[50],
@@ -26,8 +26,8 @@ class Category extends StatelessWidget {
               child: Center(
                 child: Image.asset(
                   category.image,
-                  width: _imageSize * 0.65,
-                  height: _imageSize * 0.65,
+                  width: imageSize * 0.65,
+                  height: imageSize * 0.65,
                 ),
               ),
             ),

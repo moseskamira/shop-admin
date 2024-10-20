@@ -76,9 +76,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                     maxLines: 2,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 24,
-                                      // color: Theme.of(context).buttonColor
-                                    ),
+                                        fontSize: 24,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary),
                                   )
                                 : SvgPicture.asset(
                                     ImagePath.search,
@@ -141,9 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
           filled: true,
           isDense: true,
           hintText: 'Search',
-          hintStyle: const TextStyle(
-              //color: Theme.of(context).buttonColor
-              ),
+          hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
           suffixIcon: _searchController.text.isEmpty
               ? null
               : IconButton(
@@ -154,7 +153,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           _focusNode.unfocus();
                         },
                   iconSize: 14,
-                  //  color: Theme.of(context).buttonColor,
+                   color:  Theme.of(context).colorScheme.tertiary,
                   icon: const Icon(
                     Icons.clear,
                     color: Colors.black,

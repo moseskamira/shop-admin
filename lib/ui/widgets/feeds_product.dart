@@ -14,7 +14,7 @@ class FeedsProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double productImageSize = MediaQuery.of(context).size.width * 0.45;
-    return Container(
+    return SizedBox(
       width: productImageSize,
       height: productImageSize + 90,
       child: Material(

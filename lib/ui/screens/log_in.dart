@@ -11,7 +11,7 @@ class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
 
   @override
-  _LogInScreenState createState() => _LogInScreenState();
+  State<LogInScreen> createState() => _LogInScreenState();
 }
 
 class _LogInScreenState extends State<LogInScreen> {
@@ -26,7 +26,7 @@ class _LogInScreenState extends State<LogInScreen> {
   @override
   void initState() {
     super.initState();
-    _passwordNode = new FocusNode();
+    _passwordNode =  FocusNode();
   }
 
   @override

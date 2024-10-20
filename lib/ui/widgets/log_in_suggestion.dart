@@ -3,7 +3,7 @@ import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/widgets/my_button.dart';
 
 class LogInSuggestion extends StatelessWidget {
-  const LogInSuggestion({Key? key}) : super(key: key);
+  const LogInSuggestion({super.key});
 
   @override
   Widget build(BuildContext context) {

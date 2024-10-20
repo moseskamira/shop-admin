@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class MyButton {
   static Widget text({
@@ -38,17 +37,16 @@ class MyButton {
     return Container(
       height: height,
       decoration: BoxDecoration(
-        border: Border.all(
-            //color: Theme.of(context).buttonColor,
-            width: 1),
+        border:
+            Border.all(color: Theme.of(context).colorScheme.tertiary, width: 1),
       ),
       child: InkWell(
           onTap: onPressed,
           child: Center(
             child: Text(
               text,
-              style: const TextStyle(
-                //  color: Theme.of(context).buttonColor,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.tertiary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
@@ -67,18 +65,14 @@ class MyButton {
   }) {
     return SizedBox(
       height: 25,
-      child: Center(
-        child: IconButton(
-          onPressed: onPressed,
-          icon: Icon(
-            icon,
-            color: Colors.black,
-          ),
-          iconSize: 25,
-          color: color,
-          padding: EdgeInsets.zero,
-          splashRadius: 14,
-        ),
+      width: 25,
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Icon(icon),
+        iconSize: 18,
+        color: color,
+        padding: EdgeInsets.zero,
+        splashRadius: 14,
       ),
     );
   }
