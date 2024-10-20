@@ -10,8 +10,10 @@ import 'package:shop_owner_app/core/models/product_model.dart';
 import 'package:shop_owner_app/ui/widgets/feeds_product.dart';
 
 class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
@@ -74,8 +76,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                     maxLines: 2,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 24,
-                                       // color: Theme.of(context).buttonColor
+                                      fontSize: 24,
+                                      // color: Theme.of(context).buttonColor
                                     ),
                                   )
                                 : SvgPicture.asset(
@@ -129,7 +131,7 @@ class _SearchScreenState extends State<SearchScreen> {
         autofocus: true,
         controller: _searchController,
         maxLines: 1,
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyLarge,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.search,
         textCapitalization: TextCapitalization.sentences,
@@ -141,7 +143,7 @@ class _SearchScreenState extends State<SearchScreen> {
           hintText: 'Search',
           hintStyle: TextStyle(
               //color: Theme.of(context).buttonColor
-          ),
+              ),
           suffixIcon: _searchController.text.isEmpty
               ? null
               : IconButton(
@@ -152,7 +154,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           _focusNode.unfocus();
                         },
                   iconSize: 14,
-                //  color: Theme.of(context).buttonColor,
+                  //  color: Theme.of(context).buttonColor,
                   icon: const Icon(
                     Icons.clear,
                     color: Colors.black,
@@ -164,10 +166,13 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         onChanged: (value) {
           _searchController.text.toLowerCase();
-          _searchList = allProducts.where(
-                  (element) => element.name.toLowerCase().contains(value.toLowerCase())
-                      || element.category.toLowerCase().contains(value.toLowerCase())
-                      || element.brand.toLowerCase().contains(value.toLowerCase()))
+          _searchList = allProducts
+              .where((element) =>
+                  element.name.toLowerCase().contains(value.toLowerCase()) ||
+                  element.category
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+                  element.brand.toLowerCase().contains(value.toLowerCase()))
               .toList();
         },
       ),

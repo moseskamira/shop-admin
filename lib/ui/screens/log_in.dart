@@ -8,7 +8,7 @@ import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 
 class LogInScreen extends StatefulWidget {
-  const LogInScreen({Key? key}) : super(key: key);
+  const LogInScreen({super.key});
 
   @override
   _LogInScreenState createState() => _LogInScreenState();
@@ -225,7 +225,7 @@ class _LogInScreenState extends State<LogInScreen> {
                     children: [
                       Expanded(child: Divider(thickness: 1)),
                       Text('  or   ',
-                          style: Theme.of(context).textTheme.subtitle2),
+                          style: Theme.of(context).textTheme.titleSmall),
                       Expanded(child: Divider(thickness: 1)),
                     ],
                   ),
@@ -252,7 +252,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   children: [
                     Text(
                       'Don\'t have an account? ',
-                      style: Theme.of(context).textTheme.subtitle2,
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                     TextButton(
                         onPressed: () {
@@ -280,7 +280,7 @@ class _LogInScreenState extends State<LogInScreen> {
         elevation: 0.6,
         borderRadius: BorderRadius.circular(4),
         color: Theme.of(context).cardColor,
-        textStyle: Theme.of(context).textTheme.button,
+        textStyle: Theme.of(context).textTheme.labelLarge,
         child: InkWell(
           onTap: onPressed,
           child: Row(
@@ -294,7 +294,7 @@ class _LogInScreenState extends State<LogInScreen> {
               SizedBox(width: 8),
               Text(
                 title,
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),

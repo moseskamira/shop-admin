@@ -537,7 +537,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
       padding: const EdgeInsets.only(top: 24, bottom: 14),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.headline3,
+        style: Theme.of(context).textTheme.headlineSmall,
       ),
     );
   }

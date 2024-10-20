@@ -112,7 +112,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       padding: const EdgeInsets.fromLTRB(4, 16, 0, 0),
       child: Text(
         title.toUpperCase(),
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.titleLarge,
       ),
     );
   }

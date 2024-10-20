@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shop_owner_app/ui/constants/assets_path.dart';
 
 class NetworkError extends StatelessWidget {
+  const NetworkError({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,13 +25,13 @@ class NetworkError extends StatelessWidget {
           Text(
             'WHOOPS!',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineLarge,
           ),
-          const  SizedBox(height: 20.0),
+          const SizedBox(height: 20.0),
           Text(
             'Looks like you there is something wrong with your internet connection. Please connect to internet and start again',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.overline,
+            style: Theme.of(context).textTheme.labelSmall,
           ),
         ],
       ),

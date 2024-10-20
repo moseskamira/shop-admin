@@ -5,20 +5,21 @@ const defaultDuration = Duration(milliseconds: 250);
 
 class ProductImagesListOnDetailsView extends StatefulWidget {
   ProductImagesListOnDetailsView({
-    Key? key,
+    super.key,
     required this.product,
-  }) : super(key: key);
+  });
 
   var product;
 
   @override
-  _ProductImagesListOnDetailsViewState createState() => _ProductImagesListOnDetailsViewState();
+  State<ProductImagesListOnDetailsView> createState() =>
+      _ProductImagesListOnDetailsViewState();
 }
 
-class _ProductImagesListOnDetailsViewState extends State<ProductImagesListOnDetailsView> with SingleTickerProviderStateMixin {
+class _ProductImagesListOnDetailsViewState
+    extends State<ProductImagesListOnDetailsView>
+    with SingleTickerProviderStateMixin {
   int selectedImage = 0;
-
-
 
   late TransformationController controller;
   TapDownDetails? tapDownDetails;
@@ -31,11 +32,10 @@ class _ProductImagesListOnDetailsViewState extends State<ProductImagesListOnDeta
     super.initState();
     controller = TransformationController();
     animationController = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 300)
-    )..addListener(() {
-      controller.value = animation!.value;
-    });
+        vsync: this, duration: const Duration(milliseconds: 300))
+      ..addListener(() {
+        controller.value = animation!.value;
+      });
   }
 
   @override
@@ -47,14 +47,13 @@ class _ProductImagesListOnDetailsViewState extends State<ProductImagesListOnDeta
 
   @override
   Widget build(BuildContext context) {
-     return Column(
+    return Column(
       children: [
         SizedBox(
           width: 290,
           child: GestureDetector(
             onDoubleTapDown: (details) => tapDownDetails = details,
-
-            onDoubleTap: (){
+            onDoubleTap: () {
               final position = tapDownDetails!.localPosition;
 
               final double scale = 5;
@@ -62,23 +61,23 @@ class _ProductImagesListOnDetailsViewState extends State<ProductImagesListOnDeta
               final y = -position.dy * (scale - 1);
 
               final zoomed = Matrix4.identity()
-                ..translate(x,y)
+                ..translate(x, y)
                 ..scale(scale);
-              final end = controller.value.isIdentity() ? zoomed : Matrix4.identity();
+              final end =
+                  controller.value.isIdentity() ? zoomed : Matrix4.identity();
 
               animation = Matrix4Tween(
                 begin: controller.value,
                 end: end,
-              ).animate(CurveTween(curve: Curves.easeOut).animate(animationController));
+              ).animate(CurveTween(curve: Curves.easeOut)
+                  .animate(animationController));
               animationController.forward(from: 0);
-
             },
             child: InteractiveViewer(
               clipBehavior: Clip.none,
               transformationController: controller,
               panEnabled: true,
               scaleEnabled: false,
-
               child: AspectRatio(
                 aspectRatio: 1,
                 child: Container(
@@ -87,14 +86,15 @@ class _ProductImagesListOnDetailsViewState extends State<ProductImagesListOnDeta
                   width: double.infinity,
                   decoration: BoxDecoration(
                     // radius circular depend on your requirement
-                    borderRadius: const  BorderRadius.all(
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(10),
                     ),
                     image: DecorationImage(
                       fit: BoxFit.fill,
                       // image url your network image url
                       image: NetworkImage(
-                        widget.product.imageUrls[selectedImage],                  ),
+                        widget.product.imageUrls[selectedImage],
+                      ),
                     ),
                   ),
                 ),
@@ -109,12 +109,14 @@ class _ProductImagesListOnDetailsViewState extends State<ProductImagesListOnDeta
             ),
           ),
         ),
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ...List.generate(widget.product.imageUrls.length,
-                    (index) => buildSmallProductPreview(index)),
+                (index) => buildSmallProductPreview(index)),
           ],
         )
       ],

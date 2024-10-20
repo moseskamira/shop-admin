@@ -11,7 +11,8 @@ class UserListTile extends StatelessWidget {
   final double leadingSize;
   final Color leadingColor;
 
-  UserListTile({
+  const UserListTile({
+    super.key,
     this.title = '',
     this.titleFontSize = 14,
     this.titleColor = const Color(0xFF23374D),
