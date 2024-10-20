@@ -3,16 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:ecommerce_admin_app/core/models/category_model.dart';
-import 'package:ecommerce_admin_app/core/models/product_model.dart';
-import 'package:ecommerce_admin_app/core/view_models/products_provider.dart';
+import 'package:shop_owner_app/core/models/category_model.dart';
+import 'package:shop_owner_app/core/models/product_model.dart';
+import 'package:shop_owner_app/core/view_models/products_provider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:ecommerce_admin_app/core/view_models/picture_provider.dart';
-import 'package:ecommerce_admin_app/ui/utils/ui_tools/my_alert_dialog.dart';
-import 'package:ecommerce_admin_app/ui/utils/ui_tools/my_border.dart';
-import 'package:ecommerce_admin_app/ui/utils/ui_tools/my_snackbar.dart';
-import 'package:ecommerce_admin_app/ui/widgets/authenticate.dart';
-import 'package:ecommerce_admin_app/ui/widgets/image_preview.dart';
+import 'package:shop_owner_app/core/view_models/picture_provider.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_snackbar.dart';
+import 'package:shop_owner_app/ui/widgets/authenticate.dart';
+import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 
 class UpdateProductScreen extends StatefulWidget {
   ProductModel? singleProductDtaforUpdate;

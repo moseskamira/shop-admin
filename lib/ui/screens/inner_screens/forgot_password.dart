@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ecommerce_admin_app/ui/constants/app_consntants.dart';
-import 'package:ecommerce_admin_app/core/view_models/auth_provider.dart';
-import 'package:ecommerce_admin_app/ui/utils/ui_tools/my_border.dart';
+import 'package:shop_owner_app/ui/constants/app_consntants.dart';
+import 'package:shop_owner_app/core/view_models/auth_provider.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);

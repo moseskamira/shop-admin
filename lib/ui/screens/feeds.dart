@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-import 'package:ecommerce_admin_app/core/models/product_model.dart';
-import 'package:ecommerce_admin_app/core/view_models/products_provider.dart';
-import 'package:ecommerce_admin_app/ui/widgets/feeds_product.dart';
+import 'package:shop_owner_app/core/models/product_model.dart';
+import 'package:shop_owner_app/core/view_models/products_provider.dart';
+import 'package:shop_owner_app/ui/widgets/feeds_product.dart';
 
 class FeedsScreen extends StatefulWidget {
   @override

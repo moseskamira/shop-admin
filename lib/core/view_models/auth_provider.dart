@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ecommerce_admin_app/core/models/user_model.dart';
- import 'package:ecommerce_admin_app/core/view_models/user_data_provider.dart';
+import 'package:shop_owner_app/core/models/user_model.dart';
+import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -67,7 +66,7 @@ class AuthProvider with ChangeNotifier {
         final user = userCredential.user;
 
         if (user != null) {
-          UserModel userModel =   UserModel(
+          UserModel userModel = UserModel(
             id: user.uid,
             email: user.email ?? '',
             fullName: user.displayName ?? '',

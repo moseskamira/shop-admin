@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
- import 'package:ecommerce_admin_app/core/models/product_model.dart';
-import 'package:ecommerce_admin_app/core/services/api.dart';
-import 'package:ecommerce_admin_app/core/view_models/picture_provider.dart';
+import 'package:shop_owner_app/core/models/product_model.dart';
+import 'package:shop_owner_app/core/services/api.dart';
+import 'package:shop_owner_app/core/view_models/picture_provider.dart';
 
 class ProductsProvider extends ChangeNotifier {
   final Api _api = Api(path: 'products');
 
-   List<ProductModel> _products=[];
+  List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
-   final pictureProvider = PicturesProvider();
+  final pictureProvider = PicturesProvider();
 
   Future<List<ProductModel>> fetchProducts() async {
     _products.clear();
@@ -27,7 +27,6 @@ class ProductsProvider extends ChangeNotifier {
           (element) => element.name.toLowerCase().contains(query.toLowerCase()))
       .toList();
 
-
   List<ProductModel> findByCategory(String categoryTitle) => _products
       .where((element) =>
           element.category.toLowerCase().contains(categoryTitle.toLowerCase()))
@@ -43,7 +42,8 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   Future removeProduct(
-      {required String id, required List<String> imageUrlsOnFirebaseStorage}) async {
+      {required String id,
+      required List<String> imageUrlsOnFirebaseStorage}) async {
     await _api.removeDocument(id);
     pictureProvider.deletePictures(picturePaths: imageUrlsOnFirebaseStorage);
 

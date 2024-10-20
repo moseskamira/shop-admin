@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:ecommerce_admin_app/ui/constants/app_consntants.dart';
-import 'package:ecommerce_admin_app/ui/routes/route_name.dart';
+import 'package:shop_owner_app/ui/constants/app_consntants.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
 
 class PendingOrdersList extends StatefulWidget {
   const PendingOrdersList({Key? key}) : super(key: key);

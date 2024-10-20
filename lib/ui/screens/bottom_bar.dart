@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:ecommerce_admin_app/ui/constants/app_consntants.dart';
-import 'package:ecommerce_admin_app/ui/screens/feeds.dart';
-import 'package:ecommerce_admin_app/ui/screens/home.dart';
-import 'package:ecommerce_admin_app/ui/screens/orders_list.dart';
- import 'package:ecommerce_admin_app/ui/screens/update_product.dart';
- import 'package:ecommerce_admin_app/ui/screens/upload_product.dart';
-import 'package:ecommerce_admin_app/ui/screens/user_info.dart';
- import 'package:ecommerce_admin_app/ui/widgets/authenticate.dart';
+import 'package:shop_owner_app/ui/constants/app_consntants.dart';
+import 'package:shop_owner_app/ui/screens/feeds.dart';
+import 'package:shop_owner_app/ui/screens/home.dart';
+import 'package:shop_owner_app/ui/screens/orders_list.dart';
+import 'package:shop_owner_app/ui/screens/update_product.dart';
+import 'package:shop_owner_app/ui/screens/upload_product.dart';
+import 'package:shop_owner_app/ui/screens/user_info.dart';
+import 'package:shop_owner_app/ui/widgets/authenticate.dart';
 
 class BottomBarScreen extends StatefulWidget {
   @override
   _BottomBarScreenState createState() => _BottomBarScreenState();
 }
+
 class _BottomBarScreenState extends State<BottomBarScreen> {
   late List<Map> _pages;
   late int _selectedIndex;
   void _selectedPages(int index) {
     setState(() => _selectedIndex = index);
   }
+
   @override
   void initState() {
     super.initState();
@@ -26,7 +28,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
       {'page': FeedsScreen(), 'title': 'Feeds'},
       {'page': UploadProductScreen(), 'title': 'Search'},
       {'page': PendingOrdersList(), 'title': 'Wishlist'},
-     /// {'page': Authenticate(child: UserInfoScreen()), 'title': 'User'},
+
+      /// {'page': Authenticate(child: UserInfoScreen()), 'title': 'User'},
     ];
     _selectedIndex = 0;
   }
@@ -72,7 +75,6 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
               label: 'Orders',
               tooltip: 'Orders',
             ),
-
           ],
         ),
       ),

@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:ecommerce_admin_app/core/models/user_model.dart';
+import 'package:shop_owner_app/core/models/user_model.dart';
 
 class UserDataProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  UserModel _userData = new UserModel();
+  UserModel _userData = UserModel();
   UserModel get userData => _userData;
 
   set userData(UserModel value) {
@@ -17,7 +17,7 @@ class UserDataProvider with ChangeNotifier {
     final user = _auth.currentUser;
     if (user != null) {
       final uid = user.uid;
-      if (!user.isAnonymous)
+      if (!user.isAnonymous) {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(uid)
@@ -27,6 +27,7 @@ class UserDataProvider with ChangeNotifier {
             .catchError((e) {
           print(e.toString());
         });
+      }
       notifyListeners();
       return _userData;
     }

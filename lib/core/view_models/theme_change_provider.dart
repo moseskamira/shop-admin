@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ecommerce_admin_app/core/models/theme_preferences.dart';
+import 'package:shop_owner_app/core/models/theme_preferences.dart';
 
 class ThemeChangeProvider with ChangeNotifier {
   ThemePreferences themePreferences = ThemePreferences();

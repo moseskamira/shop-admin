@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ecommerce_admin_app/ui/routes/route_name.dart';
-import 'package:ecommerce_admin_app/core/models/category_model.dart';
- import 'package:ecommerce_admin_app/ui/screens/nav_bar.dart';
-import 'package:ecommerce_admin_app/ui/widgets/category.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
+import 'package:shop_owner_app/core/models/category_model.dart';
+import 'package:shop_owner_app/ui/screens/nav_bar.dart';
+import 'package:shop_owner_app/ui/widgets/category.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: NavBar(),
-
       appBar: AppBar(
         title: const Text("CATEGORIES"),
         centerTitle: true,
@@ -44,17 +43,18 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-
-
-        actions: [Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: InkWell(
-            onTap: (){
-              Navigator.of(context).pushNamed(RouteName.searchScreen);
-            },
-            child: Icon(Icons.search,),
-          ),
-        )
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed(RouteName.searchScreen);
+              },
+              child: Icon(
+                Icons.search,
+              ),
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -83,14 +83,15 @@ class _HomeScreenState extends State<HomeScreen> {
               //     ),
               //   ),),
               // ),
-             const SizedBox(height: 30,),
+              const SizedBox(
+                height: 30,
+              ),
               GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                  mainAxisExtent: 120,
-
+                    mainAxisExtent: 120,
                   ),
                   itemCount: categories.length,
                   itemBuilder: (ctx, index) {

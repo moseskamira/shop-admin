@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ecommerce_admin_app/ui/constants/assets_path.dart';
-import 'package:ecommerce_admin_app/ui/routes/route_name.dart';
-import 'package:ecommerce_admin_app/core/models/user_model.dart';
- import 'package:ecommerce_admin_app/core/view_models/auth_provider.dart';
-import 'package:ecommerce_admin_app/ui/utils/ui_tools/my_alert_dialog.dart';
-import 'package:ecommerce_admin_app/ui/utils/ui_tools/my_border.dart';
+import 'package:shop_owner_app/ui/constants/assets_path.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
+import 'package:shop_owner_app/core/models/user_model.dart';
+import 'package:shop_owner_app/core/view_models/auth_provider.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _LogInScreenState extends State<LogInScreen> {
   late FocusNode _passwordNode;
   final _formKey = GlobalKey<FormState>();
   bool _passwordIsVisibile = false;
-  final UserModel _user =   UserModel();
+  final UserModel _user = UserModel();
   late String _password;
   bool _wrongEmailorPassword = false;
   bool _isLoading = false;

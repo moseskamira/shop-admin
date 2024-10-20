@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ecommerce_admin_app/core/models/user_model.dart';
- import 'package:ecommerce_admin_app/core/view_models/auth_provider.dart';
-import 'package:ecommerce_admin_app/ui/utils/ui_tools/my_alert_dialog.dart';
-import 'package:ecommerce_admin_app/ui/utils/ui_tools/my_border.dart';
- import 'package:ecommerce_admin_app/ui/widgets/image_preview.dart';
+import 'package:shop_owner_app/core/models/user_model.dart';
+import 'package:shop_owner_app/core/view_models/auth_provider.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
+import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -30,12 +30,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
-    _userModel =   UserModel();
+    _userModel = UserModel();
     _isLoading = false;
     _isEmailValid = true;
-    _passwordNode =   FocusNode();
-    _emailNode =   FocusNode();
-    _phoneNumberNode =   FocusNode();
+    _passwordNode = FocusNode();
+    _emailNode = FocusNode();
+    _phoneNumberNode = FocusNode();
   }
 
   @override
@@ -92,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               const Text(
+                const Text(
                   'Sign Up',
                   style: TextStyle(fontSize: 22),
                 ),
@@ -134,7 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: TextFormField(
-                          key:const ValueKey('Full Name'),
+                          key: const ValueKey('Full Name'),
                           textCapitalization: TextCapitalization.words,
                           validator: (value) => value!.isEmpty
                               ? 'Please enter your full name'
@@ -160,7 +160,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: TextFormField(
-                          key:const ValueKey('Email'),
+                          key: const ValueKey('Email'),
                           validator: (value) {
                             if (!_isEmailValid) {
                               return _emailErrorMessage;
@@ -199,7 +199,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             labelText: 'Phone Number',
-                            contentPadding:const  EdgeInsets.all(12),
+                            contentPadding: const EdgeInsets.all(12),
                             border: const OutlineInputBorder(),
                             enabledBorder: MyBorder.outlineInputBorder(context),
                             filled: true,
@@ -227,7 +227,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           obscureText: !_passwordIsVisible,
                           decoration: InputDecoration(
                             contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 12),
+                                const EdgeInsets.symmetric(horizontal: 12),
                             labelText: 'Password',
                             border: const OutlineInputBorder(),
                             enabledBorder: MyBorder.outlineInputBorder(context),

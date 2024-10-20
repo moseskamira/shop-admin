@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-   import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 import 'package:shop_owner_app/ui/constants/app_consntants.dart';
@@ -63,8 +63,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     children: [
                       ///    User bag section
 
-
-
                       //    User information section
 
                       _sectionTitle('User Information'),
@@ -75,8 +73,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 _userData.fullName, mUserIcon, context),
                             _userInformationListTile(
                                 _userData.email, mEmailIcon, context),
-
-
                             _userInformationListTile(
                                 _userData.phoneNumber, mPhoneIcon, context),
                             _userInformationListTile(
@@ -90,8 +86,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       ),
 
                       //    Settings Section
-
-
                     ],
                   ),
                 ),
@@ -112,8 +106,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       onTap: () {},
     );
   }
-
-
 
   Widget _sectionTitle(String title) {
     return Padding(
