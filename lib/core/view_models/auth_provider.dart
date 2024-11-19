@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 
+
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _googleSignIn = GoogleSignIn();
@@ -14,78 +16,116 @@ class AuthProvider with ChangeNotifier {
   bool get isLoggedIn =>
       _auth.currentUser != null && !_auth.currentUser!.isAnonymous;
 
-  Future<void> signUp(
-      {required String email,
-      required String password,
-      required UserModel userModel}) async {
-    await _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
+  Future<void> signUp({
+    required String email,
+    required String password,
+    required UserModel userModel,
+  }) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      userModel.id = _auth.currentUser?.uid ?? '';
+      // upload user image to firebase storage and get the url
+      if (userModel.imageUrl.isNotEmpty) {
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('userimages')
+            .child(userModel.id + '.jpg');
 
-    // upload user image to firebase storage and get the url
-    if (userModel.imageUrl.isNotEmpty) {
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('userimages')
+        await ref
+            .putFile(File(userModel.imageUrl))
+            .then((_) async => ref.getDownloadURL())
+            .then((imageUrl) => userModel.imageUrl = imageUrl)
+            .catchError((e) {
+          throw Exception(e.toString());
+        });
+      }
 
-          ///from here i can get the user image location for showing on app
-          .child(userModel.id + '.jpg');
-      await ref
-          .putFile(File(userModel.imageUrl))
-          .then((_) async => ref.getDownloadURL())
-          .then((imageUrl) => userModel.imageUrl = imageUrl)
-          .catchError((e) {
-        print(e.toString());
-      });
+      await UserDataProvider().uploadUserData(userModel);
+      notifyListeners();
+    } finally {
+      notifyListeners();
     }
-    await UserDataProvider().uploadUserData(userModel);
-    notifyListeners();
   }
 
   Future<void> signInAnonymously() async {
-    // if (_auth.currentUser == null)
-    //   await _auth.signInAnonymously().catchError((e) {
-    //     print(e.toString());
-    //   });
+    if (_auth.currentUser == null) {
+      await _auth.signInAnonymously().catchError((e) {
+        throw Exception(e.toString());
+      });
+    }
   }
 
   Future<void> signIn({required String email, required String password}) async {
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
-    notifyListeners();
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      notifyListeners();
+    } catch (e) {
+      throw Exception(e.toString());
+    } finally {
+      notifyListeners();
+    }
   }
 
   // Google sign in
   Future<void> googleSignIn() async {
-    final googleAccount = await _googleSignIn.signIn();
-    if (googleAccount != null) {
-      final googleAuth = await googleAccount.authentication;
-      if (googleAuth.accessToken != null && googleAuth.idToken != null) {
-        final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    try {
+      final googleAccount = await _googleSignIn.signIn();
+      if (googleAccount != null) {
+        final googleAuth = await googleAccount.authentication;
+        if (googleAuth.accessToken != null && googleAuth.idToken != null) {
+          final credential = GoogleAuthProvider.credential(
+              accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
-        final userCredential = await _auth.signInWithCredential(credential);
-        final user = userCredential.user;
+          final userCredential = await _auth.signInWithCredential(credential);
+          final user = userCredential.user;
 
-        if (user != null) {
-          UserModel userModel = UserModel(
-            id: user.uid,
-            email: user.email ?? '',
-            fullName: user.displayName ?? '',
-            imageUrl: user.photoURL ?? '',
-            phoneNumber: user.phoneNumber ?? '',
-          );
+          if (user != null) {
+            final userDoc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .get();
 
-          await UserDataProvider()
-              .uploadUserData(userModel)
-              .then((_) => print('Done Uploading'));
-          notifyListeners();
+            if (!userDoc.exists) {
+              UserModel userModel = UserModel(
+                id: user.uid,
+                email: user.email ?? '',
+                fullName: user.displayName ?? '',
+                imageUrl: user.photoURL ?? '',
+                phoneNumber: user.phoneNumber ?? '',
+              );
+
+              // Upload user data only if the document doesn't exist
+              await UserDataProvider()
+                  .uploadUserData(userModel)
+                  .then((_) => print('Done Uploading'));
+            } else {
+              print('User already exists. No need to upload data.');
+            }
+
+            notifyListeners();
+          }
         }
       }
+    } catch (e) {
+      throw Exception(e.toString());
+    } finally {
+      notifyListeners();
     }
   }
 
   //Reset Password
+
   Future<void> resetPassword({required String email}) async {
-    await _auth.sendPasswordResetEmail(email: email.trim().toLowerCase());
+    try {
+      await _auth.sendPasswordResetEmail(email: email.trim().toLowerCase());
+    } catch (e) {
+      throw Exception(e.toString());
+    } finally {
+      notifyListeners();
+    }
   }
 
   Future<void> signOut(BuildContext context) async {
@@ -102,7 +142,9 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
       });
     } catch (e) {
-      print(e.toString());
+      throw Exception(e.toString());
+    } finally {
+      notifyListeners();
     }
   }
 }

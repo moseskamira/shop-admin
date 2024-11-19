@@ -7,49 +7,42 @@ import 'package:shop_owner_app/core/view_models/auth_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 
+
+
+
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
 
   @override
-  State<LogInScreen> createState() => _LogInScreenState();
+  State<LogInScreen>  createState() => _LogInScreenState();
 }
 
 class _LogInScreenState extends State<LogInScreen> {
   late FocusNode _passwordNode;
   final _formKey = GlobalKey<FormState>();
   bool _passwordIsVisibile = false;
-  final UserModel _user = UserModel();
+  UserModel _user = UserModel();
   late String _password;
-  bool _wrongEmailOrPassword = false;
+  bool _wrongEmailorPassword = false;
   bool _isLoading = false;
-
-  late TextEditingController emailController;
-  late TextEditingController passwordController;
 
   @override
   void initState() {
     super.initState();
     _passwordNode = FocusNode();
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
-    print('inside init');
   }
 
   @override
   void dispose() {
     super.dispose();
     _passwordNode.dispose();
-    emailController.dispose();
-    passwordController.dispose();
   }
 
   void _submitForm() async {
-    _user.email = emailController.text.toString();
-    _password = emailController.text.toString();
     final isValid = _formKey.currentState!.validate();
 
     FocusScope.of(context).unfocus();
-    setState(() => _wrongEmailOrPassword = false);
+    setState(() => _wrongEmailorPassword = false);
     if (isValid) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       _formKey.currentState!.save();
@@ -61,7 +54,7 @@ class _LogInScreenState extends State<LogInScreen> {
         print(e.toString());
         if (e.toString().contains('wrong-password') ||
             e.toString().contains('user-not-found')) {
-          setState(() => _wrongEmailOrPassword = true);
+          setState(() => _wrongEmailorPassword = true);
         } else if (e.toString().toLowerCase().contains('network')) {
           MyAlertDialog.connectionError(context);
         } else {
@@ -83,12 +76,11 @@ class _LogInScreenState extends State<LogInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('inside build');
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         body: Container(
-          margin: const EdgeInsets.all(20),
+          margin:const EdgeInsets.all(20),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -102,7 +94,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       color: Theme.of(context).primaryColor,
                     ),
                     const Text(
-                      ' Merchant App',
+                      ' ShopApp',
                       style: TextStyle(fontSize: 22),
                     )
                   ],
@@ -112,11 +104,11 @@ class _LogInScreenState extends State<LogInScreen> {
                 Container(
                   height: 65,
                   padding: const EdgeInsets.only(top: 14),
-                  child: _wrongEmailOrPassword
+                  child: _wrongEmailorPassword
                       ? const Text(
-                          'The email or password you entered did not match our records. Please double check and try again',
-                          style: TextStyle(color: Colors.redAccent),
-                        )
+                    'The email or password you entered did not match our records. Please double check and try again',
+                    style: TextStyle(color: Colors.redAccent),
+                  )
                       : null,
                 ),
 
@@ -128,18 +120,17 @@ class _LogInScreenState extends State<LogInScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         child: TextFormField(
-                          controller: emailController,
-                          key: const ValueKey('Email'),
+                          key:const ValueKey('Email'),
                           validator: (value) =>
-                              value!.isEmpty || !value.contains('@')
-                                  ? 'Please enter a valid email address'
-                                  : null,
+                          value!.isEmpty || !value.contains('@')
+                              ? 'Please enter a valid email address'
+                              : null,
                           maxLines: 1,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             labelText: 'Email',
-                            contentPadding: const EdgeInsets.all(12),
+                            contentPadding: EdgeInsets.all(12),
                             border: const OutlineInputBorder(),
                             enabledBorder: MyBorder.outlineInputBorder(context),
                             filled: true,
@@ -147,6 +138,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                           onEditingComplete: () => FocusScope.of(context)
                               .requestFocus(_passwordNode),
+                          onSaved: (value) => _user.email = value!,
                         ),
                       ),
 
@@ -154,19 +146,18 @@ class _LogInScreenState extends State<LogInScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 14.0),
                         child: TextFormField(
-                          key: const ValueKey('Password'),
+                          key:const ValueKey('Password'),
                           validator: (value) => value!.isEmpty
                               ? 'Please enter a valid password'
                               : null,
                           maxLines: 1,
                           focusNode: _passwordNode,
-                          controller: passwordController,
                           keyboardType: TextInputType.visiblePassword,
                           onEditingComplete: _submitForm,
                           obscureText: !_passwordIsVisibile,
                           decoration: InputDecoration(
                             contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12),
+                            const EdgeInsets.symmetric(horizontal: 12),
                             labelText: 'Password',
                             border: const OutlineInputBorder(),
                             enabledBorder: MyBorder.outlineInputBorder(context),
@@ -177,7 +168,7 @@ class _LogInScreenState extends State<LogInScreen> {
                               width: 28,
                               child: IconButton(
                                 onPressed: () => setState(() =>
-                                    _passwordIsVisibile = !_passwordIsVisibile),
+                                _passwordIsVisibile = !_passwordIsVisibile,),
                                 splashRadius: 18,
                                 iconSize: 18,
                                 icon: Icon(
@@ -188,6 +179,7 @@ class _LogInScreenState extends State<LogInScreen> {
                               ),
                             ),
                           ),
+                          onSaved: (value) => _password = value!,
                         ),
                       ),
 
@@ -197,16 +189,16 @@ class _LogInScreenState extends State<LogInScreen> {
                         child: TextButton(
                             onPressed: () {
                               Navigator.pushNamed(
-                                  context, RouteName.forgotPasswordScreen);
+                                context, RouteName.forgotPasswordScreen,);
                             },
                             child: Text(
                               'Forgot password ?',
                               style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
+                                color: Theme.of(context).primaryColor,),
                             )),
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02),
+                        height: MediaQuery.of(context).size.height * 0.02,),
 
                       // Log in button
                       SizedBox(
@@ -215,14 +207,15 @@ class _LogInScreenState extends State<LogInScreen> {
                         child: ElevatedButton(
                           onPressed: () => _submitForm(),
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _isLoading
-                                    ? const CircularProgressIndicator(
-                                        color: Colors.white,
-                                      )
-                                    : const Text('Log In'),
-                              ]),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _isLoading
+                                  ?   CircularProgressIndicator(
+                                color: Theme.of(context).primaryColor,
+                              )
+                                  : const Text('Log In'),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -236,7 +229,7 @@ class _LogInScreenState extends State<LogInScreen> {
                     children: [
                       const Expanded(child: Divider(thickness: 1)),
                       Text('  or   ',
-                          style: Theme.of(context).textTheme.titleSmall),
+                        style: Theme.of(context).textTheme.titleSmall,),
                       const Expanded(child: Divider(thickness: 1)),
                     ],
                   ),
@@ -254,7 +247,6 @@ class _LogInScreenState extends State<LogInScreen> {
                   appLogoUrl: ImagePath.facebookLogo,
                   title: 'Log in with Facebook',
                 ),
-
                 const SizedBox(
                   height: 16,
                 ),
@@ -266,12 +258,13 @@ class _LogInScreenState extends State<LogInScreen> {
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, RouteName.signUpScreen);
-                        },
-                        child: const Text('Sign up'))
+                      onPressed: () {
+                        Navigator.pushNamed(context, RouteName.signUpScreen);
+                      },
+                      child: const Text('Sign up'),
+                    ),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -280,10 +273,11 @@ class _LogInScreenState extends State<LogInScreen> {
     );
   }
 
-  Widget _loginWithButton(
-      {String title = '',
-      String appLogoUrl = '',
-      required Function() onPressed}) {
+  Widget _loginWithButton({
+    String title = '',
+    String appLogoUrl = '',
+    required Function() onPressed,
+  }) {
     return SizedBox(
       width: double.infinity,
       height: 40,
@@ -305,7 +299,7 @@ class _LogInScreenState extends State<LogInScreen> {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],
           ),
