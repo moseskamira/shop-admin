@@ -15,6 +15,7 @@ class _AuthenticateState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
+    //  // final isLoggedIn = true;
     if (isLoggedIn) return widget.child;
     return const Scaffold(body: LogInSuggestion());
   }

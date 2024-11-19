@@ -23,19 +23,29 @@ class _LogInScreenState extends State<LogInScreen> {
   bool _wrongEmailOrPassword = false;
   bool _isLoading = false;
 
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+
   @override
   void initState() {
     super.initState();
-    _passwordNode =  FocusNode();
+    _passwordNode = FocusNode();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    print('inside init');
   }
 
   @override
   void dispose() {
     super.dispose();
     _passwordNode.dispose();
+    emailController.dispose();
+    passwordController.dispose();
   }
 
   void _submitForm() async {
+    _user.email = emailController.text.toString();
+    _password = emailController.text.toString();
     final isValid = _formKey.currentState!.validate();
 
     FocusScope.of(context).unfocus();
@@ -73,6 +83,7 @@ class _LogInScreenState extends State<LogInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('inside build');
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -91,7 +102,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       color: Theme.of(context).primaryColor,
                     ),
                     const Text(
-                      ' ShopApp',
+                      ' Merchant App',
                       style: TextStyle(fontSize: 22),
                     )
                   ],
@@ -117,6 +128,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         child: TextFormField(
+                          controller: emailController,
                           key: const ValueKey('Email'),
                           validator: (value) =>
                               value!.isEmpty || !value.contains('@')
@@ -135,7 +147,6 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                           onEditingComplete: () => FocusScope.of(context)
                               .requestFocus(_passwordNode),
-                          onSaved: (value) => _user.email = value!,
                         ),
                       ),
 
@@ -149,6 +160,7 @@ class _LogInScreenState extends State<LogInScreen> {
                               : null,
                           maxLines: 1,
                           focusNode: _passwordNode,
+                          controller: passwordController,
                           keyboardType: TextInputType.visiblePassword,
                           onEditingComplete: _submitForm,
                           obscureText: !_passwordIsVisibile,
@@ -176,7 +188,6 @@ class _LogInScreenState extends State<LogInScreen> {
                               ),
                             ),
                           ),
-                          onSaved: (value) => _password = value!,
                         ),
                       ),
 

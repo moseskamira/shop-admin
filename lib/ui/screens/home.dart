@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   getCategories() {
     categories = CategoryModel().getCategories();
+    categories.sortByTitle();
   }
 
   @override
@@ -104,5 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+}
+
+extension CategoryList on List<CategoryModel> {
+  void sortByTitle() {
+    sort((a, b) => a.title.compareTo(b.title));
   }
 }

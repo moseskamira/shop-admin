@@ -1,5 +1,3 @@
-/// this section is my main app
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
@@ -7,14 +5,13 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/theme_preferences.dart';
 import 'package:shop_owner_app/core/view_models/products_provider.dart';
-import 'package:shop_owner_app/core/view_models/product_provider.dart';
 import 'package:shop_owner_app/core/view_models/picture_provider.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
-import 'package:shop_owner_app/firebase_options.dart';
 import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
 import 'package:shop_owner_app/core/view_models/auth_provider.dart';
 import 'package:shop_owner_app/ui/screens/update_product.dart';
 import 'package:shop_owner_app/ui/screens/user_info.dart';
+import 'firebase_options.dart';
 import 'ui/routes/route_name.dart';
 import 'ui/constants/theme_data.dart';
 import 'ui/screens/bottom_bar.dart';
@@ -24,16 +21,12 @@ import 'ui/screens/inner_screens/forgot_password.dart';
 import 'ui/screens/inner_screens/product_detail.dart';
 import 'ui/screens/log_in.dart';
 import 'ui/screens/main_screen.dart';
-import 'ui/screens/orders_list.dart';
 import 'ui/screens/search.dart';
 import 'ui/screens/sign_up.dart';
-import 'ui/screens/upload_product.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+
   final isDarkTheme = await ThemePreferences().getTheme();
   // Step 3
   SystemChrome.setPreferredOrientations([
@@ -49,7 +42,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   final bool isDarkTheme;
 
-  const MyApp({Key? key, required this.isDarkTheme}) : super(key: key);
+  const MyApp({super.key, required this.isDarkTheme});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +61,7 @@ class MyApp extends StatelessWidget {
 
                     ChangeNotifierProvider(create: (_) => AuthProvider()),
                     ChangeNotifierProvider(create: (_) => UserDataProvider()),
-                  //  ChangeNotifierProvider(create: (_) => ProductProvider()),
+                    //  ChangeNotifierProvider(create: (_) => ProductProvider()),
                   ],
                   child: Consumer<ThemeChangeProvider>(
                     builder: (_, themeChangeProvider, __) {
@@ -90,11 +83,12 @@ class MyApp extends StatelessWidget {
                             RouteName.forgotPasswordScreen: (context) =>
                                 const ForgotPasswordScreen(),
                             RouteName.productDetailScreen: (context) =>
-                                  ProductDetailScreen(),
+                                ProductDetailScreen(),
                             RouteName.feedsScreen: (context) => FeedsScreen(),
                             RouteName.categoryScreen: (context) =>
                                 CategoryScreen(),
-                            RouteName.searchScreen: (context) => const SearchScreen(),
+                            RouteName.searchScreen: (context) =>
+                                const SearchScreen(),
                             RouteName.updateProductScreen: (context) =>
                                 UpdateProductScreen(),
                             RouteName.userInfoScreen: (context) =>

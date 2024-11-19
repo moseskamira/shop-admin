@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 
-class UserModel with ChangeNotifier {
+class UserModel {
   String id;
   String fullName;
   String imageUrl;
