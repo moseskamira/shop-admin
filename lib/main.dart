@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/theme_preferences.dart';
 import 'package:shop_owner_app/core/view_models/products_provider.dart';
@@ -35,10 +36,16 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => PicturesProvider()),
 
             ChangeNotifierProvider(create: (_) => AuthProvider()),
-            ChangeNotifierProvider(create: (_) => UserDataProvider()),
+            // TODO will have to check if this works or not without this entry
+            //ChangeNotifierProvider(create: (_) => UserDataProvider()),
             //  ChangeNotifierProvider(create: (_) => ProductProvider()),
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),
+
+                StreamProvider<List<UserModel>>(
+          create: (_) => UserDataProvider().usersStream,
+          initialData:   [UserModel.empty()],
+        ),
           ],
           child: Consumer<ThemeChangeProvider>(
             builder: (_, themeChangeProvider, __) {
@@ -63,7 +70,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 extension Log on Object {
   void log() => devtools.log(toString());
 }
+
+ 

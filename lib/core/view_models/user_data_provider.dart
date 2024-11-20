@@ -61,23 +61,13 @@ List<UserModel> get users => _users;
 
 
 
+Stream<List<UserModel>> get usersStream {
+  return FirebaseFirestore.instance.collection('users').snapshots().map(
+        (snapshot) => snapshot.docs.map((doc) {
+          return UserModel.fromFirestore(doc);
+        }).toList(),
+      );
+}
 
-
-
- Future<void> fetchUsers() async {
-   _isLoading = true;
-    notifyListeners();
-    try {
-      final querySnapshot = await FirebaseFirestore.instance.collection('users').get();
-         _users =  querySnapshot.docs.map((doc) {
-        return UserModel.fromJson(doc.data());
-      }).toList();
-    } catch (e) {
-      throw Exception('Error fetching users: $e');
-    }finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
 
 }

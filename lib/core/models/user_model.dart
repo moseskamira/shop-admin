@@ -39,4 +39,32 @@ class UserModel {
         'joinedAt': joinedAt,
         'createdAt': createdAt,
       };
+
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+
+    return UserModel(
+      id: data['id'] ?? '',
+      fullName: data['fullName'] ?? '',
+      email: data['email'] ?? '',
+      phoneNumber: data['phoneNumber'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
+      joinedAt: data['joinedAt'] ?? '',
+      createdAt: data['createdAt'] ?? '',
+    );
+  }
+
+  factory UserModel.empty() {
+    return UserModel(
+      id: '',
+      fullName: '',
+      imageUrl: '',
+      phoneNumber: '',
+      email: '',
+      joinedAt: '',
+      createdAt: null,
+    );
+  }
 }
+
+
