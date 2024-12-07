@@ -70,7 +70,7 @@ class FeedsProduct extends StatelessWidget {
                       child: MyButton.smallIcon(
                         context: context,
                         icon: Icons.more_vert,
-                        // color: Theme.of(context).buttonColor,
+                        color: Theme.of(context).colorScheme.tertiary,
                         onPressed: () async {
                           showDialog(
                             context: context,

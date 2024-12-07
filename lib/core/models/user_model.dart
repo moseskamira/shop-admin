@@ -54,7 +54,7 @@ class UserModel {
     );
   }
 
-  factory UserModel.empty() {
+  factory UserModel.loading() {
     return UserModel(
       id: '',
       fullName: '',

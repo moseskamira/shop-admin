@@ -22,6 +22,7 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MyApp(isDarkTheme: isDarkTheme));
 }
+
 class MyApp extends StatelessWidget {
   final bool isDarkTheme;
   const MyApp({super.key, required this.isDarkTheme});
@@ -42,15 +43,19 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),
 
-                StreamProvider<List<UserModel>>(
-          create: (_) => UserDataProvider().usersStream,
-          initialData:   [UserModel.empty()],
-        ),
+            //         StreamProvider<List<UserModel>>(
+            //   create: (_) => UserDataProvider().usersStream,
+            //   initialData:   [UserModel.empty()],
+            // ),
+
+            StreamProvider.value(
+                value: UserDataProvider().usersStream,
+                initialData: [UserModel.loading()])
           ],
           child: Consumer<ThemeChangeProvider>(
             builder: (_, themeChangeProvider, __) {
               return Consumer<ProductsProvider>(
-                builder:  (_, productProvider, __) {
+                builder: (_, productProvider, __) {
                   productProvider.fetchProducts();
 
                   return MaterialApp(
@@ -73,5 +78,3 @@ class MyApp extends StatelessWidget {
 extension Log on Object {
   void log() => devtools.log(toString());
 }
-
- 
