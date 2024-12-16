@@ -22,6 +22,11 @@ class ProductsProvider extends ChangeNotifier {
     return _products;
   }
 
+
+
+
+
+
   List<ProductModel> searchQuery(String query) => _products
       .where(
           (element) => element.name.toLowerCase().contains(query.toLowerCase()))

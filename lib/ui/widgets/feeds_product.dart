@@ -13,6 +13,7 @@ class FeedsProduct extends StatelessWidget {
   FeedsProduct({super.key, required this.item});
   @override
   Widget build(BuildContext context) {
+    print('checkingIMage: ${item.imageUrls![0]}');
     double productImageSize = MediaQuery.of(context).size.width * 0.45;
     return SizedBox(
       width: productImageSize,

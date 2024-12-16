@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
+
+import '../../core/models/customer_model.dart';
 
 class MyUsersScreen extends StatelessWidget {
   @override
@@ -22,9 +25,18 @@ class MyUsersScreen extends StatelessWidget {
                   itemCount: users.length,
                   itemBuilder: (context, index) {
                     final user = users[index];
-                    return ListTile(
-                      title: Text(user.fullName),
-                      subtitle: Text(user.email),
+                    return GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).pushNamed(RouteName.userDetailsScreen, arguments: {
+                      
+                        'user': CustomerModel(name:user.fullName ),
+                         
+                      },);
+                      },
+                      child: ListTile(
+                        title: Text(user.fullName),
+                        subtitle: Text(user.email),
+                      ),
                     );
                   },
                 ),

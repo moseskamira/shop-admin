@@ -11,6 +11,9 @@ import 'package:shop_owner_app/ui/screens/orders_list.dart';
 import 'package:shop_owner_app/ui/screens/search.dart';
 import 'package:shop_owner_app/ui/screens/sign_up.dart';
 import 'package:shop_owner_app/ui/screens/upload_product.dart';
+import 'package:shop_owner_app/ui/screens/user_details.dart';
+
+import '../../core/models/customer_model.dart';
 
 class Routes {
   static Route<dynamic> generatedRoute(RouteSettings settings) {
@@ -48,6 +51,14 @@ class Routes {
       case RouteName.ordersListScreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const PendingOrdersList());
+
+      case RouteName.userDetailsScreen:
+        Map<String, Object>? args = settings.arguments as Map<String, Object>;
+        CustomerModel user = args['user'] as CustomerModel;
+        return MaterialPageRoute(
+            builder: (BuildContext context) => UserDetails(
+                  user: user,
+                ));
 
       default:
         return MaterialPageRoute(builder: (_) {

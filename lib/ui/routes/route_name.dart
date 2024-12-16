@@ -13,4 +13,5 @@ class RouteName {
   static const String updateProductScreen = '/update_product';
   static const String ordersListScreen = '/orders_list';
   static const String userInfoScreen = '/user_info_screen';
+  static const String userDetailsScreen = '/userDetailsScreen';
  }

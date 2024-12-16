@@ -10,3 +10,5 @@ class ImagePath {
   static const String facebookLogo = 'assets/images/facebook.png';
   static const String noInternet = 'assets/images/connection_error.svg';
 }
+
+
