@@ -1,12 +1,12 @@
-import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/product_detail.dart';
 import 'package:shop_owner_app/ui/widgets/feeds_dialog.dart';
 import 'package:shop_owner_app/ui/widgets/my_button.dart';
+
+ 
+
 
 class FeedsProduct extends StatelessWidget {
   ProductModel item;

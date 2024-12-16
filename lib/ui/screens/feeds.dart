@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
 import 'package:shop_owner_app/ui/widgets/feeds_product.dart';
@@ -20,7 +19,6 @@ class _FeedsScreenState extends State<FeedsScreen> {
   final prouducts = Provider.of<List<ProductModel>>(context);
     final isLoading = prouducts.length == 1 && prouducts.first.id.isEmpty;
 
-print('${prouducts}');
     return Scaffold(
       appBar: AppBar(
         title: Text(

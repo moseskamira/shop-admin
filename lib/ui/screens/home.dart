@@ -68,24 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Padding(
-              //   padding:   EdgeInsets.symmetric(vertical: 1.h, horizontal: 3.w),
-              //   child: Container(height: 5.h,
-              //   decoration: BoxDecoration(
-              //       border: Border.all(color: Colors.black, width: .3),
-              //       color: Colors.white, borderRadius: BorderRadius.circular(7)),
-              //   child: Center(
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: [
-              //         Text("Add new Category", style: TextStyle(color: Colors.black, fontSize: 17),),
-              //         Gap(5.w),
-              //         Gap(5.w),
-              //         Icon(Icons.add, color: Colors.black,)
-              //       ],
-              //     ),
-              //   ),),
-              // ),
               const SizedBox(
                 height: 30,
               ),

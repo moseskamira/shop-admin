@@ -10,7 +10,9 @@ class Category extends StatelessWidget {
     double imageSize = 70;
     return InkWell(
       onTap: () => Navigator.pushNamed(context, RouteName.categoryScreen,
-          arguments: category.title),
+          arguments: {
+            'cat':category.title
+          }),
       child: SizedBox(
         width: 100,
         height: 100,

@@ -111,88 +111,32 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
     return Authenticate(
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: ModalProgressHUD(
-          inAsyncCall: _isLoading,
-          dismissible: false,
-          progressIndicator: SpinKitFadingCircle(
-            itemBuilder: (BuildContext context, int index) {
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  color: index.isEven ? Colors.white : Colors.green,
-                ),
-              );
-            },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Upload New Product"),
+            centerTitle: true,
           ),
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text("Upload New Product"),
-              centerTitle: true,
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 200,
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: imageList.length,
-                                itemBuilder: (context, index) {
-                                  return index == 0
-                                      ? Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 5),
-                                            child: Stack(
-                                              children: [
-                                                ImagePreview(
-                                                  imagePath: imageList[index],
-                                                  height: 190,
-                                                  width: 190,
-                                                ),
-                                                Positioned(
-                                                  top: 80,
-                                                  left: 75,
-                                                  child: InkWell(
-                                                    onTap: () async {
-                                                      final pickedImagePath =
-                                                          await MyAlertDialog
-                                                              .imagePicker(
-                                                                  context);
-                                                      setState(() {
-                                                        pickedImagePath != null
-                                                            ? imageList.add(
-                                                                pickedImagePath)
-                                                            : null;
-                                                        MySnackBar().showSnackBar(
-                                                            'New picture of the product is added',
-                                                            context,
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        300));
-                                                      });
-                                                      //  _productModel.imageUrl = _pickedImagePath;
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.add_circle,
-                                                      size: 30,
-                                                      color: Colors.black45,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : Padding(
+          body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: imageList.length,
+                              itemBuilder: (context, index) {
+                                return index == 0
+                                    ? Center(
+                                        child: Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 5),
                                           child: Stack(
@@ -201,38 +145,6 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                                 imagePath: imageList[index],
                                                 height: 190,
                                                 width: 190,
-                                              ),
-                                              Positioned(
-                                                top: 15,
-                                                right: 5,
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      imageList.remove(
-                                                          imageList[index]);
-                                                      MySnackBar().showSnackBar(
-                                                          'Picture of the product is removed',
-                                                          context,
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 2));
-                                                    });
-                                                  },
-                                                  child: Container(
-                                                    height: 25,
-                                                    width: 25,
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.black45,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20)),
-                                                    child: const Center(
-                                                        child: Icon(
-                                                      Icons.close,
-                                                      color: Colors.white,
-                                                    )),
-                                                  ),
-                                                ),
                                               ),
                                               Positioned(
                                                 top: 80,
@@ -244,287 +156,363 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                                             .imagePicker(
                                                                 context);
                                                     setState(() {
-                                                      if (pickedImagePath !=
-                                                          null) {
-                                                        imageList.remove(
-                                                            imageList[index]);
-                                                        imageList.add(
-                                                            pickedImagePath);
-                                                        MySnackBar().showSnackBar(
-                                                            'Picture of the product is replaced',
-                                                            context,
-                                                            duration:
-                                                                const Duration(
-                                                                    seconds:
-                                                                        2));
-                                                      }
+                                                      pickedImagePath != null
+                                                          ? imageList.add(
+                                                              pickedImagePath)
+                                                          : null;
+                                                      MySnackBar().showSnackBar(
+                                                          'New picture of the product is added',
+                                                          context,
+                                                          duration:
+                                                              const Duration(
+                                                                  milliseconds:
+                                                                      300));
                                                     });
+                                                    //  _productModel.imageUrl = _pickedImagePath;
                                                   },
-                                                  child: Container(
-                                                    height: 25,
-                                                    width: 25,
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.black45,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20)),
-                                                    child: const Center(
-                                                        child: Icon(
-                                                      Icons
-                                                          .image_search_rounded,
-                                                      color: Colors.white,
-                                                    )),
+                                                  child: const Icon(
+                                                    Icons.add_circle,
+                                                    size: 30,
+                                                    color: Colors.black45,
                                                   ),
                                                 ),
                                               ),
-                                              index == 1
-                                                  ? Positioned(
-                                                      top: 20,
-                                                      left: 09,
-                                                      child: InkWell(
-                                                        onTap: () async {
-                                                          final pickedImagePath =
-                                                              await MyAlertDialog
-                                                                  .imagePicker(
-                                                                      context);
-                                                          setState(() {
-                                                            if (pickedImagePath !=
-                                                                null) {
-                                                              imageList.remove(
-                                                                  imageList[
-                                                                      index]);
-                                                              imageList.add(
-                                                                  pickedImagePath);
-                                                            }
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          height: 6.3.h,
-                                                          width: 18.w,
-                                                          decoration: BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          7)),
-                                                          child: const Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Text("ThumbNail"),
-                                                              Center(
-                                                                  child: Icon(
-                                                                Icons
-                                                                    .thumb_up_alt_outlined,
-                                                                color:
-                                                                    Colors.blue,
-                                                              )),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : Container(),
                                             ],
                                           ),
-                                        );
-                                }),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: Stack(
+                                          children: [
+                                            ImagePreview(
+                                              imagePath: imageList[index],
+                                              height: 190,
+                                              width: 190,
+                                            ),
+                                            Positioned(
+                                              top: 15,
+                                              right: 5,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    imageList.remove(
+                                                        imageList[index]);
+                                                    MySnackBar().showSnackBar(
+                                                        'Picture of the product is removed',
+                                                        context,
+                                                        duration:
+                                                            const Duration(
+                                                                seconds: 2));
+                                                  });
+                                                },
+                                                child: Container(
+                                                  height: 25,
+                                                  width: 25,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.black45,
+                                                      borderRadius:
+                                                          BorderRadius
+                                                              .circular(20)),
+                                                  child: const Center(
+                                                      child: Icon(
+                                                    Icons.close,
+                                                    color: Colors.white,
+                                                  )),
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 80,
+                                              left: 75,
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  final pickedImagePath =
+                                                      await MyAlertDialog
+                                                          .imagePicker(
+                                                              context);
+                                                  setState(() {
+                                                    if (pickedImagePath !=
+                                                        null) {
+                                                      imageList.remove(
+                                                          imageList[index]);
+                                                      imageList.add(
+                                                          pickedImagePath);
+                                                      MySnackBar().showSnackBar(
+                                                          'Picture of the product is replaced',
+                                                          context,
+                                                          duration:
+                                                              const Duration(
+                                                                  seconds:
+                                                                      2));
+                                                    }
+                                                  });
+                                                },
+                                                child: Container(
+                                                  height: 25,
+                                                  width: 25,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.black45,
+                                                      borderRadius:
+                                                          BorderRadius
+                                                              .circular(20)),
+                                                  child: const Center(
+                                                      child: Icon(
+                                                    Icons
+                                                        .image_search_rounded,
+                                                    color: Colors.white,
+                                                  )),
+                                                ),
+                                              ),
+                                            ),
+                                            index == 1
+                                                ? Positioned(
+                                                    top: 20,
+                                                    left: 09,
+                                                    child: InkWell(
+                                                      onTap: () async {
+                                                        final pickedImagePath =
+                                                            await MyAlertDialog
+                                                                .imagePicker(
+                                                                    context);
+                                                        setState(() {
+                                                          if (pickedImagePath !=
+                                                              null) {
+                                                            imageList.remove(
+                                                                imageList[
+                                                                    index]);
+                                                            imageList.add(
+                                                                pickedImagePath);
+                                                          }
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        height: 6.3.h,
+                                                        width: 18.w,
+                                                        decoration: BoxDecoration(
+                                                            color:
+                                                                Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        7)),
+                                                        child: const Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text("ThumbNail"),
+                                                            Center(
+                                                                child: Icon(
+                                                              Icons
+                                                                  .thumb_up_alt_outlined,
+                                                              color:
+                                                                  Colors.blue,
+                                                            )),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Container(),
+                                          ],
+                                        ),
+                                      );
+                              }),
+                        ),
+        
+                        // Name Section
+                        _sectionTitle('Name'),
+                        TextFormField(
+                          textCapitalization: TextCapitalization.words,
+                          textInputAction: TextInputAction.next,
+                          validator: (value) =>
+                              value!.isEmpty ? 'Required' : null,
+                          decoration: InputDecoration(
+                            hintText: 'Add product name...',
+                            enabledBorder:
+                                MyBorder.underlineInputBorder(context),
                           ),
-
-                          // Name Section
-                          _sectionTitle('Name'),
-                          TextFormField(
-                            textCapitalization: TextCapitalization.words,
-                            textInputAction: TextInputAction.next,
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                            decoration: InputDecoration(
-                              hintText: 'Add product name...',
-                              enabledBorder:
-                                  MyBorder.underlineInputBorder(context),
-                            ),
-                            onEditingComplete: () => FocusScope.of(context)
-                                .requestFocus(_brandFocusNode),
-                            onSaved: (value) => _productModel.name = value!,
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(_brandFocusNode),
+                          onSaved: (value) => _productModel.name = value!,
+                        ),
+        
+                        // Brand Section
+                        _sectionTitle('Brand'),
+                        TextFormField(
+                          textCapitalization: TextCapitalization.words,
+                          textInputAction: TextInputAction.next,
+                          focusNode: _brandFocusNode,
+                          validator: (value) =>
+                              value!.isEmpty ? 'Requiered' : null,
+                          decoration: InputDecoration(
+                            hintText: 'Add product brand...',
+                            enabledBorder:
+                                MyBorder.underlineInputBorder(context),
                           ),
-
-                          // Brand Section
-                          _sectionTitle('Brand'),
-                          TextFormField(
-                            textCapitalization: TextCapitalization.words,
-                            textInputAction: TextInputAction.next,
-                            focusNode: _brandFocusNode,
-                            validator: (value) =>
-                                value!.isEmpty ? 'Requiered' : null,
-                            decoration: InputDecoration(
-                              hintText: 'Add product brand...',
-                              enabledBorder:
-                                  MyBorder.underlineInputBorder(context),
-                            ),
-                            onEditingComplete: () => FocusScope.of(context)
-                                .requestFocus(_priceFocusNode),
-                            onSaved: (value) => _productModel.brand = value!,
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(_priceFocusNode),
+                          onSaved: (value) => _productModel.brand = value!,
+                        ),
+        
+                        // Price Section
+                        _sectionTitle('Price'),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          focusNode: _priceFocusNode,
+                          // inputFormatters: [
+                          //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          // ],
+                          validator: (value) =>
+                              value!.isEmpty ? 'Required' : null,
+                          decoration: InputDecoration(
+                            hintText: 'Add product price...',
+                            enabledBorder:
+                                MyBorder.underlineInputBorder(context),
                           ),
-
-                          // Price Section
-                          _sectionTitle('Price'),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            focusNode: _priceFocusNode,
-                            // inputFormatters: [
-                            //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                            // ],
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                            decoration: InputDecoration(
-                              hintText: 'Add product price...',
-                              enabledBorder:
-                                  MyBorder.underlineInputBorder(context),
-                            ),
-                            onEditingComplete: () => FocusScope.of(context)
-                                .requestFocus(_quantityFocusNode),
-                            onSaved: (value) =>
-                                _productModel.price = double.parse(value!),
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(_quantityFocusNode),
+                          onSaved: (value) =>
+                              _productModel.price = double.parse(value!),
+                        ),
+        
+                        // Quantity Section
+                        _sectionTitle('Quantity'),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          focusNode: _quantityFocusNode,
+                          validator: (value) =>
+                              value!.isEmpty ? 'Requiered' : null,
+                          decoration: InputDecoration(
+                            hintText: 'Add product quantity...',
+                            enabledBorder:
+                                MyBorder.underlineInputBorder(context),
                           ),
-
-                          // Quantity Section
-                          _sectionTitle('Quantity'),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            focusNode: _quantityFocusNode,
-                            validator: (value) =>
-                                value!.isEmpty ? 'Requiered' : null,
-                            decoration: InputDecoration(
-                              hintText: 'Add product quantity...',
-                              enabledBorder:
-                                  MyBorder.underlineInputBorder(context),
-                            ),
-                            onEditingComplete: () => FocusScope.of(context)
-                                .requestFocus(_categoryFocusNode),
-                            onSaved: (value) =>
-                                _productModel.quantity = int.parse(value!),
-                          ),
-
-                          // Category section
-                          _sectionTitle('Category'),
-                          DropdownButtonFormField(
-                            focusNode: _categoryFocusNode,
-                            onTap: () {
-                              FocusScope.of(context)
-                                  .requestFocus(_descriptionFocusNode);
-                            },
-                            items: _categories
-                                .map(
-                                  (category) => DropdownMenuItem<String>(
-                                    value: category.title,
-                                    child: Text(category.title),
-                                  ),
-                                )
-                                .toList(),
-                            value: _productModel.category,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _productModel.category = value.toString();
-                              });
-                            },
-                            decoration: InputDecoration(
-                              enabledBorder:
-                                  MyBorder.underlineInputBorder(context),
-                            ),
-                          ),
-
-                          // Description Section
-                          _sectionTitle('Description'),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            keyboardType: TextInputType.multiline,
-                            maxLines: 10,
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                            textCapitalization: TextCapitalization.sentences,
-                            textInputAction: TextInputAction.done,
-                            focusNode: _descriptionFocusNode,
-                            decoration: InputDecoration(
-                              hintText: 'Add product description...',
-                              border: const OutlineInputBorder(),
-                              enabledBorder:
-                                  MyBorder.outlineInputBorder(context),
-                            ),
-                            onSaved: (value) =>
-                                _productModel.description = value!,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Is Popular section Section
-
-                  Card(
-                    child: Column(
-                      children: [
-                        SwitchListTile(
-                          title: const Text(
-                            'Is popular',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          ),
-                          value: _isPopular,
-                          onChanged: (bool value) {
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(_categoryFocusNode),
+                          onSaved: (value) =>
+                              _productModel.quantity = int.parse(value!),
+                        ),
+        
+                        // Category section
+                        _sectionTitle('Category'),
+                        DropdownButtonFormField(
+                          focusNode: _categoryFocusNode,
+                          onTap: () {
+                            FocusScope.of(context)
+                                .requestFocus(_descriptionFocusNode);
+                          },
+                          items: _categories
+                              .map(
+                                (category) => DropdownMenuItem<String>(
+                                  value: category.title,
+                                  child: Text(category.title),
+                                ),
+                              )
+                              .toList(),
+                          value: _productModel.category,
+                          onChanged: (String? value) {
                             setState(() {
-                              _isPopular = value;
+                              _productModel.category = value.toString();
                             });
                           },
+                          decoration: InputDecoration(
+                            enabledBorder:
+                                MyBorder.underlineInputBorder(context),
+                          ),
+                        ),
+        
+                        // Description Section
+                        _sectionTitle('Description'),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 10,
+                          validator: (value) =>
+                              value!.isEmpty ? 'Required' : null,
+                          textCapitalization: TextCapitalization.sentences,
+                          textInputAction: TextInputAction.done,
+                          focusNode: _descriptionFocusNode,
+                          decoration: InputDecoration(
+                            hintText: 'Add product description...',
+                            border: const OutlineInputBorder(),
+                            enabledBorder:
+                                MyBorder.outlineInputBorder(context),
+                          ),
+                          onSaved: (value) =>
+                              _productModel.description = value!,
                         ),
                       ],
                     ),
                   ),
-
-                  // Upload Product Button
-                  SizedBox(
-                    height: 60,
-                    width: MediaQuery.of(context).size.width,
-                    child: Material(
-                      color: Theme.of(context).primaryColor,
-                      child: InkWell(
-                        onTap: _submitForm,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Upload',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
+                ),
+                // Is Popular section Section
+        
+                Card(
+                  child: Column(
+                    children: [
+                      SwitchListTile(
+                        title: const Text(
+                          'Is popular',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
+                        value: _isPopular,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _isPopular = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+        
+                // Upload Product Button
+                SizedBox(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width,
+                  child: Material(
+                    color: Theme.of(context).primaryColor,
+                    child: InkWell(
+                      onTap: _submitForm,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Upload',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
                               ),
-                              const SizedBox(width: 8),
-                              _isLoading
-                                  ? const CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                  : const Icon(
-                                      Icons.cloud_upload_outlined,
-                                      color: Colors.white,
-                                    ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 8),
+                            _isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : const Icon(
+                                    Icons.cloud_upload_outlined,
+                                    color: Colors.white,
+                                  ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 50,
-                  )
-                ],
-              ),
+                ),
+                const SizedBox(
+                  height: 50,
+                )
+              ],
             ),
           ),
         ),

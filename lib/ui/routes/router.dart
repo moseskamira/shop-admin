@@ -12,7 +12,6 @@ import 'package:shop_owner_app/ui/screens/search.dart';
 import 'package:shop_owner_app/ui/screens/sign_up.dart';
 import 'package:shop_owner_app/ui/screens/upload_product.dart';
 import 'package:shop_owner_app/ui/screens/user_details.dart';
-
 import '../../core/models/customer_model.dart';
 
 class Routes {
@@ -43,8 +42,10 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const FeedsScreen());
       case RouteName.categoryScreen:
+          Map<String, Object>? args = settings.arguments as Map<String, Object>;
+        String cat = args['cat'] as String;
         return MaterialPageRoute(
-            builder: (BuildContext context) => const CategoryScreen());
+            builder: (BuildContext context) =>  CategoryScreen( nameOfCat: cat,));
       case RouteName.uploadProductScreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const UploadProductScreen());

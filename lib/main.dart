@@ -64,8 +64,9 @@ class MyApp extends StatelessWidget {
                 value: ProductsStreamProvider().fetchProductsStream,
                 initialData: [
                    ProductModel.loading()
-                ])
-
+                ]),
+ 
+                
 
 
 

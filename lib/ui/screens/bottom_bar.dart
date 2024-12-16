@@ -4,10 +4,7 @@ import 'package:shop_owner_app/ui/screens/feeds.dart';
 import 'package:shop_owner_app/ui/screens/home.dart';
 import 'package:shop_owner_app/ui/screens/my_users_screen.dart';
 import 'package:shop_owner_app/ui/screens/orders_list.dart';
-import 'package:shop_owner_app/ui/screens/update_product.dart';
 import 'package:shop_owner_app/ui/screens/upload_product.dart';
-import 'package:shop_owner_app/ui/screens/user_info.dart';
-import 'package:shop_owner_app/ui/widgets/authenticate.dart';
 
 class BottomBarScreen extends StatefulWidget {
   const BottomBarScreen({super.key});
