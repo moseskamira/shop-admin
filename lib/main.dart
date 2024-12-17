@@ -20,7 +20,6 @@ import 'ui/constants/theme_data.dart';
 import 'ui/routes/router.dart';
 import 'dart:developer' as devtools show log;
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -44,31 +43,23 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => PicturesProvider()),
 
             ChangeNotifierProvider(create: (_) => AuthProvider()),
-       
+
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),
-
-        
 
             StreamProvider.value(
                 value: OrdersProvider().orders,
                 initialData: [OrdersModel.loading()]),
 
-
                   StreamProvider.value(
                 value: UserDataProvider().usersStream,
                 initialData: [UserModel.loading()]),
-
 
             StreamProvider.value(
                 value: ProductsStreamProvider().fetchProductsStream,
                 initialData: [
                    ProductModel.loading()
                 ]),
- 
-                
-
-
 
           ],
           child: Consumer<ThemeChangeProvider>(

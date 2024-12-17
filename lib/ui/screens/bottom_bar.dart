@@ -20,6 +20,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     setState(() => _selectedIndex = index);
   }
 
+  
+
   @override
   void initState() {
     super.initState();

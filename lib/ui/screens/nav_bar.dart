@@ -1,8 +1,6 @@
 // import 'package:chronoshop/screens/pending_screen.dart';
 // import 'package:chronoshop/screens/profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shop_owner_app/ui/constants/assets_path.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
@@ -96,7 +94,7 @@ class _NavBarState extends State<NavBar> {
               leading: const Icon(Icons.description),
               title: const Text('Terms Of Use'),
               onTap: (() async {
-                var url = 'https://sites.google.com/view/solutionpro';
+           //     var url = 'https://sites.google.com/view/solutionpro';
                 // if(await canLaunch(url)){
                 //   await launch(url);
                 // }
