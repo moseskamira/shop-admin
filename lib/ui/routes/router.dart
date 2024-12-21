@@ -51,7 +51,7 @@ class Routes {
             builder: (BuildContext context) => const UploadProductScreen());
       case RouteName.ordersListScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const PendingOrdersList());
+            builder: (BuildContext context) =>   PendingOrdersList());
 
       case RouteName.userDetailsScreen:
         Map<String, Object>? args = settings.arguments as Map<String, Object>;

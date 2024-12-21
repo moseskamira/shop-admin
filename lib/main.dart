@@ -32,35 +32,45 @@ void main() async {
 class MyApp extends StatelessWidget {
   final bool isDarkTheme;
   const MyApp({super.key, required this.isDarkTheme});
+
   @override
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MultiProvider(
           providers: [
-            /// fetching category products using api locator
+            // Add other ChangeNotifierProviders
             ChangeNotifierProvider(create: (_) => ProductsProvider()),
             ChangeNotifierProvider(create: (_) => PicturesProvider()),
-
             ChangeNotifierProvider(create: (_) => AuthProvider()),
-
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),
 
-            StreamProvider.value(
-                value: OrdersProvider().orders,
-                initialData: [OrdersModel.loading()]),
+            // StreamProvider for ordersWithUsers
+            StreamProvider<List<Map<String, dynamic>>>(
+              create: (_) => OrdersProvider().ordersWithUsers,
+              initialData: [
+                {
+                  'order': OrdersModel.loading(),
+                  'user': UserModel(),
+                },
+              ],
+              catchError: (_, __) => [],
+            ),
 
-                  StreamProvider.value(
-                value: UserDataProvider().usersStream,
-                initialData: [UserModel.loading()]),
+            // StreamProvider for usersStream
+            StreamProvider<List<UserModel>>(
+              create: (_) => UserDataProvider().usersStream,
+              initialData: [UserModel.loading()],
+              catchError: (_, __) => [UserModel.loading()],
+            ),
 
-            StreamProvider.value(
-                value: ProductsStreamProvider().fetchProductsStream,
-                initialData: [
-                   ProductModel.loading()
-                ]),
-
+            // StreamProvider for products
+            StreamProvider<List<ProductModel>>(
+              create: (_) => ProductsStreamProvider().fetchProductsStream,
+              initialData: [ProductModel.loading()],
+              catchError: (_, __) => [ProductModel.loading()],
+            ),
           ],
           child: Consumer<ThemeChangeProvider>(
             builder: (_, themeChangeProvider, __) {

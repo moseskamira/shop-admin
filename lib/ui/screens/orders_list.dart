@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/models/orders_model.dart';
+import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:sizer/sizer.dart';
 import '../../core/models/customer_model.dart';
@@ -19,8 +19,11 @@ class PendingOrdersList extends StatefulWidget {
 class _PendingOrdersListState extends State<PendingOrdersList> {
   @override
   Widget build(BuildContext context) {
-    final orders = Provider.of<List<OrdersModel>>(context);
-    final isLoading = orders.length == 1 && orders.first.orderId.isEmpty;
+    final orders = context.watch<List<Map<String, dynamic>>>();
+    final users = context.watch<List<UserModel>>();
+    final isLoading =
+        orders.length == 1 && orders.first['order'].orderId=='';
+    //TODO adding proper loader for orders list widget
 
     return Scaffold(
       appBar: AppBar(title: const Text('Orders')),
@@ -35,8 +38,13 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
               : ListView.builder(
                   itemCount: orders.length,
                   itemBuilder: (context, index) {
-                    final order = orders[index];
+                    final orderData = orders[index];
+                    final userData = users.firstWhere(
+                      (user) => user.id == orderData['order'].customerId,
+                      orElse: () => UserModel.loading(),
+                    );
 
+                    final order = orderData['order'];
                     return GestureDetector(
                         onTap: () {
                           Navigator.of(context).pushNamed(
@@ -56,8 +64,13 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10),
-                                    child:
-                                        Text(order.createdAt.formattedDate()),
+                                    child: Row(
+                                      children: [
+                                        Text('${index + 1}.'),
+                                        Text('${order.createdAt}'
+                                            .formattedDate()),
+                                      ],
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 3,
@@ -79,19 +92,14 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                         },
                                         child: Row(
                                           children: [
-                                            Text(
-                                              '${index + 1}: ',
-                                              style:
-                                                  const TextStyle(fontSize: 20),
-                                            ),
                                             const Icon(
                                               Icons.person,
                                               color: Colors.blue,
                                               size: 26,
                                             ),
-                                            const Text(
-                                              "Mr. Andrew",
-                                              style: TextStyle(
+                                            Text(
+                                              userData.fullName,
+                                              style: const TextStyle(
                                                 color: Colors.blue,
                                                 fontSize: 18,
                                               ),
@@ -120,7 +128,10 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                           'Delivered',
                                           'confirmedByCustomer'
                                         ].map((String value) {
-                                          String showCaseValue = value == 'Confirmed'? 'On the way':value;
+                                          String showCaseValue =
+                                              value == 'Confirmed'
+                                                  ? 'On the way'
+                                                  : value;
                                           return DropdownMenuItem<String>(
                                             value: value,
                                             child: Text(showCaseValue),
@@ -149,17 +160,19 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  const Row(
+                                  Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
-                                          Icon(Icons.phone_android),
-                                          SizedBox(
+                                          const Icon(Icons.phone_android),
+                                          const SizedBox(
                                             width: 4,
                                           ),
-                                          Text("01***********"),
+                                          Text(
+                                            userData.phoneNumber,
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -167,14 +180,13 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                   const SizedBox(
                                     height: 4,
                                   ),
-                                  const Row(
+                                  Row(
                                     children: [
-                                      Icon(mShippingAddress),
-                                      SizedBox(
+                                      const Icon(mShippingAddress),
+                                      const SizedBox(
                                         width: 4,
                                       ),
-                                      Text(
-                                          "47RM+9FH Dubai - United Arab Emirates"),
+                                      Text(userData.address),
                                     ],
                                   ),
                                   const SizedBox(
@@ -190,7 +202,8 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                         return Row(
                                           children: [
                                             Text(
-                                              prod.productName.truncate(30),
+                                              '${prod.productName}'
+                                                  .truncate(30),
                                             ),
                                             Text(
                                                 '(${prod.quantity.toString()})')

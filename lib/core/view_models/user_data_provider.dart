@@ -71,4 +71,21 @@ Stream<List<UserModel>> get usersStream {
 }
 
 
+Stream<CustomerModelTest?> userStream(String userId) {
+  return FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
+      .snapshots()
+      .map((snapshot) {
+        // Check if the document exists before attempting to convert it
+        if (snapshot.exists) {
+          return CustomerModelTest.fromFirestore(snapshot);
+        }
+        return null; // Return null if the document does not exist
+      });
+}
+
+
+
+
 }

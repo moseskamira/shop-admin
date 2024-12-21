@@ -31,7 +31,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
 
       {'page': const UploadProductScreen(), 'title': 'Search'},
       {'page':   MyUsersScreen(), 'title': 'MyUsers'},
-      {'page': const PendingOrdersList(), 'title': 'Orders'},
+      {'page':   PendingOrdersList(), 'title': 'Orders'},
 
       /// {'page': Authenticate(child: UserInfoScreen()), 'title': 'User'},
     ];

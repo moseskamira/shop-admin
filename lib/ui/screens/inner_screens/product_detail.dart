@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
-import 'package:shop_owner_app/core/view_models/product_provider.dart';
 import 'package:shop_owner_app/ui/widgets/products_images_list_on_details_view.dart';
 
 class ProductDetailScreen extends StatefulWidget {
