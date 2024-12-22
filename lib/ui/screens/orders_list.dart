@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
-import 'package:sizer/sizer.dart';
 import '../../core/models/customer_model.dart';
 import '../constants/app_consntants.dart';
 import 'package:intl/intl.dart';
@@ -19,11 +17,28 @@ class PendingOrdersList extends StatefulWidget {
 class _PendingOrdersListState extends State<PendingOrdersList> {
   @override
   Widget build(BuildContext context) {
-    final orders = context.watch<List<Map<String, dynamic>>>();
+    var orders = context.watch<List<Map<String, dynamic>>>();
     final users = context.watch<List<UserModel>>();
-    final isLoading =
-        orders.length == 1 && orders.first['order'].orderId=='';
-    //TODO adding proper loader for orders list widget
+    final isLoading = orders.length == 1 && orders.first['order'].orderId == '';
+
+    // Filter and sort orders
+    final List<Map<String, dynamic>> nonCustomerConfirmedOrders = orders
+        .where((order) => order['order'].status != 'confirmedByCustomer')
+        .toList()
+      ..sort((a, b) {
+        DateTime dateA = DateTime.parse(a['order'].createdAt);
+        DateTime dateB = DateTime.parse(b['order'].createdAt);
+        return dateA.compareTo(dateB);
+      });
+
+    final List<Map<String, dynamic>> customerConfirmedOrders = orders
+        .where((order) => order['order'].status == 'confirmedByCustomer')
+        .toList();
+
+    orders = [
+      ...nonCustomerConfirmedOrders,
+      ...customerConfirmedOrders,
+    ];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Orders')),
@@ -56,49 +71,20 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                         },
                         child: Column(
                           children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 14),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Row(
+                            Card(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 14, bottom: 14),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
                                       children: [
-                                        Text('${index + 1}.'),
-                                        Text('${order.createdAt}'
-                                            .formattedDate()),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 3,
-                                  ),
-                                  const Divider(
-                                    height: 4,
-                                    color: Colors.black,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          //TODO will implement order details here..
-                                        },
-                                        child: Row(
+                                        Row(
                                           children: [
-                                            const Icon(
-                                              Icons.person,
-                                              color: Colors.blue,
-                                              size: 26,
-                                            ),
                                             Text(
-                                              userData.fullName,
+                                              '${index + 1}. ${userData.fullName}',
                                               style: const TextStyle(
                                                 color: Colors.blue,
                                                 fontSize: 18,
@@ -106,114 +92,136 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      const Text("Order Status:",
-                                          style: TextStyle(fontSize: 16)),
-                                      DropdownButton<String>(
-                                        value: order.status,
-                                        items: <String>[
-                                          //TODO Removing confirmed by customer for the admin app..
-                                          'Pending',
-                                          'Received',
-                                          'Confirmed',
-                                          'Delivered',
-                                          'confirmedByCustomer'
-                                        ].map((String value) {
-                                          String showCaseValue =
-                                              value == 'Confirmed'
-                                                  ? 'On the way'
-                                                  : value;
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(showCaseValue),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? newValue) async {
-                                          final FirebaseFirestore _fireStore =
-                                              FirebaseFirestore.instance;
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text("Order Status:",
+                                            style: TextStyle(fontSize: 16)),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        DropdownButton<String>(
+                                          value: order.status,
+                                          items: <String>[
+                                            'Pending',
+                                            'Received',
+                                            'Confirmed',
+                                            'Delivered',
+                                            if (order.status ==
+                                                'confirmedByCustomer')
+                                              'confirmedByCustomer',
+                                          ].map((String value) {
+                                            String displayValue = value ==
+                                                    'Confirmed'
+                                                ? 'On the way'
+                                                : value == 'confirmedByCustomer'
+                                                    ? 'Confirmed by Customer'
+                                                    : value;
 
-                                          try {
-                                            await _fireStore
-                                                .collection('orders')
-                                                .doc(order.orderId)
-                                                .update({
-                                              'status': newValue,
-                                              'updatedAt': DateTime.now()
-                                                  .toIso8601String(),
-                                            });
-                                          } catch (e) {
-                                            rethrow;
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.phone_android),
-                                          const SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            userData.phoneNumber,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(mShippingAddress),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      Text(userData.address),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  ListView.builder(
-                                      itemCount: order.products.length,
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        final prod = order.products[index];
-                                        return Row(
-                                          children: [
-                                            Text(
-                                              '${prod.productName}'
-                                                  .truncate(30),
-                                            ),
-                                            Text(
-                                                '(${prod.quantity.toString()})')
-                                          ],
-                                        );
-                                      }),
-                                ],
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(displayValue),
+                                            );
+                                          }).toList(),
+                                          onChanged: order.status ==
+                                                  'confirmedByCustomer'
+                                              ? null // Disable dropdown interaction for 'confirmedByCustomer'
+                                              : (String? newValue) async {
+                                                  if (newValue != null) {
+                                                    final FirebaseFirestore
+                                                        _fireStore =
+                                                        FirebaseFirestore
+                                                            .instance;
+
+                                                    try {
+                                                      await _fireStore
+                                                          .collection('orders')
+                                                          .doc(order.orderId)
+                                                          .update({
+                                                        'status': newValue,
+                                                        'updatedAt': DateTime
+                                                                .now()
+                                                            .toIso8601String(),
+                                                      });
+                                                    } catch (e) {
+                                                      rethrow;
+                                                    }
+                                                  }
+                                                },
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                      Text("Total payable amount: \$${order.totalAmount}",
+                                        style: TextStyle(fontSize: 16)),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                            Icons.calendar_month_outlined),
+                                        Text('${order.createdAt}'
+                                            .formattedDate()),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.phone_android),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text(
+                                          userData.phoneNumber,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Icon(mShippingAddress),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text(userData.address),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    ListView.builder(
+                                        itemCount: order.products.length,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          final prod = order.products[index];
+                                          return Row(
+                                            children: [
+                                              Text(
+                                                '${index + 1}. ${prod.productName}'
+                                                    .truncate(30),
+                                              ),
+                                              Text(
+                                                  '(${prod.quantity.toString()})')
+                                            ],
+                                          );
+                                        }),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Gap(2.h),
+                            )
                           ],
                         ));
                   },

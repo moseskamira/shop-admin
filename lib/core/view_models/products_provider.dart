@@ -11,16 +11,7 @@ class ProductsProvider extends ChangeNotifier {
   List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
   final pictureProvider = PicturesProvider();
-
-  Future<List<ProductModel>> fetchProducts() async {
-    _products.clear();
-    var result = await _api.getDataCollection();
-    _products = result.docs
-        .map((doc) => ProductModel.fromJson(jsonDecode(doc.data().toString())))
-        .toList();
-    notifyListeners();
-    return _products;
-  }
+ 
 
 
 

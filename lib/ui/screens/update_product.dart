@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -22,6 +22,12 @@ class UpdateProductScreen extends StatefulWidget {
   State<UpdateProductScreen> createState() => _UpdateProductScreenState();
 }
 
+
+
+/// on update checking the changes in pictures list then taking actions based on that...
+/// 
+
+
 class _UpdateProductScreenState extends State<UpdateProductScreen> {
   final _categories = CategoryModel().getCategories();
   final FocusNode _brandFocusNode = FocusNode();
@@ -30,7 +36,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   final FocusNode _categoryFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
   final ProductModel _productModel = ProductModel();
-  final bool _isLoading = false;
   bool _isPopular = false;
   TextEditingController productNameEditingController = TextEditingController();
   TextEditingController productBrandEditingController = TextEditingController();

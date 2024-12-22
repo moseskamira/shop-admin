@@ -142,10 +142,15 @@ class _ImagePickerDialogState extends State<ImagePickerDialog> {
   }
 
   Future<void> _pickImageGallery() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    Navigator.pop(context, pickedImage!.path);
+    List<String> imagePaths = [];
+    final pickedImage = await ImagePicker().pickMultiImage();
+    //  await ImagePicker().pickImage(source: ImageSource.gallery);
+    //  final List<XFile>? selectedImages =  await ImagePicker().pickMultiImage();
+    if (pickedImage.isNotEmpty) {
+      imagePaths = pickedImage.map((image) => image.path).toList();
+     
+    }
+     Navigator.pop(context, imagePaths);
   }
 
   void _removeImage() async {
@@ -167,17 +172,14 @@ class _ImagePickerDialogState extends State<ImagePickerDialog> {
           children: [
             ListTile(
               onTap: _pickImageCamera,
-              leading:   Icon(
-                Icons.camera,
-                color: Theme.of(context).colorScheme.tertiary
-              ),
+              leading: Icon(Icons.camera,
+                  color: Theme.of(context).colorScheme.tertiary),
               title: const Text('Camera'),
             ),
             ListTile(
               onTap: _pickImageGallery,
-              leading:   Icon(
-                Icons.photo,
-                  color: Theme.of(context).colorScheme.tertiary              ),
+              leading: Icon(Icons.photo,
+                  color: Theme.of(context).colorScheme.tertiary),
               title: const Text('Gallery'),
             ),
           ],

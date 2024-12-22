@@ -15,19 +15,50 @@ import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
 import 'package:shop_owner_app/core/view_models/auth_provider.dart';
 import 'core/models/orders_model.dart';
+import 'core/view_models/image_provider.dart';
 import 'ui/routes/route_name.dart';
 import 'ui/constants/theme_data.dart';
 import 'ui/routes/router.dart';
 import 'dart:developer' as devtools show log;
-
+import 'package:firebase_storage/firebase_storage.dart';
+ 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseApi().initNotifications();
   final isDarkTheme = await ThemePreferences().getTheme();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+int imageCount = await countImages();
+print("Number of images: $imageCount");
+
+
+ //Number of images: 61
   runApp(MyApp(isDarkTheme: isDarkTheme));
 }
+
+
+
+Future<int> countImages() async {
+  // Initialize Firebase if not already initialized
+  await Firebase.initializeApp();
+
+  // Create a reference to your 'productimages' folder
+  final storageRef = FirebaseStorage.instance.ref().child('productimages');
+
+  try {
+    // List all the items in the 'productimages' folder
+    final result = await storageRef.listAll();
+
+    // Return the count of images (files) in the folder
+    return result.items.length;
+  } catch (e) {
+    print("Error counting images: $e");
+    return 0;
+  }
+}
+
+
 
 class MyApp extends StatelessWidget {
   final bool isDarkTheme;
@@ -43,6 +74,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => ProductsProvider()),
             ChangeNotifierProvider(create: (_) => PicturesProvider()),
             ChangeNotifierProvider(create: (_) => AuthProvider()),
+               ChangeNotifierProvider(create: (_) => ImageList()),
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),
 
@@ -74,19 +106,13 @@ class MyApp extends StatelessWidget {
           ],
           child: Consumer<ThemeChangeProvider>(
             builder: (_, themeChangeProvider, __) {
-              return Consumer<ProductsProvider>(
-                builder: (_, productProvider, __) {
-                  productProvider.fetchProducts();
-
-                  return MaterialApp(
+              return MaterialApp(
                     debugShowCheckedModeBanner: false,
                     title: 'Store App',
                     theme: Styles.getThemeData(themeChangeProvider.isDarkTheme),
                     initialRoute: RouteName.mainScreen,
                     onGenerateRoute: Routes.generatedRoute,
                   );
-                },
-              );
             },
           ),
         );
