@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/view_models/image_provider.dart';
-import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/category_model.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
 import 'package:shop_owner_app/core/view_models/products_provider.dart';
@@ -56,7 +55,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
     final uploadingPictureProvider =
         Provider.of<PicturesProvider>(context, listen: false);
     final isValid = _formKey.currentState!.validate();
-       final imageList = Provider.of<ImageList>(context, listen: false);
+    final imageList = Provider.of<ImageList>(context, listen: false);
     if (imageList.images.length == 1) {
       MySnackBar().showSnackBar('Please select at least one image', context,
           duration: const Duration(seconds: 2));
@@ -101,7 +100,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final imageList = Provider.of<ImageList>(context, listen: false);
+ //   final imageList = Provider.of<ImageList>(context, listen: false);
 
     return Authenticate(
       child: GestureDetector(
@@ -122,130 +121,103 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3),
-                              shrinkWrap: true,
-                              itemCount: imageList.images.length,
-                              itemBuilder: (context, index) {
-                                return index == 0
-                                    ? Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5),
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              ImagePreview(
-                                                imagePath: imageList
-                                                    .images[index]
-                                                    .urlOfTheImage,
-                                                height: 50,
-                                                width: 50,
-                                              ),
-                                              Center(
-                                                child: InkWell(
-                                                  onTap: () async {
-                                                    final pickedImagePath =
-                                                        await MyAlertDialog
-                                                            .imagePicker(
-                                                                context);
-
-                                                    if (pickedImagePath !=
-                                                        null) {
-                                                      if (pickedImagePath
-                                                          is List<String>) {
-                                                        imageList.addAll(
-                                                            pickedImagePath);
-                                                      } else if (pickedImagePath
-                                                          is String) {
-                                                        imageList.add(
-                                                            pickedImagePath);
-                                                      }
-                                                      MySnackBar().showSnackBar(
-                                                          'New picture of the product is added',
-                                                          context,
-                                                          duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      300));
-
-                                                      //  _productModel.imageUrl = _pickedImagePath;
-                                                    }
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.add_circle,
-                                                    size: 30,
-                                                    color: Colors.black45,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : Padding(
+                        Consumer<ImageList>(
+                              builder: (context, imageList, child) {
+                                return GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3),
+                            shrinkWrap: true,
+                            itemCount: imageList.images.length,
+                            itemBuilder: (context, index) {
+                              return index == 0
+                                  ? Center(
+                                      child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5),
-                                        child: Container(
-                                          decoration: imageList
-                                                  .images[index].isThumbNail
-                                              ? BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.black,
-                                                      width: 4))
-                                              : null,
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  imageList
-                                                      .setThumbnail(index);
-                                                },
-                                                child: ImagePreview(
-                                                  imagePath: imageList
-                                                      .images[index]
-                                                      .urlOfTheImage,
-                                                  height: 190,
-                                                  width: 190,
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 15,
-                                                right: 5,
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    imageList.remove(index);
-                                                  },
-                                                  child: Container(
-                                                    height: 25,
-                                                    width: 25,
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.black45,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20)),
-                                                    child: const Center(
-                                                        child: Icon(
-                                                      Icons.close,
-                                                      color: Colors.white,
-                                                    )),
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            ImagePreview(
+                                              imagePath: imageList
+                                                  .images[index]
+                                                  .urlOfTheImage,
+                                              height: 50,
+                                              width: 50,
+                                            ),
+                                            Center(
+                                              child: InkWell(
                                                 onTap: () async {
                                                   final pickedImagePath =
                                                       await MyAlertDialog
-                                                          .imagePicker(context);
-
-                                                  if (pickedImagePath != null) {
-                                                    imageList.replaceImage(
-                                                        index, pickedImagePath);
+                                                          .imagePicker(
+                                                              context);
+                        
+                                                  if (pickedImagePath !=
+                                                      null) {
+                                                    if (pickedImagePath
+                                                        is List<String>) {
+                                                      imageList.addAll(
+                                                          pickedImagePath);
+                                                    } else if (pickedImagePath
+                                                        is String) {
+                                                      imageList.add(
+                                                          pickedImagePath);
+                                                    }
+                                                    MySnackBar().showSnackBar(
+                                                        'New picture of the product is added',
+                                                        context,
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    300));
+                        
+                                                    //  _productModel.imageUrl = _pickedImagePath;
                                                   }
+                                                },
+                                                child: const Icon(
+                                                  Icons.add_circle,
+                                                  size: 30,
+                                                  color: Colors.black45,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Container(
+                                        decoration: imageList
+                                                .images[index].isThumbNail
+                                            ? BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 4))
+                                            : null,
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                imageList.setThumbnail(index);
+                                              },
+                                              child: ImagePreview(
+                                                imagePath: imageList
+                                                    .images[index]
+                                                    .urlOfTheImage,
+                                                height: 190,
+                                                width: 190,
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 15,
+                                              right: 5,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  imageList.remove(index);
                                                 },
                                                 child: Container(
                                                   height: 25,
@@ -253,21 +225,50 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                                   decoration: BoxDecoration(
                                                       color: Colors.black45,
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
+                                                          BorderRadius
+                                                              .circular(20)),
                                                   child: const Center(
                                                       child: Icon(
-                                                    Icons.image_search_rounded,
+                                                    Icons.close,
                                                     color: Colors.white,
                                                   )),
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                            InkWell(
+                                              onTap: () async {
+                                                final pickedImagePath =
+                                                    await MyAlertDialog
+                                                        .imagePicker(context);
+                        
+                                                if (pickedImagePath != null) {
+                                                  imageList.replaceImage(
+                                                      index, pickedImagePath);
+                                                }
+                                              },
+                                              child: Container(
+                                                height: 25,
+                                                width: 25,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.black45,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
+                                                child: const Center(
+                                                    child: Icon(
+                                                  Icons.image_search_rounded,
+                                                  color: Colors.white,
+                                                )),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      );
-                              }),
-                        ),
+                                      ),
+                                    );
+                            });
+                              },
+                            ),
+                         
 
                         // Name Section
                         _sectionTitle('Name'),

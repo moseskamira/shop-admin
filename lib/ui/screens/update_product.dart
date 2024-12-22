@@ -22,33 +22,39 @@ class UpdateProductScreen extends StatefulWidget {
   State<UpdateProductScreen> createState() => _UpdateProductScreenState();
 }
 
-
-
 /// on update checking the changes in pictures list then taking actions based on that...
-/// 
-
+///
 
 class _UpdateProductScreenState extends State<UpdateProductScreen> {
   final _categories = CategoryModel().getCategories();
-  final FocusNode _brandFocusNode = FocusNode();
-  final FocusNode _priceFocusNode = FocusNode();
-  final FocusNode _quantityFocusNode = FocusNode();
-  final FocusNode _categoryFocusNode = FocusNode();
-  final FocusNode _descriptionFocusNode = FocusNode();
-  final ProductModel _productModel = ProductModel();
-  bool _isPopular = false;
-  TextEditingController productNameEditingController = TextEditingController();
-  TextEditingController productBrandEditingController = TextEditingController();
-  TextEditingController productPriceEditingController = TextEditingController();
-  TextEditingController productQuantityEditingController =
-      TextEditingController();
-  TextEditingController productDescriptionEditingController =
-      TextEditingController();
+  late final FocusNode _brandFocusNode;
+  late final FocusNode _priceFocusNode;
+  late final FocusNode _quantityFocusNode;
+  late final FocusNode _categoryFocusNode;
+  late final FocusNode _descriptionFocusNode;
+  late final ProductModel _productModel;
+  late bool _isPopular;
+  late final TextEditingController productNameEditingController;
+  late final TextEditingController productBrandEditingController;
+  late final TextEditingController productPriceEditingController;
+  late final TextEditingController productQuantityEditingController;
+  late final TextEditingController productDescriptionEditingController;
 
   @override
   void initState() {
     super.initState();
 
+    _brandFocusNode = FocusNode();
+    _priceFocusNode = FocusNode();
+    _quantityFocusNode = FocusNode();
+    _categoryFocusNode = FocusNode();
+    _descriptionFocusNode = FocusNode();
+    _productModel = ProductModel();
+    productNameEditingController = TextEditingController();
+    productBrandEditingController = TextEditingController();
+    productPriceEditingController = TextEditingController();
+    productQuantityEditingController = TextEditingController();
+    productDescriptionEditingController = TextEditingController();
     setUpPreloadedData();
   }
 
@@ -158,13 +164,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                                       height: 190,
                                                       width: 190,
                                                     ),
-
-                                                    ///code for showing thumbnail image
-                                                    // index==1?  Positioned(
-                                                    //     top: 15,
-                                                    //     left: 5,
-                                                    //     child: Container(height: 25,
-                                                    //         width: 25,child: Icon(Icons.thumb_up_alt_outlined, color: Colors.red,))):Container(),
                                                     Positioned(
                                                       top: 80,
                                                       left: 75,
@@ -188,7 +187,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                                                         seconds:
                                                                             2));
                                                           });
-                                                          //  _productModel.imageUrl = _pickedImagePath;
                                                         },
                                                         child: const Icon(
                                                           Icons.add_circle,
@@ -379,47 +377,36 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
                         // Name Section
                         _sectionTitle('Name'),
-                        TextField(
+                        CustomTextField(
                           controller: productNameEditingController,
+                          hintText: 'Add product name...',
                           textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            hintText: 'Add product name...',
-                            enabledBorder:
-                                MyBorder.underlineInputBorder(context),
-                          ),
+                          enabledBorder: MyBorder.underlineInputBorder(context),
                           onEditingComplete: () => FocusScope.of(context)
                               .requestFocus(_brandFocusNode),
                         ),
 
                         /// Brand Section
                         _sectionTitle('Brand'),
-                        TextField(
+                        CustomTextField(
                           controller: productBrandEditingController,
+                          hintText: 'Add product brand...',
                           textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
-                          focusNode: _brandFocusNode,
-                          decoration: InputDecoration(
-                            hintText: 'Add product brand...',
-                            enabledBorder:
-                                MyBorder.underlineInputBorder(context),
-                          ),
+                          enabledBorder: MyBorder.underlineInputBorder(context),
                           onEditingComplete: () => FocusScope.of(context)
                               .requestFocus(_priceFocusNode),
                         ),
 
                         /// Price Section
                         _sectionTitle('Price'),
-                        TextField(
+                        CustomTextField(
                           controller: productPriceEditingController,
-                          keyboardType: TextInputType.number,
+                          hintText: 'Add product price...',
                           textInputAction: TextInputAction.next,
-                          focusNode: _priceFocusNode,
-                          decoration: InputDecoration(
-                            hintText: 'Add product price...',
-                            enabledBorder:
-                                MyBorder.underlineInputBorder(context),
-                          ),
+                          textCapitalization: TextCapitalization.none,
+                          enabledBorder: MyBorder.underlineInputBorder(context),
                           onEditingComplete: () => FocusScope.of(context)
                               .requestFocus(_quantityFocusNode),
                         ),
@@ -706,6 +693,39 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         title,
         style: Theme.of(context).textTheme.headlineSmall,
       ),
+    );
+  }
+}
+
+class CustomTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final TextCapitalization textCapitalization;
+  final TextInputAction textInputAction;
+  final InputBorder? enabledBorder;
+  final VoidCallback? onEditingComplete;
+
+  const CustomTextField({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    this.textCapitalization = TextCapitalization.none,
+    this.textInputAction = TextInputAction.done,
+    this.enabledBorder,
+    this.onEditingComplete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      textCapitalization: textCapitalization,
+      textInputAction: textInputAction,
+      decoration: InputDecoration(
+        hintText: hintText,
+        enabledBorder: enabledBorder,
+      ),
+      onEditingComplete: onEditingComplete,
     );
   }
 }

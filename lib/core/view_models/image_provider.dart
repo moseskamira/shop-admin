@@ -15,10 +15,12 @@ class ImageList with ChangeNotifier {
     setfirstImageThumnNail(image);
     notifyListeners();
   }
-   void addAll(List<String> images) {
+
+  void addAll(List<String> images) {
     for (final image in images) {
       final inst = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
       _images.add(inst);
+      notifyListeners();
     }
     if (!_thumbNaiCalled && images.isNotEmpty) {
       setfirstImageThumnNail(images[0]);
@@ -39,25 +41,17 @@ class ImageList with ChangeNotifier {
 
   void setThumbnail(int index) {
     if (index >= 0 && index < _images.length) {
-      // Reset all images to non-thumbnail
       for (var img in _images) {
         img.isThumbNail = false;
       }
-
-      // Mark the selected image as the thumbnail
       final selectedImage = _images[index];
       selectedImage.isThumbNail = true;
-
-      // Remove the selected image from its current position
       _images.removeAt(index);
-
-      // Insert the thumbnail at index 1
       if (_images.isNotEmpty) {
         _images.insert(1, selectedImage);
       } else {
-        _images.add(selectedImage); // If no other images exist, just add it
+        _images.add(selectedImage);
       }
-
       _thumbNaiCalled = true;
       notifyListeners();
     }
@@ -78,14 +72,12 @@ class ImageList with ChangeNotifier {
   void replaceImage(int index, String image) {
     if (index >= 0 && index < _images.length) {
       _images[index] = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
-
       if (index == 1) {
         setThumbnail(1);
       }
     } else {
       _images.add(ImageToUpload(isThumbNail: false, urlOfTheImage: image));
     }
-
     notifyListeners();
   }
 }
