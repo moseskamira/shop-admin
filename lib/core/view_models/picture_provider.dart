@@ -8,18 +8,19 @@ class PicturesProvider with ChangeNotifier {
 
   // Method to upload multiple pictures
   Future<List<String>> uploadPictures(
-      {required List<String> picturesList, required String productsName}) async {
+      {required List<String> picturesList,
+      required String productsName}) async {
     List<String> pictureUrls = [];
     try {
-      int i =1;
+      int i = 1;
       for (var picture in picturesList) {
-
         // Generate a unique filename for each picture
-         String filename = "${const Uuid().v4()}_$i";
-         print(filename);
-         i++;
+        String filename = "${const Uuid().v4()}_$i";
+        print(filename);
+        i++;
         // Upload picture to Firebase Storage
-        final Reference storageRef = _storage.ref().child('productimages/$filename');
+        final Reference storageRef =
+            _storage.ref().child('productimages/$filename');
         final TaskSnapshot uploadTask = await storageRef.putFile(File(picture));
         // Get the download URL of the uploaded picture
         final String downloadUrl = await uploadTask.ref.getDownloadURL();
@@ -28,20 +29,15 @@ class PicturesProvider with ChangeNotifier {
 
       return pictureUrls;
     } catch (error) {
+      rethrow;
     }
-    return  pictureUrls;
   }
 
-
-
-  Future<void> deletePictures({ required List<String> picturePaths}) async {
-
-    for (final url in picturePaths){
+  Future<void> deletePictures({required List<String> picturePaths}) async {
+    for (final url in picturePaths) {
       final reference = _storage.refFromURL(url);
       await reference.delete();
     }
     notifyListeners();
   }
-
-
 }

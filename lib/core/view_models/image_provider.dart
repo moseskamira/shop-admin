@@ -6,6 +6,7 @@ class ImageList with ChangeNotifier {
     ImageToUpload(isThumbNail: false, urlOfTheImage: ''),
   ];
 
+// TODO filtering selected image so that user is don't get to select the same image again
   List<ImageToUpload> get images => _images;
   bool get thumbNaiCalled => _thumbNaiCalled;
 
@@ -66,6 +67,8 @@ class ImageList with ChangeNotifier {
 
   void clear() {
     _images.clear();
+    notifyListeners();
+    _images.add(ImageToUpload(isThumbNail: false, urlOfTheImage: ''));
     notifyListeners();
   }
 
