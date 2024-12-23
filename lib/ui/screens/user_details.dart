@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../../core/models/customer_model.dart';
+import 'package:shop_owner_app/core/models/user_model.dart';
 
 class UserDetails extends StatefulWidget {
-  final CustomerModel user;
+  final UserModel user;
   const UserDetails({super.key, required this.user});
 
   @override
@@ -20,10 +19,20 @@ class _UserDetailsState extends State<UserDetails> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Name: ${widget.user.name}'),
-          Text('Email: ${widget.user.name}'),
-          Text('Phone Number: ${widget.user.name}'),
-          Text('Formatted Address ${widget.user.name}'),
+          Text('Name: ${widget.user.fullName}'),
+          Text('imageUrl: ${widget.user.imageUrl}'),
+          Text('address: ${widget.user.address}'),
+          Text('phoneNumber: ${widget.user.phoneNumber}'),
+          Text('email: ${widget.user.email}'),
+          Text('joinedAt: ${widget.user.joinedAt}'),
+          Text('addressLine1: ${widget.user.addressLine1}'),
+          Text('addressLine2: ${widget.user.addressLine2}'),
+          Text('city: ${widget.user.city}'),
+          Text('state: ${widget.user.state}'),
+          Text('postalCode: ${widget.user.postalCode}'),
+          Text('country: ${widget.user.country}'),
+          Text('latitude: ${widget.user.latitude}'),
+           Text('longitude: ${widget.user.longitude}'),
         ],
       ),
     );

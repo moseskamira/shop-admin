@@ -12,7 +12,9 @@ import 'package:shop_owner_app/ui/screens/search.dart';
 import 'package:shop_owner_app/ui/screens/sign_up.dart';
 import 'package:shop_owner_app/ui/screens/upload_product.dart';
 import 'package:shop_owner_app/ui/screens/user_details.dart';
-import '../../core/models/customer_model.dart';
+import '../../core/models/user_model.dart';
+
+
 
 class Routes {
   static Route<dynamic> generatedRoute(RouteSettings settings) {
@@ -42,20 +44,22 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const FeedsScreen());
       case RouteName.categoryScreen:
-          Map<String, Object>? args = settings.arguments as Map<String, Object>;
+        Map<String, Object>? args = settings.arguments as Map<String, Object>;
         String cat = args['cat'] as String;
         return MaterialPageRoute(
-            builder: (BuildContext context) =>  CategoryScreen( nameOfCat: cat,));
+            builder: (BuildContext context) => CategoryScreen(
+                  nameOfCat: cat,
+                ));
       case RouteName.uploadProductScreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const UploadProductScreen());
       case RouteName.ordersListScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) =>   PendingOrdersList());
+            builder: (BuildContext context) => const PendingOrdersList());
 
       case RouteName.userDetailsScreen:
         Map<String, Object>? args = settings.arguments as Map<String, Object>;
-        CustomerModel user = args['user'] as CustomerModel;
+        UserModel user = args['user'] as UserModel;
         return MaterialPageRoute(
             builder: (BuildContext context) => UserDetails(
                   user: user,

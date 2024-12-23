@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
-import '../../core/models/customer_model.dart';
-import '../constants/app_consntants.dart';
+ import '../constants/app_consntants.dart';
 import 'package:intl/intl.dart';
 
 class PendingOrdersList extends StatefulWidget {
@@ -65,7 +64,7 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                           Navigator.of(context).pushNamed(
                             RouteName.userDetailsScreen,
                             arguments: {
-                              'user': CustomerModel(name: 'fff'),
+                              'user': UserModel(fullName: 'fff'),
                             },
                           );
                         },
