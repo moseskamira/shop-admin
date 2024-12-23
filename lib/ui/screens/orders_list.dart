@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
- import '../constants/app_consntants.dart';
+import '../constants/app_consntants.dart';
 import 'package:intl/intl.dart';
 
 class PendingOrdersList extends StatefulWidget {
@@ -63,9 +63,7 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                         onTap: () {
                           Navigator.of(context).pushNamed(
                             RouteName.userDetailsScreen,
-                            arguments: {
-                              'user': UserModel(fullName: 'fff'),
-                            },
+                            arguments: {'user': userData},
                           );
                         },
                         child: Column(
@@ -100,7 +98,7 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                       children: [
                                         const Text("Order Status:",
                                             style: TextStyle(fontSize: 16)),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 10,
                                         ),
                                         DropdownButton<String>(
@@ -132,12 +130,12 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                               : (String? newValue) async {
                                                   if (newValue != null) {
                                                     final FirebaseFirestore
-                                                        _fireStore =
+                                                        fireStore =
                                                         FirebaseFirestore
                                                             .instance;
 
                                                     try {
-                                                      await _fireStore
+                                                      await fireStore
                                                           .collection('orders')
                                                           .doc(order.orderId)
                                                           .update({
@@ -157,8 +155,9 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                      Text("Total payable amount: \$${order.totalAmount}",
-                                        style: TextStyle(fontSize: 16)),
+                                    Text(
+                                        "Total payable amount: \$${order.totalAmount}",
+                                        style: const TextStyle(fontSize: 16)),
                                     const SizedBox(
                                       height: 10,
                                     ),

@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shop_owner_app/ui/constants/assets_path.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
 import '../constants/app_consntants.dart';
 import 'package:flutter_map/flutter_map.dart' as flutter_map;
 import 'package:latlong2/latlong.dart' as LatLon;
+
+import 'inner_screens/users_location.dart';
 
 class UserDetails extends StatefulWidget {
   final UserModel user;
@@ -36,18 +39,21 @@ class _UserDetailsState extends State<UserDetails> {
   @override
   Widget build(BuildContext context) {
     UserModel user = widget.user;
-    double latitude =  23.88843664456423;//double.tryParse(user.latitude) ?? 51.509364;
-    double longitude =90.39065949603635; //double.tryParse(user.longitude) ?? -0.128928;
+    double latitude =
+        23.88843664456423; //double.tryParse(user.latitude) ?? 51.509364;
+    double longitude =
+        90.39065949603635; //double.tryParse(user.longitude) ?? -0.128928;
 
     return SafeArea(
       child: Scaffold(
+      
         body: Stack(
           children: [
             CustomScrollView(
               controller: _scrollController,
               slivers: [
                 SliverAppBar(
-                  expandedHeight: 200,
+                  expandedHeight: 250,
                   pinned: true,
                   elevation: 0,
                   flexibleSpace: FlexibleSpaceBar(
@@ -76,6 +82,7 @@ class _UserDetailsState extends State<UserDetails> {
                           ),
                   ),
                 ),
+
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -127,7 +134,8 @@ class _UserDetailsState extends State<UserDetails> {
                   child: _userFullDetailsSection(user),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildMapSection(latitude: latitude,longitude: longitude),
+                  child: _buildMapSection(
+                      latitude: latitude, longitude: longitude, name: user.fullName),
                 ),
               ],
             ),
@@ -137,58 +145,70 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
-  Widget _buildMapSection({latitude, longitude}) {
-    return  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                       _sectionTitle('User Location'),
-                      SizedBox(
-                        height: 200,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: flutter_map.FlutterMap(
-                            options: flutter_map.MapOptions(
-                              initialCenter: LatLon.LatLng(latitude, longitude),
-                              initialZoom: 9.2,
-                            ),
-                            children: [
-                              // Map Tiles
-                              flutter_map.TileLayer(
-                                urlTemplate:
-                                    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-                                subdomains: const ['a', 'b', 'c', 'd'],
-                                userAgentPackageName: 'com.example.app',
-                              ),
-                        
-                              flutter_map.MarkerLayer(
-                                markers: [
-                                  flutter_map.Marker(
-                                    child: const Icon(
-                                      Icons.location_pin,
-                                      color: Colors.red,
-                                      size: 40,
-                                    ),
-                                    point: LatLon.LatLng(latitude, longitude),
-                                    width: 80,
-                                    height: 80,
-                                  ),
-                                ],
-                              ),
-                        
-                              const flutter_map.RichAttributionWidget(
-                                attributions: [
-                                  flutter_map.TextSourceAttribution(
-                                    'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
-                                  ),
-                                ],
-                              ),
-                            ],
+  Widget _buildMapSection({required double latitude, required double longitude, required String name}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _sectionTitle('User Location'),
+        SizedBox(
+          height: 200,
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: flutter_map.FlutterMap(
+                  options: flutter_map.MapOptions(
+                    initialCenter: LatLon.LatLng(latitude, longitude),
+                    initialZoom: 11,
+                    interactionOptions:
+                        const flutter_map.InteractionOptions(flags: 0),
+                  ),
+                  children: [
+                    // Map Tiles
+                    flutter_map.TileLayer(
+                      urlTemplate:
+                          'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+                      subdomains: const ['a', 'b', 'c', 'd'],
+                      userAgentPackageName: 'com.example.app',
+                      retinaMode: flutter_map.RetinaMode.isHighDensity(context),
+                    ),
+                    flutter_map.MarkerLayer(
+                      markers: [
+                        flutter_map.Marker(
+                          child: const Icon(
+                            Icons.location_pin,
+                            color: Colors.red,
+                            size: 40,
                           ),
+                          point: LatLon.LatLng(latitude, longitude),
+                          width: 80,
+                          height: 80,
                         ),
-                      ),
-                    ],
-                  );
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              // Transparent overlay to capture gestures
+              Positioned.fill(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        RouteName.usersLocation,
+                        arguments: {'lat': latitude, 'lon': longitude, 'name':name},
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _userInformationListTile(title, icon, context) {
@@ -198,8 +218,6 @@ class _UserDetailsState extends State<UserDetails> {
       onTap: () {},
     );
   }
-
- 
 
   Widget _sectionTitle(String title) {
     return Padding(

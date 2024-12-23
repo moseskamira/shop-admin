@@ -4,6 +4,7 @@ import 'package:shop_owner_app/ui/screens/bottom_bar.dart';
 import 'package:shop_owner_app/ui/screens/feeds.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/category_screen.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/forgot_password.dart';
+import 'package:shop_owner_app/ui/screens/inner_screens/users_location.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/product_detail.dart';
 import 'package:shop_owner_app/ui/screens/log_in.dart';
 import 'package:shop_owner_app/ui/screens/main_screen.dart';
@@ -13,8 +14,6 @@ import 'package:shop_owner_app/ui/screens/sign_up.dart';
 import 'package:shop_owner_app/ui/screens/upload_product.dart';
 import 'package:shop_owner_app/ui/screens/user_details.dart';
 import '../../core/models/user_model.dart';
-
-
 
 class Routes {
   static Route<dynamic> generatedRoute(RouteSettings settings) {
@@ -63,6 +62,18 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => UserDetails(
                   user: user,
+                ));
+
+      case RouteName.usersLocation:
+        Map<String, dynamic>? args = settings.arguments as Map<String, dynamic>;
+        double lat = args['lat'] as double;
+        double lon = args['lon'] as double;
+        String name = args['name'] as String;//'name'
+        return MaterialPageRoute(
+            builder: (BuildContext context) => UsersLocations(
+                  latitude: lat,
+                  longitude: lon,
+                  name:name,
                 ));
 
       default:
