@@ -7,9 +7,9 @@ class UserDataProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   UserModel _userData = UserModel();
   UserModel get userData => _userData;
-   List<UserModel> _users = [];
-     bool _isLoading = false;
-List<UserModel> get users => _users;
+  List<UserModel> _users = [];
+  bool _isLoading = false;
+  List<UserModel> get users => _users;
   bool get isLoading => _isLoading;
 
   set userData(UserModel value) {
@@ -58,22 +58,11 @@ List<UserModel> get users => _users;
     notifyListeners();
   }
 
-
-
-
-Stream<List<UserModel>> get usersStream {
-  
-  return FirebaseFirestore.instance.collection('users').snapshots().map(
-        (snapshot) => snapshot.docs.map((doc) {
-          return UserModel.fromFirestore(doc);
-        }).toList(),
-      );
-}
-
-
- 
-
-
-
-
+  Stream<List<UserModel>> get usersStream {
+    return FirebaseFirestore.instance.collection('users').snapshots().map(
+          (snapshot) => snapshot.docs.map((doc) {
+            return UserModel.fromFirestore(doc);
+          }).toList(),
+        );
+  }
 }

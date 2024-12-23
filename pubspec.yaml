@@ -31,6 +31,9 @@ dependencies:
   flutter_spinkit:
   firebase_messaging: ^15.1.6
   intl: ^0.20.1
+  shimmer: ^3.0.0
+  google_maps_flutter: ^2.10.0
+  flutter_map: ^7.0.2
 dev_dependencies:
   flutter_launcher_icons:
   flutter_test:
