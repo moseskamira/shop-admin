@@ -156,7 +156,7 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                       height: 10,
                                     ),
                                     Text(
-                                        "Total payable amount: \$${order.totalAmount}",
+                                        "Total amount: \$${order.totalAmount}",
                                         style: const TextStyle(fontSize: 16)),
                                     const SizedBox(
                                       height: 10,

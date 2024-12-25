@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -12,9 +12,10 @@ import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_snackbar.dart';
 import 'package:shop_owner_app/ui/widgets/authenticate.dart';
-import 'package:shop_owner_app/ui/widgets/image_preview.dart';
-
+import 'dart:io';
+import '../../core/view_models/update_image_provider.dart';
 import '../widgets/update_reusable_textField.dart';
+import 'package:shop_owner_app/ui/widgets/image_preview.dart' as placeHolder;
 
 // ignore: must_be_immutable
 class UpdateProductScreen extends StatefulWidget {
@@ -38,8 +39,8 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   late final FocusNode _descriptionFocusNode;
   late final ProductModel _productModel;
   late bool _isPopular;
-  late final TextEditingController productNameEditingController;
-  late final TextEditingController productBrandEditingController;
+  late final TextEditingController productNameController;
+  late final TextEditingController productBrandController;
   late final TextEditingController productPriceEditingController;
   late final TextEditingController productQuantityEditingController;
   late final TextEditingController productDescriptionEditingController;
@@ -55,12 +56,17 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     _categoryFocusNode = FocusNode();
     _descriptionFocusNode = FocusNode();
     _productModel = ProductModel();
-    productNameEditingController = TextEditingController();
-    productBrandEditingController = TextEditingController();
+    productNameController = TextEditingController();
+    productBrandController = TextEditingController();
     productPriceEditingController = TextEditingController();
     productQuantityEditingController = TextEditingController();
     productDescriptionEditingController = TextEditingController();
     setUpPreloadedData();
+    Future.microtask(() {
+      ProductModel? data = widget.singleProductDtaforUpdate;
+      Provider.of<UpdateImageProvider>(context, listen: false)
+          .addAll(data!.imageUrls!);
+    });
   }
 
   @override
@@ -72,38 +78,35 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     _quantityFocusNode.dispose();
     _categoryFocusNode.dispose();
     _descriptionFocusNode.dispose();
-    productNameEditingController.dispose();
-    productBrandEditingController.dispose();
+    productNameController.dispose();
+    productBrandController.dispose();
     productPriceEditingController.dispose();
     productQuantityEditingController.dispose();
     productDescriptionEditingController.dispose();
   }
 
   setUpPreloadedData() {
-    if (widget.singleProductDtaforUpdate?.isPopular ?? true) {
+    ProductModel? data = widget.singleProductDtaforUpdate;
+    if (data?.isPopular ?? true) {
       _isPopular = true;
     } else {
       _isPopular = false;
     }
-    productNameEditingController.text =
-        widget.singleProductDtaforUpdate?.name.toString() ?? "";
-    productBrandEditingController.text =
-        widget.singleProductDtaforUpdate?.brand.toString() ?? "";
-    productPriceEditingController.text =
-        widget.singleProductDtaforUpdate?.price.toString() ?? "";
-    productQuantityEditingController.text =
-        widget.singleProductDtaforUpdate?.quantity.toString() ?? "";
+    productNameController.text = data?.name.toString() ?? "";
+    productBrandController.text = data?.brand.toString() ?? "";
+    productPriceEditingController.text = data?.price.toString() ?? "";
+    productQuantityEditingController.text = data?.quantity.toString() ?? "";
     productDescriptionEditingController.text =
-        widget.singleProductDtaforUpdate?.description.toString() ?? "";
+        data?.description.toString() ?? "";
     int index = 0;
     for (int i = 0; i < _categories.length; i++) {
-      if (_categories[i].title ==
-          widget.singleProductDtaforUpdate?.category.toString()) {
+      if (_categories[i].title == data?.category.toString()) {
         index = i;
         break;
       }
     }
     _productModel.category = _categories[index].title;
+    //loading data..
   }
 
   List<String> imageList = [
@@ -388,115 +391,167 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                             ),
                           ),
 
-                          // Name Section
-                          _sectionTitle('Name'),
-                          CustomTextField(
-                            controller: productNameEditingController,
-                            focusNode: _titleFocusNode,
-                            hintText: 'Add product name...',
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                            nextFocusNode: _brandFocusNode,
-                          ),
-
-                          /// Brand Section
-                          _sectionTitle('Brand'),
-                          CustomTextField(
-                            controller: productBrandEditingController,
-                            focusNode: _brandFocusNode,
-                            hintText: 'Add product brand...',
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                            nextFocusNode: _priceFocusNode,
-                          ),
-
-                          /// Price Section
-                          _sectionTitle('Price'),
-                          CustomTextField(
-                            controller: productPriceEditingController,
-                            focusNode: _priceFocusNode,
-                            hintText: 'Add product price...',
-                            keyboardType: TextInputType.number,
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                            nextFocusNode: _quantityFocusNode,
-                          ),
-
-                          // Quantity Section
-                          _sectionTitle('Quantity'),
-
-                          CustomTextField(
-                            controller: productQuantityEditingController,
-                            focusNode: _quantityFocusNode,
-                            hintText: 'Add product quantity...',
-                            keyboardType: TextInputType.number,
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                            nextFocusNode: _categoryFocusNode,
-                          ),
-
-                          // Category section
-                          _sectionTitle('Category'),
-                          DropdownButtonFormField(
-                            focusNode: _categoryFocusNode,
-                            onTap: () {
-                              FocusScope.of(context)
-                                  .requestFocus(_descriptionFocusNode);
-                            },
-                            items: _categories
-                                .map(
-                                  (category) => DropdownMenuItem<String>(
-                                    value: category.title,
-                                    child: Text(category.title),
-                                  ),
-                                )
-                                .toList(),
-                            value: _productModel.category,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _productModel.category = value.toString();
-                              });
-                            },
-                            decoration: InputDecoration(
-                              enabledBorder:
-                                  MyBorder.underlineInputBorder(context),
-                            ),
-                          ),
-                          //Gap(2.h),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          Card(
-                            child: Column(
-                              children: [
-                                SwitchListTile(
-                                  title: const Text('Is popular'),
-                                  value: _isPopular,
-                                  onChanged: (bool value) {
-                                    setState(() {
-                                      _isPopular = value;
-                                    });
-                                  },
+                          Consumer<UpdateImageProvider>(
+                            builder: (context, imageList, child) {
+                              return GridView.builder(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
                                 ),
-                              ],
-                            ),
+                                shrinkWrap: true,
+                                itemCount: imageList.images.isEmpty
+                                    ? 1
+                                    : imageList.images.length +
+                                        1, // +1 for the "Add Image" widget
+                                itemBuilder: (context, index) {
+                                  if (index == 0) {
+                                    // "Add Image" widget
+                                    return Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                          const  placeHolder.ImagePreview(
+                                              imagePath:
+                                                  '', // Empty or default image
+                                              height: 50,
+                                              width: 50,
+                                            ),
+                                            Center(
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  final pickedImagePath =
+                                                      await MyAlertDialog
+                                                          .imagePicker(context);
+
+                                                  if (pickedImagePath != null) {
+                                                    if (pickedImagePath
+                                                        is List<String>) {
+                                                      imageList.addAll(
+                                                          pickedImagePath);
+                                                    } else if (pickedImagePath
+                                                        is String) {
+                                                      imageList
+                                                          .add(pickedImagePath);
+                                                    }
+                                                    MySnackBar().showSnackBar(
+                                                      'New picture of the product is added',
+                                                      context,
+                                                      duration: const Duration(
+                                                          milliseconds: 300),
+                                                    );
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.add_circle,
+                                                  size: 30,
+                                                  color: Colors.black45,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    // Display actual images
+                                    final imageIndex = index -
+                                        1; // Adjust index due to "Add Image" widget
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Container(
+                                        decoration: imageList
+                                                .images[imageIndex].isThumbNail
+                                            ? BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 4),
+                                              )
+                                            : null,
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                imageList
+                                                    .setThumbnail(imageIndex);
+                                              },
+                                              child: ImagePreview(
+                                                imagePath: imageList
+                                                    .images[imageIndex]
+                                                    .urlOfTheImage,
+                                                height: 190,
+                                                width: 190,
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 15,
+                                              right: 5,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  imageList.remove(imageIndex);
+                                                },
+                                                child: Container(
+                                                  height: 25,
+                                                  width: 25,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.black45,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                  child: const Center(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () async {
+                                                final pickedImagePath =
+                                                    await MyAlertDialog
+                                                        .imagePicker(context);
+
+                                                if (pickedImagePath != null) {
+                                                  imageList.replaceImage(
+                                                      imageIndex,
+                                                      pickedImagePath);
+                                                }
+                                              },
+                                              child: Container(
+                                                height: 25,
+                                                width: 25,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black45,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: const Center(
+                                                  child: Icon(
+                                                    Icons.image_search_rounded,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            },
                           ),
 
-                          // Description Section
-                          _sectionTitle('Description'),
-                          const SizedBox(height: 10),
-
-                          CustomTextField(
-                            controller: productDescriptionEditingController,
-                            focusNode: _descriptionFocusNode,
-                            maxLines: 10,
-                            hintText: 'Add product description...',
-                            textInputAction: TextInputAction.done,
-                            textCapitalization: TextCapitalization.sentences,
-                            keyboardType: TextInputType.multiline,
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                          ),
+                          // all the fields
+                          fields(),
                         ],
                       ),
                     ),
@@ -504,136 +559,68 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                       height: 1.5.h,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        SizedBox(
-                          width: .3.w,
-                        ),
-                        GestureDetector(
-                          onTap: () {
+                        ElevatedButton.icon(
+                          onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Container(
-                            height: 4.6.h,
-                            width: 44.w,
-                            decoration: BoxDecoration(
-                                color: Colors.red[700],
-                                borderRadius: BorderRadius.circular(4)),
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(left: 5.w),
-                                  child: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                    size: 22,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 1.2.w,
-                                ),
-                                //  Gap(1.2.w),
-                                const Center(
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 3.0),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0)),
+                          label: const Text(
+                            'Cancel',
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                letterSpacing: 3.0,
+                                color: Colors.white),
                           ),
+                          icon: const Icon(Icons.close,
+                              size: 24, color: Colors.white),
                         ),
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.cyan[600],
+                              backgroundColor: Colors.black,
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 43.0)),
+                                  const EdgeInsets.symmetric(horizontal: 30.0)),
+                          label: const Text(
+                            'Save',
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                letterSpacing: 3.0,
+                                color: Colors.white),
+                          ),
+                          icon: const Icon(Icons.save_as,
+                              size: 24, color: Colors.white),
                           onPressed: () async {
-                            _productModel.name =
-                                productNameEditingController.text.toString();
-                            _productModel.brand =
-                                productBrandEditingController.text.toString();
+                            final isValid = _formKey.currentState!.validate();
 
-                            _productModel.description =
-                                productDescriptionEditingController.text
-                                    .toString();
-                            _productModel.isPopular = _isPopular;
-                            _productModel.imageUrls =
-                                widget.singleProductDtaforUpdate?.imageUrls;
-
-                            /// quantity exception handling
-                            if (productQuantityEditingController.text.isEmpty) {
-                              MySnackBar().showSnackBar(
-                                  'Please Enter a Number on Quantity field',
-                                  context,
-                                  duration: const Duration(seconds: 2));
-                            } else if (_productModel.name.isEmpty) {
-                              MySnackBar().showSnackBar(
-                                  'Please Enter a Product name..', context,
-                                  duration: const Duration(seconds: 2));
-                            } else if (_productModel.brand.isEmpty) {
-                              MySnackBar().showSnackBar(
-                                  'Please Enter a brand for your product',
-                                  context,
-                                  duration: const Duration(seconds: 2));
-                            } else if (productPriceEditingController.text
-                                .toString()
-                                .isEmpty) {
-                              MySnackBar().showSnackBar(
-                                  'Please Enter a price for your product',
-                                  context,
-                                  duration: const Duration(seconds: 2));
-                            } else if (productQuantityEditingController
-                                .text.isEmpty) {
-                              MySnackBar().showSnackBar(
-                                  'Please Enter amount of product you have',
-                                  context,
-                                  duration: const Duration(seconds: 2));
-                            } else if (_productModel.category.isEmpty) {
-                              MySnackBar().showSnackBar(
-                                  'Please select a category for your product',
-                                  context,
-                                  duration: const Duration(seconds: 2));
-                            } else if (productDescriptionEditingController
-                                .text.isEmpty) {
-                              MySnackBar().showSnackBar(
-                                  'Please write a long description of your product',
-                                  context,
-                                  duration: const Duration(seconds: 2));
-                            } else {
-                              /// quantity exception handling
-                              try {
-                                _productModel.quantity = int.tryParse(
-                                        productQuantityEditingController.text
-                                            .toString()) ??
-                                    0;
-                              } catch (e) {
-                                MySnackBar().showSnackBar(
-                                    'Please Enter a Number on Quantity field',
-                                    context,
-                                    duration: const Duration(seconds: 2));
-                              }
-
-                              /// price exception handling
-                              try {
-                                _productModel.price = double.tryParse(
-                                        productPriceEditingController.text
-                                            .toString()) ??
-                                    0;
-                              } catch (e) {
-                                MySnackBar().showSnackBar(
-                                    'Please Enter amount of Money on price field',
-                                    context,
-                                    duration: const Duration(seconds: 2));
-                              }
+                            if (isValid) {
                               setState(() {
                                 loadingOnUpload = true;
                               });
+                              _productModel.name =
+                                  productNameController.text.toString();
+                              _productModel.brand =
+                                  productBrandController.text.toString();
+
+                              _productModel.description =
+                                  productDescriptionEditingController.text
+                                      .toString();
+                              _productModel.isPopular = _isPopular;
+                              _productModel.imageUrls =
+                                  widget.singleProductDtaforUpdate?.imageUrls;
+                              _productModel.price = double.tryParse(
+                                      productPriceEditingController.text
+                                          .toString()) ??
+                                  0;
+
+                              _productModel.quantity = int.tryParse(
+                                      productQuantityEditingController.text
+                                          .toString()) ??
+                                  0;
+
                               if (imageList.length <= 1) {
                               } else {
                                 for (int i = 1; i < imageList.length; i++) {
@@ -667,17 +654,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 MySnackBar().showSnackBar(
                                     'Updated Successfully', context,
                                     duration: const Duration(seconds: 2));
+                                Navigator.of(context).pop();
                               });
-                            }
+                            } else {}
                           },
-                          label: const Text(
-                            'Save',
-                            style:
-                                TextStyle(fontSize: 20.0, letterSpacing: 3.0),
-                          ),
-                          icon: const Icon(Icons.save_as, size: 24),
                         ),
-                        SizedBox(width: .3.w),
                       ],
                     ),
                     const SizedBox(
@@ -693,6 +674,132 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     );
   }
 
+  Widget fields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Name Section
+        _sectionTitle('Name'),
+        CustomTextField(
+          controller: productNameController,
+          focusNode: _titleFocusNode,
+          hintText: 'Add product name...',
+          validator: (value) => value!.isEmpty ? 'Required' : null,
+          nextFocusNode: _brandFocusNode,
+        ),
+
+        /// Brand Section
+        _sectionTitle('Brand'),
+        CustomTextField(
+          controller: productBrandController,
+          focusNode: _brandFocusNode,
+          hintText: 'Add product brand...',
+          validator: (value) => value!.isEmpty ? 'Required' : null,
+          nextFocusNode: _priceFocusNode,
+        ),
+
+        /// Price Section
+        _sectionTitle('Price'),
+        CustomTextField(
+          controller: productPriceEditingController,
+          focusNode: _priceFocusNode,
+          hintText: 'Add product price...',
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter a price";
+            }
+            if (double.tryParse(value) == null) {
+              return "Please enter a valid price";
+            }
+            return null;
+          },
+        ),
+
+        // Quantity Section
+        _sectionTitle('Quantity'),
+
+        CustomTextField(
+          controller: productQuantityEditingController,
+          focusNode: _quantityFocusNode,
+          hintText: 'Add product quantity...',
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter a quantity";
+            }
+            if (int.tryParse(value) == null) {
+              return "Please enter a valid integer";
+            }
+            return null;
+          },
+          nextFocusNode: _categoryFocusNode,
+        ),
+
+        // Category section
+        _sectionTitle('Category'),
+        DropdownButtonFormField(
+          focusNode: _categoryFocusNode,
+          onTap: () {
+            FocusScope.of(context).requestFocus(_descriptionFocusNode);
+          },
+          items: _categories
+              .map(
+                (category) => DropdownMenuItem<String>(
+                  value: category.title,
+                  child: Text(category.title),
+                ),
+              )
+              .toList(),
+          value: _productModel.category,
+          onChanged: (String? value) {
+            setState(() {
+              _productModel.category = value.toString();
+            });
+          },
+          decoration: InputDecoration(
+            enabledBorder: MyBorder.underlineInputBorder(context),
+          ),
+        ),
+        //Gap(2.h),
+        SizedBox(
+          height: 2.h,
+        ),
+        Card(
+          child: Column(
+            children: [
+              SwitchListTile(
+                title: const Text('Is popular'),
+                value: _isPopular,
+                onChanged: (bool value) {
+                  setState(() {
+                    _isPopular = value;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+
+        // Description Section
+        _sectionTitle('Description'),
+        const SizedBox(height: 10),
+
+        CustomTextField(
+          controller: productDescriptionEditingController,
+          focusNode: _descriptionFocusNode,
+          maxLines: 10,
+          hintText: 'Add product description...',
+          textInputAction: TextInputAction.done,
+          textCapitalization: TextCapitalization.sentences,
+          keyboardType: TextInputType.multiline,
+          validator: (value) => value!.isEmpty ? 'Required' : null,
+        ),
+      ],
+    );
+  }
+
   Widget _sectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(top: 24, bottom: 14),
@@ -700,6 +807,54 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         title,
         style: Theme.of(context).textTheme.headlineSmall,
       ),
+    );
+  }
+}
+
+/// Custom widget to show the preview of an image from the device memory or network
+class ImagePreview extends StatefulWidget {
+  final String imagePath;
+  final double width;
+  final double height;
+
+  const ImagePreview({
+    super.key,
+    this.imagePath = '',
+    this.width = 100,
+    this.height = 100,
+  });
+
+  @override
+  State<ImagePreview> createState() => _ImagePreviewState();
+}
+
+class _ImagePreviewState extends State<ImagePreview> {
+  bool _isNetworkImage(String? path) {
+    return path != null &&
+        (path.startsWith('http://') || path.startsWith('https://'));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200, // Fixed height
+      width: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.grey[300]!,
+          width: 2,
+        ),
+        color: Colors.grey[200],
+        image: DecorationImage(
+          image: _isNetworkImage(widget.imagePath)
+              ? CachedNetworkImageProvider(widget.imagePath!)
+              : FileImage(File(widget.imagePath!)),
+          fit: BoxFit.cover,
+        ),
+      ),
+
+      // Show local file image
     );
   }
 }

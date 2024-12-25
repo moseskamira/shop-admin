@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ImageList with ChangeNotifier {
-  bool _thumbNaiCalled = false;
-  final List<ImageToUpload> _images = [
-    ImageToUpload(isThumbNail: false, urlOfTheImage: ''),
-  ];
+class UpdateImageProvider with ChangeNotifier{
+ bool _thumbNaiCalled = false;
+  bool _isFirstTime = true;
+    //TODO removing this initial image 
 
+  final List<ImageToUpload> _images = [
+  ];
+  final List<String> _firstImages = [];
 // TODO filtering selected image so that user is don't get to select the same image again
   List<ImageToUpload> get images => _images;
   bool get thumbNaiCalled => _thumbNaiCalled;
@@ -14,6 +16,7 @@ class ImageList with ChangeNotifier {
     final inst = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
     _images.add(inst);
     setfirstImageThumnNail(image);
+ 
     notifyListeners();
   }
 
@@ -27,12 +30,18 @@ class ImageList with ChangeNotifier {
       setfirstImageThumnNail(images[0]);
     }
     notifyListeners();
+
+    if(_isFirstTime){
+      _firstImages.addAll(images);
+    }
+    _isFirstTime = false;
+    notifyListeners();
   }
 
   void setfirstImageThumnNail(String urlOfTheImage) {
     if (!_thumbNaiCalled) {
       if (_images.length > 1) {
-        _images[1] =
+        _images[0] =
             ImageToUpload(isThumbNail: true, urlOfTheImage: urlOfTheImage);
         _thumbNaiCalled = true;
         notifyListeners();
@@ -49,7 +58,7 @@ class ImageList with ChangeNotifier {
       selectedImage.isThumbNail = true;
       _images.removeAt(index);
       if (_images.isNotEmpty) {
-        _images.insert(1, selectedImage);
+        _images.insert(0, selectedImage);
       } else {
         _images.add(selectedImage);
       }
@@ -90,4 +99,6 @@ class ImageToUpload {
   bool isThumbNail;
 
   ImageToUpload({required this.urlOfTheImage, required this.isThumbNail});
+
+
 }

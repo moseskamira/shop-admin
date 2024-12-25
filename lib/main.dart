@@ -7,6 +7,7 @@ import 'package:shop_owner_app/core/models/product_model.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/orders_provider.dart';
 import 'package:shop_owner_app/core/view_models/products_stream_provider.dart';
+import 'package:shop_owner_app/core/view_models/update_image_provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/theme_preferences.dart';
 import 'package:shop_owner_app/core/view_models/products_provider.dart';
@@ -15,13 +16,13 @@ import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
 import 'package:shop_owner_app/core/view_models/auth_provider.dart';
 import 'core/models/orders_model.dart';
-import 'core/view_models/image_provider.dart';
+import 'core/view_models/product_upload_image_provider.dart';
 import 'ui/routes/route_name.dart';
 import 'ui/constants/theme_data.dart';
 import 'ui/routes/router.dart';
 import 'dart:developer' as devtools show log;
 import 'package:firebase_storage/firebase_storage.dart';
- 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -29,15 +30,12 @@ void main() async {
   final isDarkTheme = await ThemePreferences().getTheme();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-int imageCount = await countImages();
-print("Number of images: $imageCount");
+  int imageCount = await countImages();
+  print("Number of images: $imageCount");
 
-
- //Number of images: 61
+  //Number of images: 61
   runApp(MyApp(isDarkTheme: isDarkTheme));
 }
-
-
 
 Future<int> countImages() async {
   // Initialize Firebase if not already initialized
@@ -58,8 +56,6 @@ Future<int> countImages() async {
   }
 }
 
-
-
 class MyApp extends StatelessWidget {
   final bool isDarkTheme;
   const MyApp({super.key, required this.isDarkTheme});
@@ -74,7 +70,8 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => ProductsProvider()),
             ChangeNotifierProvider(create: (_) => PicturesProvider()),
             ChangeNotifierProvider(create: (_) => AuthProvider()),
-               ChangeNotifierProvider(create: (_) => ImageList()),
+            ChangeNotifierProvider(create: (_) => ImageListProductUpload()),
+            ChangeNotifierProvider(create: (_) => UpdateImageProvider()),
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),
 
@@ -107,12 +104,12 @@ class MyApp extends StatelessWidget {
           child: Consumer<ThemeChangeProvider>(
             builder: (_, themeChangeProvider, __) {
               return MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    title: 'Store App',
-                    theme: Styles.getThemeData(themeChangeProvider.isDarkTheme),
-                    initialRoute: RouteName.mainScreen,
-                    onGenerateRoute: Routes.generatedRoute,
-                  );
+                debugShowCheckedModeBanner: false,
+                title: 'Store App',
+                theme: Styles.getThemeData(themeChangeProvider.isDarkTheme),
+                initialRoute: RouteName.mainScreen,
+                onGenerateRoute: Routes.generatedRoute,
+              );
             },
           ),
         );
