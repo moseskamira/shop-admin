@@ -1,22 +1,40 @@
 import 'package:flutter/material.dart';
 
-class UpdateImageProvider with ChangeNotifier{
- bool _thumbNaiCalled = false;
+class UpdateImageProvider with ChangeNotifier {
+  bool _thumbNaiCalled = false;
   bool _isFirstTime = true;
-    //TODO removing this initial image 
+  //TODO removing this initial image
 
-  final List<ImageToUpload> _images = [
-  ];
-  final List<String> _firstImages = [];
-// TODO filtering selected image so that user is don't get to select the same image again
+  final List<ImageToUpload> _images = [];
+  final List<ImageToUpload> _firstImages = [];
+  List<ImageToUpload> get initialImages => _firstImages;
+// TODO filtering selected image so that user is don't get to select the same image again from their device
   List<ImageToUpload> get images => _images;
-  bool get thumbNaiCalled => _thumbNaiCalled;
+
+  List<ImageToUpload> get newImagesToUpload =>
+      _images.where((image) => !image.urlOfTheImage.contains('http')).toList();
+
+  List<ImageToUpload> get backedUpImages =>
+      _images.where((image) => image.urlOfTheImage.contains('http')).toList();
+
+  bool get isDeletedPreviousImage => imagesToDeleteFromStorage.isNotEmpty;
+
+  List<ImageToUpload> get imagesToDeleteFromStorage => _firstImages
+      .where((element) =>
+          !_images.any((image) => image.urlOfTheImage == element.urlOfTheImage))
+      .toList();
+
+
+List<String> get urlofThemimagesToDeleteFromStorage => imagesToDeleteFromStorage
+    .map((image) => image.urlOfTheImage) // Extract only the URL
+    .toList();
+
 
   void add(String image) {
     final inst = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
     _images.add(inst);
     setfirstImageThumnNail(image);
- 
+
     notifyListeners();
   }
 
@@ -31,8 +49,12 @@ class UpdateImageProvider with ChangeNotifier{
     }
     notifyListeners();
 
-    if(_isFirstTime){
-      _firstImages.addAll(images);
+    if (_isFirstTime) {
+      for (final image in images) {
+        final inst = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
+        _firstImages.add(inst);
+        notifyListeners();
+      }
     }
     _isFirstTime = false;
     notifyListeners();
@@ -92,6 +114,39 @@ class UpdateImageProvider with ChangeNotifier{
     }
     notifyListeners();
   }
+
+  void reset() {
+    _thumbNaiCalled = false;
+    _isFirstTime = true;
+    _images.clear();
+    _firstImages.clear();
+    notifyListeners();
+  }
+
+
+
+
+
+List<String> mergeAndRearrangeAsList(
+     {required List<ImageToUpload> oldData,required List<ImageToUpload> recentUploads}) {
+  List<ImageToUpload> mergedList = [...oldData, ...recentUploads];
+
+  int thumbnailIndex = mergedList.indexWhere((item) => item.isThumbNail);
+
+  if (thumbnailIndex != -1) {
+    ImageToUpload thumbnailItem = mergedList.removeAt(thumbnailIndex);
+    mergedList.insert(0, thumbnailItem);
+  }
+
+  // Convert the merged list to a list of strings (URLs only)
+  return mergedList.map((item) => item.urlOfTheImage).toList();
+}
+
+
+
+
+
+
 }
 
 class ImageToUpload {
@@ -99,6 +154,4 @@ class ImageToUpload {
   bool isThumbNail;
 
   ImageToUpload({required this.urlOfTheImage, required this.isThumbNail});
-
-
 }

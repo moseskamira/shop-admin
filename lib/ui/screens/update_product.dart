@@ -62,7 +62,9 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     productQuantityEditingController = TextEditingController();
     productDescriptionEditingController = TextEditingController();
     setUpPreloadedData();
+
     Future.microtask(() {
+      Provider.of<UpdateImageProvider>(context, listen: false).reset();
       ProductModel? data = widget.singleProductDtaforUpdate;
       Provider.of<UpdateImageProvider>(context, listen: false)
           .addAll(data!.imageUrls!);
@@ -83,6 +85,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     productPriceEditingController.dispose();
     productQuantityEditingController.dispose();
     productDescriptionEditingController.dispose();
+    // Provider.of<UpdateImageProvider>(context, listen: false).reset();
   }
 
   setUpPreloadedData() {
@@ -109,10 +112,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     //loading data..
   }
 
-  List<String> imageList = [
-    "",
-  ];
-  List<String> imageChosenForASingleProduct = [];
   bool loadingOnUpload = false;
 
   @override
@@ -151,257 +150,17 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           /// image section
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  height: 200,
-                                  child: ListView.builder(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: imageList.length,
-                                      itemBuilder: (context, index) {
-                                        return index == 0
-                                            ? Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(horizontal: 5),
-                                                  child: Stack(
-                                                    children: [
-                                                      ImagePreview(
-                                                        imagePath:
-                                                            imageList[index],
-                                                        height: 190,
-                                                        width: 190,
-                                                      ),
-                                                      Positioned(
-                                                        top: 80,
-                                                        left: 75,
-                                                        child: InkWell(
-                                                          onTap: () async {
-                                                            final pickedImagePath =
-                                                                await MyAlertDialog
-                                                                    .imagePicker(
-                                                                        context);
-                                                            setState(() {
-                                                              pickedImagePath !=
-                                                                      null
-                                                                  ? imageList.add(
-                                                                      pickedImagePath)
-                                                                  : null;
-                                                              MySnackBar().showSnackBar(
-                                                                  'New picture of the product is added',
-                                                                  context,
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              2));
-                                                            });
-                                                          },
-                                                          child: const Icon(
-                                                            Icons.add_circle,
-                                                            size: 30,
-                                                            color:
-                                                                Colors.black45,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                            : Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5),
-                                                child: Stack(
-                                                  children: [
-                                                    ImagePreview(
-                                                      imagePath:
-                                                          imageList[index],
-                                                      height: 190,
-                                                      width: 190,
-                                                    ),
-                                                    Positioned(
-                                                      top: 15,
-                                                      right: 5,
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            imageList.remove(
-                                                                imageList[
-                                                                    index]);
-                                                            MySnackBar().showSnackBar(
-                                                                'Picture of the product is removed',
-                                                                context,
-                                                                duration:
-                                                                    const Duration(
-                                                                        seconds:
-                                                                            2));
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          height: 25,
-                                                          width: 25,
-                                                          decoration: BoxDecoration(
-                                                              color: Colors
-                                                                  .black45,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20)),
-                                                          child: const Center(
-                                                              child: Icon(
-                                                            Icons.close,
-                                                            color: Colors.white,
-                                                          )),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Positioned(
-                                                      top: 80,
-                                                      left: 75,
-                                                      child: InkWell(
-                                                        onTap: () async {
-                                                          final pickedImagePath =
-                                                              await MyAlertDialog
-                                                                  .imagePicker(
-                                                                      context);
-                                                          setState(() {
-                                                            if (pickedImagePath !=
-                                                                null) {
-                                                              imageList.remove(
-                                                                  imageList[
-                                                                      index]);
-                                                              imageList.add(
-                                                                  pickedImagePath);
-                                                              MySnackBar().showSnackBar(
-                                                                  'Picture of the product is replaced',
-                                                                  context,
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              2));
-                                                            }
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          height: 25,
-                                                          width: 25,
-                                                          decoration: BoxDecoration(
-                                                              color: Colors
-                                                                  .black45,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20)),
-                                                          child: const Center(
-                                                              child: Icon(
-                                                            Icons
-                                                                .image_search_rounded,
-                                                            color: Colors.white,
-                                                          )),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                      }),
-                                ),
-                                SizedBox(
-                                  height: 200,
-                                  child: ListView.builder(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: widget
-                                          .singleProductDtaforUpdate
-                                          ?.imageUrls
-                                          ?.length,
-                                      itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5),
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                height: 190,
-                                                width: 190,
-                                                decoration: BoxDecoration(
-                                                  // radius circular depend on your requirement
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                    Radius.circular(8),
-                                                  ),
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    // image url your network image url
-                                                    image: NetworkImage(
-                                                      widget.singleProductDtaforUpdate
-                                                                  ?.imageUrls?[
-                                                              index] ??
-                                                          "",
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 15,
-                                                right: 5,
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      widget
-                                                          .singleProductDtaforUpdate
-                                                          ?.imageUrls
-                                                          ?.remove(widget
-                                                              .singleProductDtaforUpdate
-                                                              ?.imageUrls?[index]);
-                                                      MySnackBar().showSnackBar(
-                                                          'Picture of the product is removed',
-                                                          context,
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 2));
-                                                    });
-                                                  },
-                                                  child: Container(
-                                                    height: 25,
-                                                    width: 25,
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.black45,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20)),
-                                                    child: const Center(
-                                                        child: Icon(
-                                                      Icons.close,
-                                                      color: Colors.white,
-                                                    )),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ],
-                            ),
-                          ),
-
                           Consumer<UpdateImageProvider>(
-                            builder: (context, imageList, child) {
+                            builder: (context, imageListUpdate, child) {
                               return GridView.builder(
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                 ),
                                 shrinkWrap: true,
-                                itemCount: imageList.images.isEmpty
+                                itemCount: imageListUpdate.images.isEmpty
                                     ? 1
-                                    : imageList.images.length +
+                                    : imageListUpdate.images.length +
                                         1, // +1 for the "Add Image" widget
                                 itemBuilder: (context, index) {
                                   if (index == 0) {
@@ -413,7 +172,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                         child: Stack(
                                           alignment: Alignment.center,
                                           children: [
-                                          const  placeHolder.ImagePreview(
+                                            const placeHolder.ImagePreview(
                                               imagePath:
                                                   '', // Empty or default image
                                               height: 50,
@@ -429,11 +188,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                                   if (pickedImagePath != null) {
                                                     if (pickedImagePath
                                                         is List<String>) {
-                                                      imageList.addAll(
+                                                      imageListUpdate.addAll(
                                                           pickedImagePath);
                                                     } else if (pickedImagePath
                                                         is String) {
-                                                      imageList
+                                                      imageListUpdate
                                                           .add(pickedImagePath);
                                                     }
                                                     MySnackBar().showSnackBar(
@@ -463,7 +222,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5),
                                       child: Container(
-                                        decoration: imageList
+                                        decoration: imageListUpdate
                                                 .images[imageIndex].isThumbNail
                                             ? BoxDecoration(
                                                 border: Border.all(
@@ -476,11 +235,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                           children: [
                                             InkWell(
                                               onTap: () {
-                                                imageList
+                                                imageListUpdate
                                                     .setThumbnail(imageIndex);
                                               },
                                               child: ImagePreview(
-                                                imagePath: imageList
+                                                imagePath: imageListUpdate
                                                     .images[imageIndex]
                                                     .urlOfTheImage,
                                                 height: 190,
@@ -492,7 +251,8 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                               right: 5,
                                               child: InkWell(
                                                 onTap: () {
-                                                  imageList.remove(imageIndex);
+                                                  imageListUpdate
+                                                      .remove(imageIndex);
                                                 },
                                                 child: Container(
                                                   height: 25,
@@ -519,7 +279,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                                         .imagePicker(context);
 
                                                 if (pickedImagePath != null) {
-                                                  imageList.replaceImage(
+                                                  imageListUpdate.replaceImage(
                                                       imageIndex,
                                                       pickedImagePath);
                                                 }
@@ -595,10 +355,28 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                               size: 24, color: Colors.white),
                           onPressed: () async {
                             final isValid = _formKey.currentState!.validate();
+                            final imageProvider =
+                                Provider.of<UpdateImageProvider>(context,
+                                    listen: false);
+
+                            print('allTheImages: ${imageProvider.images}');
+
+                            print(
+                                'isDeletedPreviousImage: ${imageProvider.isDeletedPreviousImage}');
+                            //Image to upload newly
+                            print(
+                                'imagesFromDevice: ${imageProvider.newImagesToUpload}');
+                            print(
+                                'backedUpImages: ${imageProvider.backedUpImages}');
+
+                            print(
+                                'imagesToDeleteFromStorage: ${imageProvider.imagesToDeleteFromStorage}');
+                            print(
+                                'initialImages: ${imageProvider.initialImages}');
 
                             if (isValid) {
                               setState(() {
-                                loadingOnUpload = true;
+                            loadingOnUpload = true;
                               });
                               _productModel.name =
                                   productNameController.text.toString();
@@ -620,27 +398,35 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                       productQuantityEditingController.text
                                           .toString()) ??
                                   0;
+                              _productModel.imageUrls = imageProvider.images
+                                  .map((item) => item.urlOfTheImage)
+                                  .toList();
 
-                              if (imageList.length <= 1) {
-                              } else {
-                                for (int i = 1; i < imageList.length; i++) {
-                                  imageChosenForASingleProduct
-                                      .add(imageList[i]);
+                              if (imageProvider.newImagesToUpload.isNotEmpty) {
+                                await uploadingPictureProvider
+                                    .uploadPictures(
+                                        lengthOfImages:
+                                            imageProvider.images.length,
+                                        picturesList:
+                                            imageProvider.newImagesToUpload,
+                                        productsName: _productModel.name)
+                                    .then((val) {
+                                  _productModel.imageUrls =
+                                      imageProvider.mergeAndRearrangeAsList(
+                                          oldData: imageProvider.backedUpImages,
+                                          recentUploads: val);
                                   setState(() {});
-                                }
-
-                                var listOfImageUrlLinks =
-                                    await uploadingPictureProvider
-                                        .uploadPictures(
-                                            picturesList:
-                                                imageChosenForASingleProduct,
-                                            productsName: _productModel.name);
-
-                                setState(() {
-                                  _productModel.imageUrls
-                                      ?.addAll(listOfImageUrlLinks);
                                 });
                               }
+
+                              if (imageProvider.isDeletedPreviousImage) {
+                                await uploadingPictureProvider.deletePictures(
+                                    picturePaths: imageProvider
+                                        .urlofThemimagesToDeleteFromStorage);
+                              }
+
+                             //Number of images: 73
+
                               _productModel.id =
                                   widget.singleProductDtaforUpdate!.id;
                               productsProvider

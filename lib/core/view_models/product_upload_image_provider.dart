@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shop_owner_app/core/view_models/update_image_provider.dart';
 
 class ImageListProductUpload with ChangeNotifier {
   bool _thumbNaiCalled = false;
-  //TODO removing this initial image 
-  final List<ImageToUpload> _images = [
-     
-  ];
+  //TODO removing this initial image
+  final List<ImageToUpload> _images = [];
 
 // TODO filtering selected image so that user is don't get to select the same image again
   List<ImageToUpload> get images => _images;
@@ -14,7 +13,9 @@ class ImageListProductUpload with ChangeNotifier {
   void add(String image) {
     final inst = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
     _images.add(inst);
-    setfirstImageThumnNail(image);
+    if (!_thumbNaiCalled && images.isNotEmpty) {
+      setfirstImageThumnNail(image);
+    }
     notifyListeners();
   }
 
@@ -31,14 +32,9 @@ class ImageListProductUpload with ChangeNotifier {
   }
 
   void setfirstImageThumnNail(String urlOfTheImage) {
-    if (!_thumbNaiCalled) {
-      if (_images.length > 1) {
-        _images[0] =
-            ImageToUpload(isThumbNail: true, urlOfTheImage: urlOfTheImage);
-        _thumbNaiCalled = true;
-        notifyListeners();
-      }
-    }
+    _images[0] = ImageToUpload(isThumbNail: true, urlOfTheImage: urlOfTheImage);
+    _thumbNaiCalled = true;
+    notifyListeners();
   }
 
   void setThumbnail(int index) {
@@ -69,7 +65,7 @@ class ImageListProductUpload with ChangeNotifier {
   void clear() {
     _images.clear();
     notifyListeners();
-    
+
     notifyListeners();
   }
 
@@ -84,11 +80,4 @@ class ImageListProductUpload with ChangeNotifier {
     }
     notifyListeners();
   }
-}
-
-class ImageToUpload {
-  final String urlOfTheImage;
-  bool isThumbNail;
-
-  ImageToUpload({required this.urlOfTheImage, required this.isThumbNail});
 }

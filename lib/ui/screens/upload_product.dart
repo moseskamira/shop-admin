@@ -62,20 +62,22 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
           duration: const Duration(seconds: 2));
     } else if (isValid) {
       setState(() => _isLoading = true);
+      List<String> images = [];
 
-      for (int i = 1; i < imageList.images.length; i++) {
-        imageChosenForASingleProduct.add(imageList.images[i].urlOfTheImage);
-        setState(() {});
-      }
-
-      var listOfImageUrlLinks = await uploadingPictureProvider.uploadPictures(
-          picturesList: imageChosenForASingleProduct,
-          productsName: _productModel.name);
+      await uploadingPictureProvider
+          .uploadPictures(
+              lengthOfImages: imageList.images.length,
+              picturesList: imageList.images,
+              productsName: _productModel.name)
+          .then((img) {
+        for (int i = 0; i < img.length; i++) {
+          images.add(img[i].urlOfTheImage);
+        }
+      });
 
       setState(() {
-        _productModel.imageUrls = listOfImageUrlLinks;
+        _productModel.imageUrls = images;
         _productModel.isPopular = _isPopular;
-        imageList.clear();
       });
 
       _formKey.currentState!.save();
@@ -86,16 +88,14 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
         MySnackBar().showSnackBar('Success', context);
         setState(() {
           _productModel.imageUrls?.clear();
-          imageChosenForASingleProduct.clear();
           _formKey.currentState?.reset();
+          imageList.clear();
         });
       }).catchError((error) {
         MyAlertDialog.error(context, error.message);
       }).whenComplete(() => setState(() => _isLoading = false));
     }
   }
-
-  List<String> imageChosenForASingleProduct = [];
 
   bool _isPopular = false;
 
@@ -144,7 +144,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                       child: Stack(
                                         alignment: Alignment.center,
                                         children: [
-                                        const  ImagePreview(
+                                          const ImagePreview(
                                             imagePath:
                                                 '', // Empty or default image
                                             height: 50,
@@ -187,9 +187,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                     ),
                                   );
                                 } else {
-                                  
-                                  final imageIndex = index -
-                                      1; 
+                                  final imageIndex = index - 1;
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5),
@@ -279,154 +277,6 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                             );
                           },
                         ),
-
-                        // Consumer<ImageListProductUpload>(
-                        //       builder: (context, imageList, child) {
-                        //         return GridView.builder(
-                        //     gridDelegate:
-                        //         const SliverGridDelegateWithFixedCrossAxisCount(
-                        //             crossAxisCount: 3),
-                        //     shrinkWrap: true,
-                        //     itemCount: imageList.images.length,
-                        //     itemBuilder: (context, index) {
-                        //       return index == 0
-                        //           ? Center(
-                        //               child: Padding(
-                        //                 padding: const EdgeInsets.symmetric(
-                        //                     horizontal: 5),
-                        //                 child: Stack(
-                        //                   alignment: Alignment.center,
-                        //                   children: [
-                        //                     ImagePreview(
-                        //                       imagePath: imageList
-                        //                           .images[index]
-                        //                           .urlOfTheImage,
-                        //                       height: 50,
-                        //                       width: 50,
-                        //                     ),
-                        //                     Center(
-                        //                       child: InkWell(
-                        //                         onTap: () async {
-                        //                           final pickedImagePath =
-                        //                               await MyAlertDialog
-                        //                                   .imagePicker(
-                        //                                       context);
-
-                        //                           if (pickedImagePath !=
-                        //                               null) {
-                        //                             if (pickedImagePath
-                        //                                 is List<String>) {
-                        //                               imageList.addAll(
-                        //                                   pickedImagePath);
-                        //                             } else if (pickedImagePath
-                        //                                 is String) {
-                        //                               imageList.add(
-                        //                                   pickedImagePath);
-                        //                             }
-                        //                             MySnackBar().showSnackBar(
-                        //                                 'New picture of the product is added',
-                        //                                 context,
-                        //                                 duration:
-                        //                                     const Duration(
-                        //                                         milliseconds:
-                        //                                             300));
-
-                        //                             //  _productModel.imageUrl = _pickedImagePath;
-                        //                           }
-                        //                         },
-                        //                         child: const Icon(
-                        //                           Icons.add_circle,
-                        //                           size: 30,
-                        //                           color: Colors.black45,
-                        //                         ),
-                        //                       ),
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //               ),
-                        //             )
-                        //           : Padding(
-                        //               padding: const EdgeInsets.symmetric(
-                        //                   horizontal: 5),
-                        //               child: Container(
-                        //                 decoration: imageList
-                        //                         .images[index].isThumbNail
-                        //                     ? BoxDecoration(
-                        //                         border: Border.all(
-                        //                             color: Colors.black,
-                        //                             width: 4))
-                        //                     : null,
-                        //                 child: Stack(
-                        //                   alignment: Alignment.center,
-                        //                   children: [
-                        //                     InkWell(
-                        //                       onTap: () {
-                        //                         imageList.setThumbnail(index);
-                        //                       },
-                        //                       child: ImagePreview(
-                        //                         imagePath: imageList
-                        //                             .images[index]
-                        //                             .urlOfTheImage,
-                        //                         height: 190,
-                        //                         width: 190,
-                        //                       ),
-                        //                     ),
-                        //                     Positioned(
-                        //                       top: 15,
-                        //                       right: 5,
-                        //                       child: InkWell(
-                        //                         onTap: () {
-                        //                           imageList.remove(index);
-                        //                         },
-                        //                         child: Container(
-                        //                           height: 25,
-                        //                           width: 25,
-                        //                           decoration: BoxDecoration(
-                        //                               color: Colors.black45,
-                        //                               borderRadius:
-                        //                                   BorderRadius
-                        //                                       .circular(20)),
-                        //                           child: const Center(
-                        //                               child: Icon(
-                        //                             Icons.close,
-                        //                             color: Colors.white,
-                        //                           )),
-                        //                         ),
-                        //                       ),
-                        //                     ),
-                        //                     InkWell(
-                        //                       onTap: () async {
-                        //                         final pickedImagePath =
-                        //                             await MyAlertDialog
-                        //                                 .imagePicker(context);
-
-                        //                         if (pickedImagePath != null) {
-                        //                           imageList.replaceImage(
-                        //                               index, pickedImagePath);
-                        //                         }
-                        //                       },
-                        //                       child: Container(
-                        //                         height: 25,
-                        //                         width: 25,
-                        //                         decoration: BoxDecoration(
-                        //                             color: Colors.black45,
-                        //                             borderRadius:
-                        //                                 BorderRadius.circular(
-                        //                                     20)),
-                        //                         child: const Center(
-                        //                             child: Icon(
-                        //                           Icons.image_search_rounded,
-                        //                           color: Colors.white,
-                        //                         )),
-                        //                       ),
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //               ),
-                        //             );
-                        //     });
-                        //       },
-                        //     ),
 
                         // Name Section
                         _sectionTitle('Name'),
