@@ -3,10 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/firebase_api.dart';
-import 'package:shop_owner_app/core/models/product_model.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/orders_provider.dart';
-import 'package:shop_owner_app/core/view_models/products_stream_provider.dart';
 import 'package:shop_owner_app/core/view_models/update_image_provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/theme_preferences.dart';
@@ -30,30 +28,7 @@ void main() async {
   final isDarkTheme = await ThemePreferences().getTheme();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  int imageCount = await countImages();
-  print("Number of images: $imageCount");
-
-  //Number of images: 61
   runApp(MyApp(isDarkTheme: isDarkTheme));
-}
-
-Future<int> countImages() async {
-  // Initialize Firebase if not already initialized
-  await Firebase.initializeApp();
-
-  // Create a reference to your 'productimages' folder
-  final storageRef = FirebaseStorage.instance.ref().child('productimages');
-
-  try {
-    // List all the items in the 'productimages' folder
-    final result = await storageRef.listAll();
-
-    // Return the count of images (files) in the folder
-    return result.items.length;
-  } catch (e) {
-    print("Error counting images: $e");
-    return 0;
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -72,34 +47,11 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => AuthProvider()),
             ChangeNotifierProvider(create: (_) => ImageListProductUpload()),
             ChangeNotifierProvider(create: (_) => UpdateImageProvider()),
+            ChangeNotifierProvider(create: (_) => UserDataProvider()),
+            ChangeNotifierProvider(create: (_) => OrdersProvider()),
+
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),
-
-            // StreamProvider for ordersWithUsers
-            StreamProvider<List<Map<String, dynamic>>>(
-              create: (_) => OrdersProvider().ordersWithUsers,
-              initialData: [
-                {
-                  'order': OrdersModel.loading(),
-                  'user': UserModel(),
-                },
-              ],
-              catchError: (_, __) => [],
-            ),
-
-            // StreamProvider for usersStream
-            StreamProvider<List<UserModel>>(
-              create: (_) => UserDataProvider().usersStream,
-              initialData: [UserModel.loading()],
-              catchError: (_, __) => [UserModel.loading()],
-            ),
-
-            // StreamProvider for products
-            StreamProvider<List<ProductModel>>(
-              create: (_) => ProductsStreamProvider().fetchProductsStream,
-              initialData: [ProductModel.loading()],
-              catchError: (_, __) => [ProductModel.loading()],
-            ),
           ],
           child: Consumer<ThemeChangeProvider>(
             builder: (_, themeChangeProvider, __) {

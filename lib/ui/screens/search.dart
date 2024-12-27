@@ -117,7 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
         (index) => ChangeNotifierProvider.value(
           value: _searchList[index],
           child: Center(
-            child: FeedsProduct(item: _searchList[index]),
+            child: FeedsProduct(product: _searchList[index]),
           ),
         ),
       ),

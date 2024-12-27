@@ -6,9 +6,11 @@ import 'package:shop_owner_app/ui/constants/app_consntants.dart';
 import 'package:shop_owner_app/ui/screens/update_product.dart';
 import 'package:shop_owner_app/ui/widgets/my_button.dart';
 
+import '../../core/models/product_model.dart';
+
 class FeedsDialog extends StatefulWidget {
-  var product;
-  FeedsDialog({super.key, this.product});
+  final ProductModel product;
+  const FeedsDialog({super.key, required this.product});
 
   @override
   State<FeedsDialog> createState() => _FeedsDialogState();
@@ -49,8 +51,6 @@ class _FeedsDialogState extends State<FeedsDialog> {
                           decoration: BoxDecoration(
                               color: Colors.white,
                               image: DecorationImage(
-
-                                  /// TODO edited imageList
                                   image: NetworkImage(
                                       widget.product.imageUrls![0]),
                                   fit: BoxFit.contain)),
@@ -96,7 +96,8 @@ class _FeedsDialogState extends State<FeedsDialog> {
                                           .removeProduct(
                                               id: widget.product.id,
                                               imageUrlsOnFirebaseStorage:
-                                                  widget.product.imageUrls)
+                                                  widget.product.imageUrls ??
+                                                      [])
                                           .then((value) {
                                         setState(() {
                                           loadingOnDeletion = false;

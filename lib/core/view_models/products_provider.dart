@@ -32,6 +32,15 @@ class ProductsProvider extends ChangeNotifier {
     return _api.streamDataCollection();
   }
 
+
+   Stream<List<ProductModel>> get fetchProductsStream {
+    return FirebaseFirestore.instance.collection('products').snapshots().map(
+          (snapshot) => snapshot.docs.map((doc) {
+            return ProductModel.fromFirestore(doc);
+          }).toList(),
+        );
+  }
+
   Future<ProductModel> getProductById(String id) async {
     var doc = await _api.getDocumentById(id);
     return ProductModel.fromJson(jsonDecode(doc.data().toString()));

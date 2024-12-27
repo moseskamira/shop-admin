@@ -634,8 +634,8 @@ class _ImagePreviewState extends State<ImagePreview> {
         color: Colors.grey[200],
         image: DecorationImage(
           image: _isNetworkImage(widget.imagePath)
-              ? CachedNetworkImageProvider(widget.imagePath!)
-              : FileImage(File(widget.imagePath!)),
+              ? CachedNetworkImageProvider(widget.imagePath)
+              : FileImage(File(widget.imagePath)),
           fit: BoxFit.cover,
         ),
       ),

@@ -13,6 +13,7 @@ import 'package:shop_owner_app/ui/screens/search.dart';
 import 'package:shop_owner_app/ui/screens/sign_up.dart';
 import 'package:shop_owner_app/ui/screens/upload_product.dart';
 import 'package:shop_owner_app/ui/screens/user_details.dart';
+import '../../core/models/product_model.dart';
 import '../../core/models/user_model.dart';
 
 class Routes {
@@ -37,8 +38,10 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const ForgotPasswordScreen());
       case RouteName.productDetailScreen:
+              Map<String, Object>? args = settings.arguments as Map<String, Object>;
+        ProductModel productModel = args['productModel'] as ProductModel;
         return MaterialPageRoute(
-            builder: (BuildContext context) => ProductDetailScreen());
+            builder: (BuildContext context) => ProductDetailScreen(detailsOfProduct: productModel,));
       case RouteName.feedsScreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const FeedsScreen());
@@ -54,7 +57,7 @@ class Routes {
             builder: (BuildContext context) => const UploadProductScreen());
       case RouteName.ordersListScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const PendingOrdersList());
+            builder: (BuildContext context) => const OrdersList());
 
       case RouteName.userDetailsScreen:
         Map<String, Object>? args = settings.arguments as Map<String, Object>;

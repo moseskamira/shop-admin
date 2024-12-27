@@ -4,8 +4,8 @@ import 'package:shop_owner_app/core/models/product_model.dart';
 import 'package:shop_owner_app/ui/widgets/products_images_list_on_details_view.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  ProductModel? detailsOfProduct;
-  ProductDetailScreen({super.key, this.detailsOfProduct});
+  final ProductModel? detailsOfProduct;
+   const ProductDetailScreen({super.key, required this.detailsOfProduct});
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -27,8 +27,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ProductImagesListOnDetailsView(
-                    product: widget.detailsOfProduct),
+                child: ProductImagesListWidget(
+                     productImgList: widget.detailsOfProduct?.imageUrls??[]),
               ),
               const SizedBox(
                 height: 20,

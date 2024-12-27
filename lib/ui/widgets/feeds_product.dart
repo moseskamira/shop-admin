@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
-import 'package:shop_owner_app/ui/screens/inner_screens/product_detail.dart';
 import 'package:shop_owner_app/ui/widgets/feeds_dialog.dart';
 import 'package:shop_owner_app/ui/widgets/my_button.dart';
 
- 
-
-
 class FeedsProduct extends StatelessWidget {
-  ProductModel item;
-  FeedsProduct({super.key, required this.item});
+  final ProductModel product;
+  const FeedsProduct({super.key, required this.product});
+
   @override
   Widget build(BuildContext context) {
-    print('checkingIMage: ${item.imageUrls![0]}');
     double productImageSize = MediaQuery.of(context).size.width * 0.45;
     return SizedBox(
       width: productImageSize,
@@ -23,10 +20,12 @@ class FeedsProduct extends StatelessWidget {
         color: Theme.of(context).cardColor,
         child: InkWell(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ProductDetailScreen(
-                      detailsOfProduct: item,
-                    )));
+
+            Navigator.of(context).pushNamed(RouteName.productDetailScreen, arguments: {
+              'productModel':product
+            });
+
+ 
           },
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -37,9 +36,7 @@ class FeedsProduct extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       image: DecorationImage(
-
-                          /// TODO edited imageList
-                          image: NetworkImage(item.imageUrls![0]),
+                          image: NetworkImage(product.imageUrls![0]),
                           onError: (object, stacktrace) => {},
                           fit: BoxFit.contain)),
                 ),
@@ -53,7 +50,7 @@ class FeedsProduct extends StatelessWidget {
                           borderRadius: BorderRadius.circular(17)),
                       child: Center(
                         child: Text(
-                          '${item.imageUrls?.length ?? 0}',
+                          '${product.imageUrls?.length ?? 0}',
                           style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
@@ -76,7 +73,7 @@ class FeedsProduct extends StatelessWidget {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) => FeedsDialog(
-                              product: item,
+                              product: product,
                             ),
                           );
                         },
@@ -92,13 +89,13 @@ class FeedsProduct extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.name,
+                    product.name,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    '\$ ${item.price.toString()}',
+                    '\$ ${product.price.toString()}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
