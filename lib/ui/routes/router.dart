@@ -16,6 +16,7 @@ import 'package:shop_owner_app/ui/screens/user_details.dart';
 import '../../core/models/product_model.dart';
 import '../../core/models/user_model.dart';
 import '../screens/update_product.dart';
+import '../screens/update_users_inofrmation.dart';
 
 class Routes {
   static Route<dynamic> generatedRoute(RouteSettings settings) {
@@ -90,6 +91,13 @@ class Routes {
                   longitude: lon,
                   name: name,
                 ));
+
+      case RouteName.updateUserInfo:
+        final UserModel userModel = settings.arguments as UserModel;
+
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                UpdateUsersInformation(userModel: userModel));
 
       default:
         return MaterialPageRoute(builder: (_) {

@@ -54,9 +54,8 @@ class _LogInScreenState extends State<LogInScreen> {
       setState(() => _isLoading = true);
 
       authProvider.signIn(email: _user.email, password: _password).then((_) {
-        if (Navigator.canPop(context)) Navigator.pop(context);
+       Navigator.of(context).pushNamedAndRemoveUntil(RouteName.bottomBarScreen,  (Route<dynamic> route) => false, );
       }).catchError((e) {
-        print(e.toString());
         if (e.toString().contains('wrong-password') ||
             e.toString().contains('user-not-found')) {
           setState(() => _wrongEmailorPassword = true);
@@ -75,7 +74,7 @@ class _LogInScreenState extends State<LogInScreen> {
     setState(() => _isLoading = true);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.googleSignIn().then((_) {
-      if (Navigator.canPop(context)) Navigator.pop(context);
+      Navigator.of(context).pushNamedAndRemoveUntil(RouteName.bottomBarScreen,  (Route<dynamic> route) => false, );
     }).whenComplete(() => setState(() => _isLoading = false));
   }
 

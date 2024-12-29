@@ -5,7 +5,6 @@ import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 import 'package:shop_owner_app/ui/widgets/reusable_text_field.dart';
-
 import '../../core/models/user_model.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -32,7 +31,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void initState() {
     super.initState();
     _userModel = UserModel();
-
     _isLoading = false;
     _isEmailValid = true;
     _fullNameNode = FocusNode();
@@ -67,7 +65,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         userModel: _userModel,
       )
           .then((_) {
-        if (Navigator.canPop(context)) Navigator.pop(context);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          RouteName.bottomBarScreen,
+          (Route<dynamic> route) => false,
+        );
       }).catchError((error) {
         if (error.toString().toLowerCase().contains('email')) {
           _isEmailValid = false;
@@ -83,6 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

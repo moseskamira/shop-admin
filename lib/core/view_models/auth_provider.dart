@@ -50,14 +50,6 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Future<void> signInAnonymously() async {
-  //   if (_auth.currentUser == null) {
-  //     await _auth.signInAnonymously().catchError((e) {
-  //       throw Exception(e.toString());
-  //     });
-  //   }
-  // }
-
   Future<void> signIn({required String email, required String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -81,7 +73,7 @@ class AuthProvider with ChangeNotifier {
 
           final userCredential = await _auth.signInWithCredential(credential);
           final user = userCredential.user;
- 
+
           if (user != null) {
             final userDoc = await FirebaseFirestore.instance
                 .collection('users')
@@ -90,14 +82,14 @@ class AuthProvider with ChangeNotifier {
 
             if (!userDoc.exists) {
               UserModel userModel = UserModel(
-                
                 id: user.uid,
                 email: user.email ?? '',
                 fullName: user.displayName ?? '',
                 imageUrl: user.photoURL ?? '',
                 phoneNumber: user.phoneNumber ?? '',
                 createdAt: Timestamp.now(),
-                joinedAt: DateFormat('EEEE, MMMM d, yyyy').format(DateTime.now()),
+                joinedAt:
+                    DateFormat('EEEE, MMMM d, yyyy').format(DateTime.now()),
               );
 
               // Upload user data only if the document doesn't exist
@@ -141,7 +133,7 @@ class AuthProvider with ChangeNotifier {
         }
       }
       await _auth.signOut().then((_) {
-       // signInAnonymously();
+        // signInAnonymously();
         notifyListeners();
       });
     } catch (e) {
@@ -151,4 +143,3 @@ class AuthProvider with ChangeNotifier {
     }
   }
 }
-

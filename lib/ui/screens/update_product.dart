@@ -11,7 +11,6 @@ import 'package:shop_owner_app/core/view_models/picture_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_snackbar.dart';
-import 'package:shop_owner_app/ui/widgets/authenticate.dart';
 import 'dart:io';
 import '../../core/view_models/update_image_provider.dart';
 import '../widgets/update_reusable_textField.dart';
@@ -119,171 +118,140 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     final productsProvider = Provider.of<ProductsProvider>(context);
     final uploadingPictureProvider = Provider.of<PicturesProvider>(context);
 
-    return Authenticate(
-      child: ModalProgressHUD(
-        inAsyncCall: loadingOnUpload,
-        progressIndicator: SpinKitFadingCircle(
-          itemBuilder: (BuildContext context, int index) {
-            return DecoratedBox(
-              decoration: BoxDecoration(
-                color: index.isEven ? Colors.white : Colors.green,
-              ),
-            );
-          },
-        ),
-        dismissible: false,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text("Update Product"),
-              centerTitle: true,
+    return ModalProgressHUD(
+      inAsyncCall: loadingOnUpload,
+      progressIndicator: SpinKitFadingCircle(
+        itemBuilder: (BuildContext context, int index) {
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              color: index.isEven ? Colors.white : Colors.green,
             ),
-            body: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// image section
-                          Consumer<UpdateImageProvider>(
-                            builder: (context, imageListUpdate, child) {
-                              return GridView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                ),
-                                shrinkWrap: true,
-                                itemCount: imageListUpdate.images.isEmpty
-                                    ? 1
-                                    : imageListUpdate.images.length +
-                                        1, // +1 for the "Add Image" widget
-                                itemBuilder: (context, index) {
-                                  if (index == 0) {
-                                    // "Add Image" widget
-                                    return Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5),
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            const placeHolder.ImagePreview(
-                                              imagePath:
-                                                  '', // Empty or default image
-                                              height: 50,
-                                              width: 50,
-                                            ),
-                                            Center(
-                                              child: InkWell(
-                                                onTap: () async {
-                                                  final pickedImagePath =
-                                                      await MyAlertDialog
-                                                          .imagePicker(context);
-
-                                                  if (pickedImagePath != null) {
-                                                    if (pickedImagePath
-                                                        is List<String>) {
-                                                      imageListUpdate.addAll(
-                                                          pickedImagePath);
-                                                    } else if (pickedImagePath
-                                                        is String) {
-                                                      imageListUpdate
-                                                          .add(pickedImagePath);
-                                                    }
-                                                    MySnackBar().showSnackBar(
-                                                      'New picture of the product is added',
-                                                      context,
-                                                      duration: const Duration(
-                                                          milliseconds: 300),
-                                                    );
-                                                  }
-                                                },
-                                                child: const Icon(
-                                                  Icons.add_circle,
-                                                  size: 30,
-                                                  color: Colors.black45,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    // Display actual images
-                                    final imageIndex = index -
-                                        1; // Adjust index due to "Add Image" widget
-                                    return Padding(
+          );
+        },
+      ),
+      dismissible: false,
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Update Product"),
+            centerTitle: true,
+          ),
+          body: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// image section
+                        Consumer<UpdateImageProvider>(
+                          builder: (context, imageListUpdate, child) {
+                            return GridView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                              ),
+                              shrinkWrap: true,
+                              itemCount: imageListUpdate.images.isEmpty
+                                  ? 1
+                                  : imageListUpdate.images.length +
+                                      1, // +1 for the "Add Image" widget
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  // "Add Image" widget
+                                  return Center(
+                                    child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5),
-                                      child: Container(
-                                        decoration: imageListUpdate
-                                                .images[imageIndex].isThumbNail
-                                            ? BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.black,
-                                                    width: 4),
-                                              )
-                                            : null,
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                imageListUpdate
-                                                    .setThumbnail(imageIndex);
-                                              },
-                                              child: ImagePreview(
-                                                imagePath: imageListUpdate
-                                                    .images[imageIndex]
-                                                    .urlOfTheImage,
-                                                height: 190,
-                                                width: 190,
-                                              ),
-                                            ),
-                                            Positioned(
-                                              top: 15,
-                                              right: 5,
-                                              child: InkWell(
-                                                onTap: () {
-                                                  imageListUpdate
-                                                      .remove(imageIndex);
-                                                },
-                                                child: Container(
-                                                  height: 25,
-                                                  width: 25,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.black45,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                  child: const Center(
-                                                    child: Icon(
-                                                      Icons.close,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            InkWell(
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          const placeHolder.ImagePreview(
+                                            imagePath:
+                                                '', // Empty or default image
+                                            height: 50,
+                                            width: 50,
+                                          ),
+                                          Center(
+                                            child: InkWell(
                                               onTap: () async {
                                                 final pickedImagePath =
                                                     await MyAlertDialog
                                                         .imagePicker(context);
 
                                                 if (pickedImagePath != null) {
-                                                  imageListUpdate.replaceImage(
-                                                      imageIndex,
-                                                      pickedImagePath);
+                                                  if (pickedImagePath
+                                                      is List<String>) {
+                                                    imageListUpdate.addAll(
+                                                        pickedImagePath);
+                                                  } else if (pickedImagePath
+                                                      is String) {
+                                                    imageListUpdate
+                                                        .add(pickedImagePath);
+                                                  }
+                                                  MySnackBar().showSnackBar(
+                                                    'New picture of the product is added',
+                                                    context,
+                                                    duration: const Duration(
+                                                        milliseconds: 300),
+                                                  );
                                                 }
+                                              },
+                                              child: const Icon(
+                                                Icons.add_circle,
+                                                size: 30,
+                                                color: Colors.black45,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  // Display actual images
+                                  final imageIndex = index -
+                                      1; // Adjust index due to "Add Image" widget
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5),
+                                    child: Container(
+                                      decoration: imageListUpdate
+                                              .images[imageIndex].isThumbNail
+                                          ? BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.black,
+                                                  width: 4),
+                                            )
+                                          : null,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              imageListUpdate
+                                                  .setThumbnail(imageIndex);
+                                            },
+                                            child: ImagePreview(
+                                              imagePath: imageListUpdate
+                                                  .images[imageIndex]
+                                                  .urlOfTheImage,
+                                              height: 190,
+                                              width: 190,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 15,
+                                            right: 5,
+                                            child: InkWell(
+                                              onTap: () {
+                                                imageListUpdate
+                                                    .remove(imageIndex);
                                               },
                                               child: Container(
                                                 height: 25,
@@ -295,150 +263,178 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                                 ),
                                                 child: const Center(
                                                   child: Icon(
-                                                    Icons.image_search_rounded,
+                                                    Icons.close,
                                                     color: Colors.white,
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          InkWell(
+                                            onTap: () async {
+                                              final pickedImagePath =
+                                                  await MyAlertDialog
+                                                      .imagePicker(context);
+
+                                              if (pickedImagePath != null) {
+                                                imageListUpdate.replaceImage(
+                                                    imageIndex,
+                                                    pickedImagePath);
+                                              }
+                                            },
+                                            child: Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black45,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.image_search_rounded,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  }
-                                },
-                              );
-                            },
-                          ),
-
-                          // all the fields
-                          fields(),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 1.5.h,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0)),
-                          label: const Text(
-                            'Cancel',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                letterSpacing: 3.0,
-                                color: Colors.white),
-                          ),
-                          icon: const Icon(Icons.close,
-                              size: 24, color: Colors.white),
-                        ),
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 30.0)),
-                          label: const Text(
-                            'Save',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                letterSpacing: 3.0,
-                                color: Colors.white),
-                          ),
-                          icon: const Icon(Icons.save_as,
-                              size: 24, color: Colors.white),
-                          onPressed: () async {
-                            final isValid = _formKey.currentState!.validate();
-                            FocusScope.of(context).unfocus();
-                            final imageProvider =
-                                Provider.of<UpdateImageProvider>(context,
-                                    listen: false);
-
-                            if (isValid) {
-                              setState(() {
-                                loadingOnUpload = true;
-                              });
-                              _productModel.name =
-                                  productNameController.text.toString();
-                              _productModel.brand =
-                                  productBrandController.text.toString();
-
-                              _productModel.description =
-                                  productDescriptionEditingController.text
-                                      .toString();
-                              _productModel.isPopular = _isPopular;
-                              _productModel.imageUrls =
-                                  widget.singleProductDtaforUpdate?.imageUrls;
-                              _productModel.price = double.tryParse(
-                                      productPriceEditingController.text
-                                          .toString()) ??
-                                  0;
-
-                              _productModel.quantity = int.tryParse(
-                                      productQuantityEditingController.text
-                                          .toString()) ??
-                                  0;
-                              _productModel.imageUrls = imageProvider.images
-                                  .map((item) => item.urlOfTheImage)
-                                  .toList();
-
-                              if (imageProvider.newImagesToUpload.isNotEmpty) {
-                                await uploadingPictureProvider
-                                    .uploadPictures(
-                                        lengthOfImages:
-                                            imageProvider.images.length,
-                                        picturesList:
-                                            imageProvider.newImagesToUpload,
-                                        productsName: _productModel.name)
-                                    .then((val) {
-                                  _productModel.imageUrls =
-                                      imageProvider.mergeAndRearrangeAsList(
-                                          oldData: imageProvider.backedUpImages,
-                                          recentUploads: val);
-                                  setState(() {});
-                                });
-                              }
-
-                              if (imageProvider.isDeletedPreviousImage) {
-                                await uploadingPictureProvider.deletePictures(
-                                    picturePaths: imageProvider
-                                        .urlofThemimagesToDeleteFromStorage);
-                              }
-
-                              //Number of images: 73
-
-                              _productModel.id =
-                                  widget.singleProductDtaforUpdate!.id;
-                              productsProvider
-                                  .updateProduct(_productModel,
-                                      widget.singleProductDtaforUpdate!.id)
-                                  .then((value) {
-                                setState(() {
-                                  loadingOnUpload = false;
-                                });
-
-                                MySnackBar().showSnackBar(
-                                    'Updated Successfully', context,
-                                    duration: const Duration(seconds: 2));
-                                Navigator.of(context).pop();
-                              });
-                            } else {}
+                                    ),
+                                  );
+                                }
+                              },
+                            );
                           },
                         ),
+
+                        // all the fields
+                        fields(),
                       ],
                     ),
-                    const SizedBox(
-                      height: 50,
-                    )
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    height: 1.5.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0)),
+                        label: const Text(
+                          'Cancel',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              letterSpacing: 3.0,
+                              color: Colors.white),
+                        ),
+                        icon: const Icon(Icons.close,
+                            size: 24, color: Colors.white),
+                      ),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 30.0)),
+                        label: const Text(
+                          'Save',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              letterSpacing: 3.0,
+                              color: Colors.white),
+                        ),
+                        icon: const Icon(Icons.save_as,
+                            size: 24, color: Colors.white),
+                        onPressed: () async {
+                          final isValid = _formKey.currentState!.validate();
+                          FocusScope.of(context).unfocus();
+                          final imageProvider =
+                              Provider.of<UpdateImageProvider>(context,
+                                  listen: false);
+
+                          if (isValid) {
+                            setState(() {
+                              loadingOnUpload = true;
+                            });
+                            _productModel.name =
+                                productNameController.text.toString();
+                            _productModel.brand =
+                                productBrandController.text.toString();
+
+                            _productModel.description =
+                                productDescriptionEditingController.text
+                                    .toString();
+                            _productModel.isPopular = _isPopular;
+                            _productModel.imageUrls =
+                                widget.singleProductDtaforUpdate?.imageUrls;
+                            _productModel.price = double.tryParse(
+                                    productPriceEditingController.text
+                                        .toString()) ??
+                                0;
+
+                            _productModel.quantity = int.tryParse(
+                                    productQuantityEditingController.text
+                                        .toString()) ??
+                                0;
+                            _productModel.imageUrls = imageProvider.images
+                                .map((item) => item.urlOfTheImage)
+                                .toList();
+
+                            if (imageProvider.newImagesToUpload.isNotEmpty) {
+                              await uploadingPictureProvider
+                                  .uploadPictures(
+                                      lengthOfImages:
+                                          imageProvider.images.length,
+                                      picturesList:
+                                          imageProvider.newImagesToUpload,
+                                      productsName: _productModel.name)
+                                  .then((val) {
+                                _productModel.imageUrls =
+                                    imageProvider.mergeAndRearrangeAsList(
+                                        oldData: imageProvider.backedUpImages,
+                                        recentUploads: val);
+                                setState(() {});
+                              });
+                            }
+
+                            if (imageProvider.isDeletedPreviousImage) {
+                              await uploadingPictureProvider.deletePictures(
+                                  picturePaths: imageProvider
+                                      .urlofThemimagesToDeleteFromStorage);
+                            }
+
+                            //Number of images: 73
+
+                            _productModel.id =
+                                widget.singleProductDtaforUpdate!.id;
+                            productsProvider
+                                .updateProduct(_productModel,
+                                    widget.singleProductDtaforUpdate!.id)
+                                .then((value) {
+                              setState(() {
+                                loadingOnUpload = false;
+                              });
+
+                              MySnackBar().showSnackBar(
+                                  'Updated Successfully', context,
+                                  duration: const Duration(seconds: 2));
+                              Navigator.of(context).pop();
+                            });
+                          } else {}
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  )
+                ],
               ),
             ),
           ),

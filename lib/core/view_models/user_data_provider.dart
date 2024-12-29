@@ -16,7 +16,7 @@ class UserDataProvider with ChangeNotifier {
       if (user != null) {
         final uid = user.uid;
         if (!user.isAnonymous) {
-          final snapshot = await _fireStore.collection('users').doc(uid).get();
+          final snapshot = await _fireStore.collection('adminUsers').doc(uid).get();
           _userData = UserModel.fromJson(snapshot.data()!);
         }
         notifyListeners();
@@ -40,7 +40,7 @@ class UserDataProvider with ChangeNotifier {
         userModel.joinedAt = formattedDate;
         userModel.createdAt = Timestamp.now();
         await _fireStore
-            .collection('users')
+            .collection('adminUsers')
             .doc(userModel.id)
             .set(userModel.toJson())
             .then((_) async {
@@ -60,7 +60,7 @@ class UserDataProvider with ChangeNotifier {
       final user = _auth.currentUser;
       userModel.id = user!.uid;
       await _fireStore
-          .collection('users')
+          .collection('adminUsers')
           .doc(userModel.id)
           .update(userModel.toJson());
       notifyListeners();

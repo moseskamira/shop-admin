@@ -20,20 +20,15 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     setState(() => _selectedIndex = index);
   }
 
-  
-
   @override
   void initState() {
     super.initState();
     _pages = [
       {'page': const HomeScreen(), 'title': 'Home'},
       {'page': const FeedsScreen(), 'title': 'Feeds'},
-
       {'page': const UploadProductScreen(), 'title': 'Search'},
-      {'page':   const MyUsersScreen(), 'title': 'MyUsers'},
-      {'page':   const OrdersList(), 'title': 'Orders'},
-
-      /// {'page': Authenticate(child: UserInfoScreen()), 'title': 'User'},
+      {'page': const MyUsersScreen(), 'title': 'MyUsers'},
+      {'page': const OrdersList(), 'title': 'Orders'},
     ];
     _selectedIndex = 0;
   }
@@ -80,7 +75,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
               tooltip: 'MyUsers',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add_shopping_cart),
+              icon: Icon(Icons.pending_actions),
               label: 'Orders',
               tooltip: 'Orders',
             ),
@@ -100,8 +95,3 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     );
   }
 }
-
-
-
-/// edit fixing 
-/// details edit/delete..

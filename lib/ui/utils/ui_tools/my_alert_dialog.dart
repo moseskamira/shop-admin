@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/view_models/auth_provider.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
 
 class MyAlertDialog {
   void removeItem(context, Function() func) {
@@ -62,9 +63,13 @@ class MyAlertDialog {
                 Consumer<AuthProvider>(
                   builder: (_, authProvider, __) => TextButton(
                       onPressed: () async {
-                        await authProvider.signOut(context);
-
-                        Navigator.pop(context);
+                        await authProvider.signOut(context).then((_) {
+                          Navigator.pop(context);
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            RouteName.logInScreen,
+                            (Route<dynamic> route) => true,
+                          );
+                        });
                       },
                       child: Text('Sign Out'.toUpperCase())),
                 ),
@@ -74,20 +79,18 @@ class MyAlertDialog {
 
   /// Display [AlertDialog] to pick image with [ImagePicker] and return the
   /// picked image path.
- 
+
   static Future<dynamic> imagePicker(BuildContext context) async {
     return showDialog(
         context: context, builder: (context) => const ImagePickerDialog());
   }
 
-
   static Future<dynamic> imagePickerForAuth(BuildContext context) async {
     return showDialog(
-        context: context, builder: (context) => const ImagePickerDialogForAuth());
+        context: context,
+        builder: (context) => const ImagePickerDialogForAuth());
   }
 
-
- 
   static Future<void> connectionError(BuildContext context) async {
     showDialog(
         context: context,
@@ -152,7 +155,7 @@ class _ImagePickerDialogState extends State<ImagePickerDialog> {
   Future<void> _pickImageGallery() async {
     List<String> imagePaths = [];
     final pickedImage = await ImagePicker().pickMultiImage();
- 
+
     if (pickedImage.isNotEmpty) {
       imagePaths = pickedImage.map((image) => image.path).toList();
     }

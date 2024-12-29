@@ -1,14 +1,13 @@
-// import 'package:chronoshop/screens/pending_screen.dart';
-// import 'package:chronoshop/screens/profile.dart';
-import 'package:shop_owner_app/ui/constants/assets_path.dart';
+import 'package:shop_owner_app/core/models/user_model.dart';
+import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
-// import 'package:get/get.dart';
-// import 'package:url_launcher/url_launcher.dart';
-//
-// import 'login_screen.dart';
+import 'package:shop_owner_app/ui/widgets/profile_picture.dart';
+import 'package:shop_owner_app/ui/widgets/user_full_name_user_email.dart';
+
+import '../routes/route_name.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -18,13 +17,18 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
-  String phone = '';
-  String name = '';
-  String address = '';
+  UserModel _userData = UserModel();
 
   @override
   void initState() {
     super.initState();
+    userData();
+  }
+
+  void userData() async {
+    _userData = await Provider.of<UserDataProvider>(context, listen: false)
+        .fetchUserData();
+    setState(() {});
   }
 
   @override
@@ -37,72 +41,113 @@ class _NavBarState extends State<NavBar> {
           // Remove padding
           padding: EdgeInsets.zero,
           children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(name,
-                  style: const TextStyle(color: Colors.black87, fontSize: 20)),
-              accountEmail:
-                  Text(phone, style: const TextStyle(color: Colors.black87)),
-              currentAccountPicture: CircleAvatar(
-                child: ClipOval(
-                  child: Image.asset(
-                    ImagePath.profilePlaceholder,
-                    fit: BoxFit.cover,
-                    width: 90,
-                    height: 90,
+            Stack(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * .30,
+                  decoration: const BoxDecoration(
+                    color: Color(0Xff0c0e2a),
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * .0430,
+                                width: MediaQuery.of(context).size.width * .087,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color(0xff24263f),
+                                    width: .5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.white,
+                                    size: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            const Text(
+                              'Profile',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(width: 20),
+                          ProfilePicture(
+                            imageUrl: _userData.imageUrl,
+                          ),
+                          const SizedBox(width: 15),
+                          UserFullNameUserName(
+                            fullName: _userData.fullName,
+                            userName: _userData.email,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: FloatingActionButton(
+                              mini: true,
+                              onPressed: () => Navigator.of(context).pushNamed(
+                                RouteName.updateUserInfo,
+                                arguments: _userData,
+                              ),
+                              child: const Icon(Icons.edit_note_outlined),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFFFFF),
-                image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(
-                      'https://media.istockphoto.com/photos/healthy-food-shopping-concept-picture-id1132266853?k=20&m=1132266853&s=612x612&w=0&h=0GPmf-3NHyy8N-3Gj8mMXNCPYDMsOS0lRWBpH8_MyeM=',
-                    )),
-              ),
+                
+              ],
             ),
             ListTile(
               leading: const Icon(Icons.pending_actions),
               title: const Text('Pending Order'),
-              onTap: (() {
-                // Get.to(PendingScreen());
-              }),
+              onTap: () {},
             ),
             ListTile(
               leading: const Icon(Icons.account_circle_outlined),
               title: const Text('My Profile'),
-              onTap: (() {
-                // Get.to(ProfileScreen());
-              }),
+              onTap: (() {}),
             ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.policy_sharp),
               title: const Text('Privacy Policies'),
-              onTap: (() async {
-                // var url = 'https://sites.google.com/view/solutionpro';
-                // if(await canLaunch(url)){
-                //   await launch(url);
-                // }
-                // else
-                // {
-                //   throw "Cannot load url";
-                // }
-              }),
+              onTap: (() async {}),
             ),
             ListTile(
               leading: const Icon(Icons.description),
               title: const Text('Terms Of Use'),
-              onTap: (() async {
-           //     var url = 'https://sites.google.com/view/solutionpro';
-                // if(await canLaunch(url)){
-                //   await launch(url);
-                // }
-                // else
-                // {
-                //   throw "Cannot load url";
-                // }
-              }),
+              onTap: (() async {}),
             ),
             Card(
               child: Column(
@@ -124,7 +169,7 @@ class _NavBarState extends State<NavBar> {
               leading: const Icon(Icons.exit_to_app),
               title: const Text('Sign Out'),
               onTap: (() {
-                MyAlertDialog.signOut(context); //    Get.offAll(LoginScreen());
+                MyAlertDialog.signOut(context);
               }),
             ),
           ],
