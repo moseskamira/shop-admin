@@ -6,30 +6,10 @@ import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/widgets/profile_picture.dart';
 import 'package:shop_owner_app/ui/widgets/user_full_name_user_email.dart';
-
 import '../routes/route_name.dart';
 
-class NavBar extends StatefulWidget {
+class NavBar extends StatelessWidget {
   const NavBar({super.key});
-
-  @override
-  State<NavBar> createState() => _NavBarState();
-}
-
-class _NavBarState extends State<NavBar> {
-  UserModel _userData = UserModel();
-
-  @override
-  void initState() {
-    super.initState();
-    userData();
-  }
-
-  void userData() async {
-    _userData = await Provider.of<UserDataProvider>(context, listen: false)
-        .fetchUserData();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,84 +28,117 @@ class _NavBarState extends State<NavBar> {
                   decoration: const BoxDecoration(
                     color: Color(0Xff0c0e2a),
                   ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * .0430,
-                                width: MediaQuery.of(context).size.width * .087,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: const Color(0xff24263f),
-                                    width: .5,
-                                  ),
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Colors.white,
-                                    size: 15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            const Text(
-                              'Profile',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Spacer(),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(width: 20),
-                          ProfilePicture(
-                            imageUrl: _userData.imageUrl,
+                  child: StreamBuilder<UserModel>(
+                    stream:
+                        Provider.of<UserDataProvider>(context, listen: false)
+                            .fetchUserData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text(
+                            'Error loading user data',
+                            style: TextStyle(color: Colors.white),
                           ),
-                          const SizedBox(width: 15),
-                          UserFullNameUserName(
-                            fullName: _userData.fullName,
-                            userName: _userData.email,
+                        );
+                      } else if (!snapshot.hasData || snapshot.data == null) {
+                        return const Center(
+                          child: Text(
+                            'No user data available',
+                            style: TextStyle(color: Colors.white),
                           ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        );
+                      }
+
+                      final userData = snapshot.data!;
+                      return Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: FloatingActionButton(
-                              mini: true,
-                              onPressed: () => Navigator.of(context).pushNamed(
-                                RouteName.updateUserInfo,
-                                arguments: _userData,
-                              ),
-                              child: const Icon(Icons.edit_note_outlined),
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        .0430,
+                                    width: MediaQuery.of(context).size.width *
+                                        .087,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: const Color(0xff24263f),
+                                        width: .5,
+                                      ),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.arrow_back_ios,
+                                        color: Colors.white,
+                                        size: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                const Text(
+                                  'Profile',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const Spacer(),
+                              ],
                             ),
                           ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(width: 20),
+                              ProfilePicture(imageUrl: userData.imageUrl),
+                              const SizedBox(width: 15),
+                              UserFullNameUserName(
+                                fullName: userData.fullName,
+                                userName: userData.email,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () => Navigator.of(context).pushNamed(
+                                    RouteName.updateUserInfo,
+                                    arguments: userData,
+                                  ),
+                                  child:   Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color:Theme.of(context).primaryColor,
+                                     borderRadius: BorderRadius.circular(10), 
+                                    ),
+                                    child: const  Icon(Icons.edit_note_outlined, color: Colors.white,),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 ),
-                
               ],
             ),
             ListTile(
@@ -154,12 +167,10 @@ class _NavBarState extends State<NavBar> {
                 children: [
                   SwitchListTile(
                     title: const Text('Dark Theme'),
-                    secondary: _customIcon(Icons.dark_mode),
+                    secondary: _customIcon(Icons.dark_mode, context),
                     value: themeChange.isDarkTheme,
                     onChanged: (bool value) {
-                      setState(() {
-                        themeChange.isDarkTheme = value;
-                      });
+                      themeChange.isDarkTheme = value;
                     },
                   ),
                 ],
@@ -178,7 +189,7 @@ class _NavBarState extends State<NavBar> {
     );
   }
 
-  Widget _customIcon(IconData icon) {
+  Widget _customIcon(IconData icon, BuildContext context) {
     return Icon(
       icon,
       color: Theme.of(context).iconTheme.color,

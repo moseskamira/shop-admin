@@ -7,26 +7,28 @@ class UserDataProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
-  UserModel _userData = UserModel();
-  UserModel get userData => _userData;
-
-  Future<UserModel> fetchUserData() async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        final uid = user.uid;
-        if (!user.isAnonymous) {
-          final snapshot = await _fireStore.collection('adminUsers').doc(uid).get();
-          _userData = UserModel.fromJson(snapshot.data()!);
+   
+  
+Stream<UserModel> fetchUserData() async* {
+  final user = _auth.currentUser;
+  if (user != null) {
+    final uid = user.uid;
+    if (!user.isAnonymous) {
+      yield* _fireStore.collection('adminUsers').doc(uid).snapshots().map((snapshot) {
+        if (snapshot.exists) {
+          return UserModel.fromJson(snapshot.data()!);
+        } else {
+          return UserModel();  
         }
-        notifyListeners();
-        return _userData;
-      }
-      return UserModel();
-    } catch (e) {
-      return UserModel();
+      });
+    } else {
+      yield UserModel(); 
     }
+  } else {
+    yield UserModel();  
   }
+}
+
 
   Future<void> uploadUserData(UserModel userModel) async {
     try {

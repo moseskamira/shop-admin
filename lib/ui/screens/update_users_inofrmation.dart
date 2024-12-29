@@ -64,16 +64,10 @@ class _UpdateUsersInformationState extends State<UpdateUsersInformation> {
           Provider.of<UserDataProvider>(context, listen: false);
       setState(() => _isLoading = true);
       if (initialImagePath != widget.userModel.imageUrl) {
-        //Checking if the user is logged In using google account then writing logic for changing that image also.
         if (initialImagePath.contains('firebasestorage')) {
-          //user have images that is not from google account
           final FirebaseStorage _storage = FirebaseStorage.instance;
-
-//refactoring this part fo the code with picture provider...
-
           final reference = _storage.refFromURL(initialImagePath);
           await reference.delete();
-          // Upload picture to Firebase Storage
           final ref = FirebaseStorage.instance
               .ref()
               .child('userimages')
@@ -86,7 +80,6 @@ class _UpdateUsersInformationState extends State<UpdateUsersInformation> {
             throw e.toString();
           });
         } else {
-          // Upload picture to Firebase Storage
           final ref = FirebaseStorage.instance
               .ref()
               .child('userimages')

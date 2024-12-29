@@ -6,6 +6,7 @@ import 'package:shop_owner_app/core/firebase_api.dart';
 import 'package:shop_owner_app/core/view_models/orders_provider.dart';
 import 'package:shop_owner_app/core/view_models/search_provider.dart';
 import 'package:shop_owner_app/core/view_models/update_image_provider.dart';
+import 'package:shop_owner_app/ui/screens/bottom_bar.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/theme_preferences.dart';
 import 'package:shop_owner_app/core/view_models/products_provider.dart';
@@ -47,7 +48,8 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => UpdateImageProvider()),
             ChangeNotifierProvider(create: (_) => UserDataProvider()),
             ChangeNotifierProvider(create: (_) => OrdersProvider()),
-            ChangeNotifierProvider(create: (_) => SearchProvider()),
+            ChangeNotifierProvider(create: (_) => SearchProvider()),  
+            //ChangeNotifierProvider(create: (_) => NavigationOnBottomBar()),
 
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),
