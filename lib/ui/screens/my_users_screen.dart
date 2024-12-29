@@ -6,6 +6,7 @@ import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
+import 'package:sizer/sizer.dart';
 
 class MyUsersScreen extends StatelessWidget {
   const MyUsersScreen({super.key});
@@ -63,8 +64,8 @@ class MyUsersScreen extends StatelessWidget {
                               child: user.imageUrl.isNotEmpty
                                   ? CachedNetworkImage(
                                       imageUrl: user.imageUrl,
-                                      height: 40,
-                                      width: 40,
+                                      height: 50,
+                                      width: 50,
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) =>
                                           Shimmer.fromColors(
@@ -80,8 +81,8 @@ class MyUsersScreen extends StatelessWidget {
                                           const Icon(Icons.error),
                                     )
                                   : Container(
-                                      height: 40,
-                                      width: 40,
+                                      height: 10.h,
+                                      width: 30.w,
                                       color: Colors.grey[300],
                                       child: const Icon(
                                         Icons.person,
@@ -95,8 +96,10 @@ class MyUsersScreen extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(user.fullName),
-                              Text(user.email),
+                              Text('Name: ${user.fullName}'),
+                              Text('Email: ${user.email}'),
+                              Text('Mobile: ${user.phoneNumber}'),
+                              Text('Addr: ${user.address}'),
                             ],
                           ),
                         ],
