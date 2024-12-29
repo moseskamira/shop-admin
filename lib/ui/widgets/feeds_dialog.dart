@@ -3,9 +3,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/view_models/products_provider.dart';
 import 'package:shop_owner_app/ui/constants/app_consntants.dart';
-import 'package:shop_owner_app/ui/screens/update_product.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/widgets/my_button.dart';
-
 import '../../core/models/product_model.dart';
 
 class FeedsDialog extends StatefulWidget {
@@ -93,7 +92,7 @@ class _FeedsDialogState extends State<FeedsDialog> {
                                         loadingOnDeletion = true;
                                       });
                                       await productsProvider
-                                          .removeProduct(
+                                          .deleteProduct(
                                               id: widget.product.id,
                                               imageUrlsOnFirebaseStorage:
                                                   widget.product.imageUrls ??
@@ -146,14 +145,14 @@ class _FeedsDialogState extends State<FeedsDialog> {
                                       horizontal: 10),
                                   child: InkWell(
                                     onTap: () {
-                                      Navigator.pop(context);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  UpdateProductScreen(
-                                                    singleProductDtaforUpdate:
-                                                        widget.product,
-                                                  )));
+                                      
+                                       Navigator.of(context).pushNamed(
+                                  RouteName.updateProductScreen,
+                                  arguments: {
+                                    'productModel':  widget.product,
+                                  }).then((_){
+                                    Navigator.pop(context);
+                                  });
                                     },
                                     child: const Row(
                                       mainAxisAlignment:

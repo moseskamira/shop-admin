@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
@@ -20,12 +22,8 @@ class FeedsProduct extends StatelessWidget {
         color: Theme.of(context).cardColor,
         child: InkWell(
           onTap: () {
-
-            Navigator.of(context).pushNamed(RouteName.productDetailScreen, arguments: {
-              'productModel':product
-            });
-
- 
+            Navigator.of(context).pushNamed(RouteName.productDetailScreen,
+                arguments: {'productModel': product});
           },
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -33,12 +31,22 @@ class FeedsProduct extends StatelessWidget {
               children: [
                 Container(
                   height: productImageSize,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      image: DecorationImage(
-                          image: NetworkImage(product.imageUrls![0]),
-                          onError: (object, stacktrace) => {},
-                          fit: BoxFit.contain)),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: product.imageUrls![0],
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        color: Colors.white,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 15.w, top: 9.h),

@@ -153,6 +153,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                           Consumer<UpdateImageProvider>(
                             builder: (context, imageListUpdate, child) {
                               return GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
@@ -355,28 +356,14 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                               size: 24, color: Colors.white),
                           onPressed: () async {
                             final isValid = _formKey.currentState!.validate();
+                            FocusScope.of(context).unfocus();
                             final imageProvider =
                                 Provider.of<UpdateImageProvider>(context,
                                     listen: false);
 
-                            print('allTheImages: ${imageProvider.images}');
-
-                            print(
-                                'isDeletedPreviousImage: ${imageProvider.isDeletedPreviousImage}');
-                            //Image to upload newly
-                            print(
-                                'imagesFromDevice: ${imageProvider.newImagesToUpload}');
-                            print(
-                                'backedUpImages: ${imageProvider.backedUpImages}');
-
-                            print(
-                                'imagesToDeleteFromStorage: ${imageProvider.imagesToDeleteFromStorage}');
-                            print(
-                                'initialImages: ${imageProvider.initialImages}');
-
                             if (isValid) {
                               setState(() {
-                            loadingOnUpload = true;
+                                loadingOnUpload = true;
                               });
                               _productModel.name =
                                   productNameController.text.toString();
@@ -425,7 +412,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                         .urlofThemimagesToDeleteFromStorage);
                               }
 
-                             //Number of images: 73
+                              //Number of images: 73
 
                               _productModel.id =
                                   widget.singleProductDtaforUpdate!.id;

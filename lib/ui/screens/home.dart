@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return IconButton(
               icon: const Icon(
                 Icons.remove_red_eye_sharp,
-                color: Colors.white, // Change Custom Drawer Icon Color
+                color: Colors.white,
               ),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -48,13 +48,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: InkWell(
               onTap: () {
                 Navigator.of(context).pushNamed(RouteName.searchScreen);
               },
-              child: const Icon(
-                Icons.search,
+              child: const SizedBox(
+                height: 20,
+                width: 30,
+                child: Icon(
+                  Icons.search,
+                ),
               ),
             ),
           )
@@ -72,16 +76,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 30,
               ),
               GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisExtent: 120,
-                  ),
-                  itemCount: categories.length,
-                  itemBuilder: (ctx, index) {
-                    return Category(category: categories[index]);
-                  })
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisExtent: 120,
+                ),
+                itemCount: categories.length + 1,
+                itemBuilder: (ctx, index) {
+                  if (index == 0) {
+                    return GestureDetector(
+                      onTap: () {
+                        // Handle add category action
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Add Category"),
+                            content:
+                                const Text("Feature to add a new category."),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Close"),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: addNewCategory(context),
+                    );
+                  }
+                  return Category(category: categories[index - 1]);
+                },
+              ),
             ],
           ),
         ),
@@ -94,4 +123,37 @@ extension CategoryList on List<CategoryModel> {
   void sortByTitle() {
     sort((a, b) => a.title.compareTo(b.title));
   }
+}
+
+Widget addNewCategory(BuildContext context) {
+  double imageSize = 70;
+  return SizedBox(
+    width: 100,
+    height: 100,
+    child: Column(
+      children: [
+        Container(
+          height: imageSize,
+          width: imageSize,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+            color: Colors.deepPurple[50],
+          ),
+          child: Center(
+            child: Icon(
+              Icons.add,
+              size: 35,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'New Category',
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w500, fontSize: 15),
+        ),
+      ],
+    ),
+  );
 }

@@ -5,55 +5,69 @@ import 'package:shop_owner_app/core/models/user_model.dart';
 
 class UserDataProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   UserModel _userData = UserModel();
   UserModel get userData => _userData;
 
-  set userData(UserModel value) {
-    _userData = value;
-    notifyListeners();
-  }
-
   Future<UserModel> fetchUserData() async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      final uid = user.uid;
-      if (!user.isAnonymous) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(uid)
-            .get()
-            .then(
-                (snapshot) => _userData = UserModel.fromJson(snapshot.data()!))
-            .catchError((e) {
-          print(e.toString());
-        });
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        final uid = user.uid;
+        if (!user.isAnonymous) {
+          final snapshot = await _fireStore.collection('users').doc(uid).get();
+          _userData = UserModel.fromJson(snapshot.data()!);
+        }
+        notifyListeners();
+        return _userData;
       }
-      notifyListeners();
-      return _userData;
+      return UserModel();
+    } catch (e) {
+      return UserModel();
     }
-    return UserModel();
   }
 
   Future<void> uploadUserData(UserModel userModel) async {
-    // set user id
-    final user = _auth.currentUser;
-    userModel.id = user!.uid;
-
-    //set date
-    var date = DateTime.now().toString();
-    var dateparse = DateTime.parse(date);
-    var formattedDate = "${dateparse.day}-${dateparse.month}-${dateparse.year}";
-    userModel.joinedAt = formattedDate;
-    userModel.createdAt = Timestamp.now();
-
-    // Upload user data to firebase firestore
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userModel.id)
-        .set(userModel.toJson());
-    notifyListeners();
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        userModel.id = user.uid;
+        var date = DateTime.now().toString();
+        var dateparse = DateTime.parse(date);
+        var formattedDate =
+            '${dateparse.day}-${dateparse.month}-${dateparse.year}';
+        userModel.joinedAt = formattedDate;
+        userModel.createdAt = Timestamp.now();
+        await _fireStore
+            .collection('users')
+            .doc(userModel.id)
+            .set(userModel.toJson())
+            .then((_) async {
+          await fetchUserData();
+        });
+      } else {
+        throw Exception('No authenticated user found');
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 
+  Future<void> updateUserData(UserModel userModel) async {
+    ///TODO fixing update not changing existing user data of shipping address and so on
+    try {
+      final user = _auth.currentUser;
+      userModel.id = user!.uid;
+      await _fireStore
+          .collection('users')
+          .doc(userModel.id)
+          .update(userModel.toJson());
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Stream<List<UserModel>> get usersStream {
     return FirebaseFirestore.instance.collection('users').snapshots().map(

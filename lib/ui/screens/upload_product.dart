@@ -52,6 +52,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
   }
 
   void _submitForm() async {
+    FocusScope.of(context).unfocus();
     final uploadingPictureProvider =
         Provider.of<PicturesProvider>(context, listen: false);
     final isValid = _formKey.currentState!.validate();
@@ -125,6 +126,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                         Consumer<ImageListProductUpload>(
                           builder: (context, imageList, child) {
                             return GridView.builder(
+                              physics:const NeverScrollableScrollPhysics(),
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3,

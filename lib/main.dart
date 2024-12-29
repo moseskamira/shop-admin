@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/firebase_api.dart';
-import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/orders_provider.dart';
+import 'package:shop_owner_app/core/view_models/search_provider.dart';
 import 'package:shop_owner_app/core/view_models/update_image_provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/theme_preferences.dart';
@@ -13,13 +13,11 @@ import 'package:shop_owner_app/core/view_models/picture_provider.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
 import 'package:shop_owner_app/core/view_models/auth_provider.dart';
-import 'core/models/orders_model.dart';
 import 'core/view_models/product_upload_image_provider.dart';
 import 'ui/routes/route_name.dart';
 import 'ui/constants/theme_data.dart';
 import 'ui/routes/router.dart';
 import 'dart:developer' as devtools show log;
-import 'package:firebase_storage/firebase_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +47,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => UpdateImageProvider()),
             ChangeNotifierProvider(create: (_) => UserDataProvider()),
             ChangeNotifierProvider(create: (_) => OrdersProvider()),
+            ChangeNotifierProvider(create: (_) => SearchProvider()),
 
             ChangeNotifierProvider(
                 create: (_) => ThemeChangeProvider(isDarkTheme)),

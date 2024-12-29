@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/ui/constants/assets_path.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/auth_provider.dart';
+import 'package:shop_owner_app/ui/constants/assets_path.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
+import 'package:shop_owner_app/ui/screens/sign_up.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
-import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
-
-
-
+import 'package:shop_owner_app/ui/widgets/reusable_text_field.dart';
+ 
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
 
   @override
-  State<LogInScreen>  createState() => _LogInScreenState();
+  State<LogInScreen> createState() => _LogInScreenState();
 }
 
 class _LogInScreenState extends State<LogInScreen> {
   late FocusNode _passwordNode;
+  late FocusNode _emailFocusNode;
+  late TextEditingController email;
   final _formKey = GlobalKey<FormState>();
-  bool _passwordIsVisibile = false;
+
   UserModel _user = UserModel();
   late String _password;
   bool _wrongEmailorPassword = false;
@@ -30,12 +31,16 @@ class _LogInScreenState extends State<LogInScreen> {
   void initState() {
     super.initState();
     _passwordNode = FocusNode();
+    _emailFocusNode = FocusNode();
+    email = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
     _passwordNode.dispose();
+    _emailFocusNode.dispose();
+    email.dispose();
   }
 
   void _submitForm() async {
@@ -80,7 +85,7 @@ class _LogInScreenState extends State<LogInScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         body: Container(
-          margin:const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -106,9 +111,9 @@ class _LogInScreenState extends State<LogInScreen> {
                   padding: const EdgeInsets.only(top: 14),
                   child: _wrongEmailorPassword
                       ? const Text(
-                    'The email or password you entered did not match our records. Please double check and try again',
-                    style: TextStyle(color: Colors.redAccent),
-                  )
+                          'The email or password you entered did not match our records. Please double check and try again',
+                          style: TextStyle(color: Colors.redAccent),
+                        )
                       : null,
                 ),
 
@@ -117,70 +122,31 @@ class _LogInScreenState extends State<LogInScreen> {
                   child: Column(
                     children: [
                       // Email TextFormField
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        child: TextFormField(
-                          key:const ValueKey('Email'),
-                          validator: (value) =>
-                          value!.isEmpty || !value.contains('@')
-                              ? 'Please enter a valid email address'
-                              : null,
-                          maxLines: 1,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            contentPadding: EdgeInsets.all(12),
-                            border: const OutlineInputBorder(),
-                            enabledBorder: MyBorder.outlineInputBorder(context),
-                            filled: true,
-                            fillColor: Theme.of(context).cardColor,
-                          ),
-                          onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(_passwordNode),
-                          onSaved: (value) => _user.email = value!,
-                        ),
+                      ReusableTextField(
+                        controller: email,
+                        focusNode: _emailFocusNode,
+                        valueKey: 'Email',
+                        validator: (value) =>
+                            value == null || !EmailValidator.validateEmail(value) ? 'Please enter a valid email address' : null,
+                        maxLines: 1,
+                        labelText: 'Email',
+                        hintText: 'Enter your email',
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
+                        onEditingComplete: () =>
+                            FocusScope.of(context).requestFocus(_passwordNode),
+                        onSaved: (value) => _user.email = value!,
                       ),
 
                       // Password TextFormField
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 14.0),
-                        child: TextFormField(
-                          key:const ValueKey('Password'),
-                          validator: (value) => value!.isEmpty
-                              ? 'Please enter a valid password'
-                              : null,
-                          maxLines: 1,
-                          focusNode: _passwordNode,
-                          keyboardType: TextInputType.visiblePassword,
-                          onEditingComplete: _submitForm,
-                          obscureText: !_passwordIsVisibile,
-                          decoration: InputDecoration(
-                            contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 12),
-                            labelText: 'Password',
-                            border: const OutlineInputBorder(),
-                            enabledBorder: MyBorder.outlineInputBorder(context),
-                            filled: true,
-                            fillColor: Theme.of(context).cardColor,
-                            suffix: SizedBox(
-                              height: 32,
-                              width: 28,
-                              child: IconButton(
-                                onPressed: () => setState(() =>
-                                _passwordIsVisibile = !_passwordIsVisibile,),
-                                splashRadius: 18,
-                                iconSize: 18,
-                                icon: Icon(
-                                  _passwordIsVisibile
-                                      ? Icons.visibility_off_outlined
-                                      : Icons.visibility_outlined,
-                                ),
-                              ),
-                            ),
-                          ),
-                          onSaved: (value) => _password = value!,
-                        ),
+                      PasswordTextField(
+                        focusNode: _passwordNode,
+                        label: 'Password',
+                        validator: (value) => value != null && value.length < 6
+                            ? 'Password must be at least 6 characters'
+                            : null,
+                        onSaved: (value) => _password = value!,
+                        onEditingComplete: _submitForm,
                       ),
 
                       // Forgot Password Button
@@ -189,16 +155,20 @@ class _LogInScreenState extends State<LogInScreen> {
                         child: TextButton(
                             onPressed: () {
                               Navigator.pushNamed(
-                                context, RouteName.forgotPasswordScreen,);
+                                context,
+                                RouteName.forgotPasswordScreen,
+                              );
                             },
                             child: Text(
                               'Forgot password ?',
                               style: TextStyle(
-                                color: Theme.of(context).primaryColor,),
+                                color: Theme.of(context).primaryColor,
+                              ),
                             )),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,),
+                        height: MediaQuery.of(context).size.height * 0.02,
+                      ),
 
                       // Log in button
                       SizedBox(
@@ -210,9 +180,9 @@ class _LogInScreenState extends State<LogInScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               _isLoading
-                                  ?   CircularProgressIndicator(
-                                color: Theme.of(context).primaryColor,
-                              )
+                                  ? CircularProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
+                                    )
                                   : const Text('Log In'),
                             ],
                           ),
@@ -228,8 +198,10 @@ class _LogInScreenState extends State<LogInScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Expanded(child: Divider(thickness: 1)),
-                      Text('  or   ',
-                        style: Theme.of(context).textTheme.titleSmall,),
+                      Text(
+                        '  or   ',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
                       const Expanded(child: Divider(thickness: 1)),
                     ],
                   ),
@@ -259,7 +231,8 @@ class _LogInScreenState extends State<LogInScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, RouteName.signUpScreen);
+                        Navigator.popAndPushNamed(
+                            context, RouteName.signUpScreen);
                       },
                       child: const Text('Sign up'),
                     ),

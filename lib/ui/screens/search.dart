@@ -1,13 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/view_models/products_provider.dart';
-import 'package:shop_owner_app/ui/constants/assets_path.dart';
-import 'package:shop_owner_app/core/models/product_model.dart';
-import 'package:shop_owner_app/ui/widgets/feeds_product.dart';
+import 'package:shop_owner_app/core/view_models/search_provider.dart';
+import '../../core/models/product_model.dart';
+import '../constants/assets_path.dart';
+import '../widgets/feeds_product.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -40,68 +37,41 @@ class _SearchScreenState extends State<SearchScreen> {
     _focusNode.dispose();
   }
 
-  List<ProductModel>? allProducts = [];
-
   @override
   Widget build(BuildContext context) {
-    allProducts?.clear();
-    final productsProvider = Provider.of<ProductsProvider>(context);
+    final searchProvider = Provider.of<SearchProvider>(context);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: StreamBuilder(
-        stream: productsProvider.fetchProductsAsStream(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData) {
-            allProducts?.clear();
-            snapshot.data?.docs.forEach((element) {
-              Map<String, dynamic> map = element.data() as Map<String, dynamic>;
-              allProducts?.add(ProductModel.fromJson(map));
-            });
-            return Scaffold(
-              appBar: AppBar(
-                title: _searchBar(allProducts!),
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                elevation: 0,
-                centerTitle: true,
-              ),
-              body: Center(
-                child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    child: _searchController.text.isEmpty || _searchList.isEmpty
-                        ? SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            child: _searchController.text.isNotEmpty
-                                ? Text(
-                                    'No results found :(',
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 24,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .tertiary),
-                                  )
-                                : SvgPicture.asset(
-                                    ImagePath.search,
-                                  ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: _searchBar(searchProvider),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 0,
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: _searchController.text.isEmpty || _searchList.isEmpty
+                ? SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: _searchController.text.isNotEmpty
+                        ? Text(
+                            'No results found :(',
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
                           )
-                        : _showSearchResults()),
-              ),
-            );
-          } else {
-            return Center(
-              child: SpinKitFadingCircle(
-                itemBuilder: (BuildContext context, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: index.isEven ? Colors.white : Colors.green,
-                    ),
-                  );
-                },
-              ),
-            );
-          }
-        },
+                        : SvgPicture.asset(
+                            ImagePath.search,
+                          ),
+                  )
+                : _showSearchResults(),
+          ),
+        ),
       ),
     );
   }
@@ -117,14 +87,16 @@ class _SearchScreenState extends State<SearchScreen> {
         (index) => ChangeNotifierProvider.value(
           value: _searchList[index],
           child: Center(
-            child: FeedsProduct(product: _searchList[index]),
+            child: FeedsProduct(
+              product: _searchList[index],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _searchBar(List<ProductModel> allProducts) {
+  Widget _searchBar(SearchProvider searchProvider) {
     return Material(
       elevation: 1,
       child: TextField(
@@ -153,11 +125,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           _focusNode.unfocus();
                         },
                   iconSize: 14,
-                   color:  Theme.of(context).colorScheme.tertiary,
-                  icon: const Icon(
-                    Icons.clear,
-                    color: Colors.black,
-                  ),
+                  color: Theme.of(context).colorScheme.tertiary,
+                  icon: const Icon(Icons.clear),
                   padding: EdgeInsets.zero,
                   splashRadius: 14,
                 ),
@@ -165,14 +134,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         onChanged: (value) {
           _searchController.text.toLowerCase();
-          _searchList = allProducts
-              .where((element) =>
-                  element.name.toLowerCase().contains(value.toLowerCase()) ||
-                  element.category
-                      .toLowerCase()
-                      .contains(value.toLowerCase()) ||
-                  element.brand.toLowerCase().contains(value.toLowerCase()))
-              .toList();
+          _searchList = searchProvider.searchQuery(value);
         },
       ),
     );

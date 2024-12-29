@@ -15,6 +15,7 @@ import 'package:shop_owner_app/ui/screens/upload_product.dart';
 import 'package:shop_owner_app/ui/screens/user_details.dart';
 import '../../core/models/product_model.dart';
 import '../../core/models/user_model.dart';
+import '../screens/update_product.dart';
 
 class Routes {
   static Route<dynamic> generatedRoute(RouteSettings settings) {
@@ -38,10 +39,21 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const ForgotPasswordScreen());
       case RouteName.productDetailScreen:
-              Map<String, Object>? args = settings.arguments as Map<String, Object>;
+        Map<String, Object>? args = settings.arguments as Map<String, Object>;
         ProductModel productModel = args['productModel'] as ProductModel;
         return MaterialPageRoute(
-            builder: (BuildContext context) => ProductDetailScreen(detailsOfProduct: productModel,));
+            builder: (BuildContext context) => ProductDetailScreen(
+                  detailsOfProduct: productModel,
+                ));
+
+      case RouteName.updateProductScreen:
+        Map<String, Object>? args = settings.arguments as Map<String, Object>;
+        ProductModel productModel = args['productModel'] as ProductModel;
+        return MaterialPageRoute(
+            builder: (BuildContext context) => UpdateProductScreen(
+                  singleProductDtaforUpdate: productModel,
+                ));
+
       case RouteName.feedsScreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const FeedsScreen());
@@ -71,12 +83,12 @@ class Routes {
         Map<String, dynamic>? args = settings.arguments as Map<String, dynamic>;
         double lat = args['lat'] as double;
         double lon = args['lon'] as double;
-        String name = args['name'] as String;//'name'
+        String name = args['name'] as String; //'name'
         return MaterialPageRoute(
             builder: (BuildContext context) => UsersLocations(
                   latitude: lat,
                   longitude: lon,
-                  name:name,
+                  name: name,
                 ));
 
       default:

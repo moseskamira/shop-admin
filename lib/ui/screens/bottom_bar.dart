@@ -30,8 +30,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
       {'page': const FeedsScreen(), 'title': 'Feeds'},
 
       {'page': const UploadProductScreen(), 'title': 'Search'},
-      {'page':   MyUsersScreen(), 'title': 'MyUsers'},
-      {'page':   OrdersList(), 'title': 'Orders'},
+      {'page':   const MyUsersScreen(), 'title': 'MyUsers'},
+      {'page':   const OrdersList(), 'title': 'Orders'},
 
       /// {'page': Authenticate(child: UserInfoScreen()), 'title': 'User'},
     ];
@@ -100,3 +100,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     );
   }
 }
+
+
+
+/// edit fixing 
+/// details edit/delete..

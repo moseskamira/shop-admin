@@ -5,9 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
-
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -50,13 +50,13 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> signInAnonymously() async {
-    if (_auth.currentUser == null) {
-      await _auth.signInAnonymously().catchError((e) {
-        throw Exception(e.toString());
-      });
-    }
-  }
+  // Future<void> signInAnonymously() async {
+  //   if (_auth.currentUser == null) {
+  //     await _auth.signInAnonymously().catchError((e) {
+  //       throw Exception(e.toString());
+  //     });
+  //   }
+  // }
 
   Future<void> signIn({required String email, required String password}) async {
     try {
@@ -81,7 +81,7 @@ class AuthProvider with ChangeNotifier {
 
           final userCredential = await _auth.signInWithCredential(credential);
           final user = userCredential.user;
-
+ 
           if (user != null) {
             final userDoc = await FirebaseFirestore.instance
                 .collection('users')
@@ -90,11 +90,14 @@ class AuthProvider with ChangeNotifier {
 
             if (!userDoc.exists) {
               UserModel userModel = UserModel(
+                
                 id: user.uid,
                 email: user.email ?? '',
                 fullName: user.displayName ?? '',
                 imageUrl: user.photoURL ?? '',
                 phoneNumber: user.phoneNumber ?? '',
+                createdAt: Timestamp.now(),
+                joinedAt: DateFormat('EEEE, MMMM d, yyyy').format(DateTime.now()),
               );
 
               // Upload user data only if the document doesn't exist
@@ -138,7 +141,7 @@ class AuthProvider with ChangeNotifier {
         }
       }
       await _auth.signOut().then((_) {
-        signInAnonymously();
+       // signInAnonymously();
         notifyListeners();
       });
     } catch (e) {
@@ -148,3 +151,4 @@ class AuthProvider with ChangeNotifier {
     }
   }
 }
+
