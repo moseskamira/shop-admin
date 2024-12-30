@@ -15,6 +15,20 @@ class ProductsProvider extends ChangeNotifier {
         );
   }
 
+  Stream<ProductModel?> fetchProductById(String productId) {
+  return FirebaseFirestore.instance
+      .collection('products')
+      .where('id', isEqualTo: productId) // Filter by product ID
+      .snapshots()
+      .map((snapshot) {
+        if (snapshot.docs.isNotEmpty) {
+          return ProductModel.fromFirestore(snapshot.docs.first);
+        }
+        return null; // Return null if no product is found
+      });
+}
+
+
   Future deleteProduct(
       {required String id,
       required List<String> imageUrlsOnFirebaseStorage}) async {

@@ -72,14 +72,14 @@ class OrdersList extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 14, bottom: 14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              ListTile(
+                      Padding(
+                        padding: const EdgeInsets.only(left: 14, bottom: 14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Card(
+                              child: ListTile(
                                 title:
                                     Text('${index + 1}. ${userData.fullName}'),
                                 leading: Icon(
@@ -93,112 +93,118 @@ class OrdersList extends StatelessWidget {
                                   );
                                 },
                               ),
-                              ListTile(
-                                title: const Text('Order Status'),
-                                leading: Icon(
-                                  Icons.swap_horiz,
-                                  color: Theme.of(context).iconTheme.color,
-                                ),
-                                trailing: DropdownButton<String>(
-                                  value: order.status,
-                                  items: <String>[
-                                    'Pending',
-                                    'Received',
-                                    'Confirmed',
-                                    'Delivered',
-                                    if (order.status == 'confirmedByCustomer')
-                                      'confirmedByCustomer',
-                                  ].map((String value) {
-                                    String displayValue = value == 'Confirmed'
-                                        ? 'On the way'
-                                        : value == 'confirmedByCustomer'
-                                            ? 'Confirmed by Customer'
-                                            : value;
+                            ),
+                            ListTile(
+                              title: const Text('Order Status'),
+                              leading: Icon(
+                                Icons.swap_horiz,
+                                color: Theme.of(context).iconTheme.color,
+                              ),
+                              trailing: DropdownButton<String>(
+                                value: order.status,
+                                items: <String>[
+                                  'Pending',
+                                  'Received',
+                                  'Confirmed',
+                                  'Delivered',
+                                  if (order.status == 'confirmedByCustomer')
+                                    'confirmedByCustomer',
+                                ].map((String value) {
+                                  String displayValue = value == 'Confirmed'
+                                      ? 'On the way'
+                                      : value == 'confirmedByCustomer'
+                                          ? 'Confirmed by Customer'
+                                          : value;
 
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(displayValue),
-                                    );
-                                  }).toList(),
-                                  onChanged: order.status ==
-                                          'confirmedByCustomer'
-                                      ? null // Disable dropdown interaction for 'confirmedByCustomer'
-                                      : (String? newValue) async {
-                                          if (newValue != null) {
-                                            final FirebaseFirestore fireStore =
-                                                FirebaseFirestore.instance;
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(displayValue),
+                                  );
+                                }).toList(),
+                                onChanged: order.status == 'confirmedByCustomer'
+                                    ? null // Disable dropdown interaction for 'confirmedByCustomer'
+                                    : (String? newValue) async {
+                                        if (newValue != null) {
+                                          final FirebaseFirestore fireStore =
+                                              FirebaseFirestore.instance;
 
-                                            try {
-                                              await fireStore
-                                                  .collection('orders')
-                                                  .doc(order.orderId)
-                                                  .update({
-                                                'status': newValue,
-                                                'updatedAt': DateTime.now()
-                                                    .toIso8601String(),
-                                              });
-                                            } catch (e) {
-                                              rethrow;
-                                            }
+                                          try {
+                                            await fireStore
+                                                .collection('orders')
+                                                .doc(order.orderId)
+                                                .update({
+                                              'status': newValue,
+                                              'updatedAt': DateTime.now()
+                                                  .toIso8601String(),
+                                            });
+                                          } catch (e) {
+                                            rethrow;
                                           }
-                                        },
-                                ),
+                                        }
+                                      },
                               ),
-                              iconAndText(
-                                icon: Icons.attach_money,
-                                text: "Total amount: \$${order.totalAmount}",
-                                context: context,
-                              ),
-                              iconAndText(
-                                icon: Icons.calendar_month_outlined,
-                                text: order.createdAt.formattedDate(),
-                                context: context,
-                              ),
-                              iconAndText(
-                                icon: Icons.phone_android,
-                                text: userData.phoneNumber,
-                                context: context,
-                              ),
-                              iconAndText(
-                                icon: mShippingAddress,
-                                text: userData.address,
-                                context: context,
-                              ),
-                              ListView.builder(
-                                  itemCount: order.products.length,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    final prod = order.products[index];
-                                    return Column(
-                                      children: [
-                                        const Divider(),
-                                        ListTile(
-                                          title: Text(
-                                              '${index + 1}. ${prod.productName}'),
-                                          trailing: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Items: ${prod.quantity}',
-                                                style: const TextStyle(
-                                                    fontSize: 14),
-                                              ),
-                                              Text(
-                                                'Price: \$${prod.pricePerUnit}',
-                                                style: const TextStyle(
-                                                    fontSize: 14),
-                                              ),
-                                            ],
-                                          ),
+                            ),
+                            iconAndText(
+                              icon: Icons.attach_money,
+                              text: "Total amount: \$${order.totalAmount}",
+                              context: context,
+                            ),
+                            iconAndText(
+                              icon: Icons.calendar_month_outlined,
+                              text: order.createdAt.formattedDate(),
+                              context: context,
+                            ),
+                            iconAndText(
+                              icon: Icons.phone_android,
+                              text: userData.phoneNumber,
+                              context: context,
+                            ),
+                            iconAndText(
+                              icon: mShippingAddress,
+                              text: userData.address,
+                              context: context,
+                            ),
+                            ListView.builder(
+                                itemCount: order.products.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  final prod = order.products[index];
+                                  return Column(
+                                    children: [
+                                      const Divider(),
+                                      ListTile(
+                                        title: Text(
+                                            '${index + 1}. ${prod.productName}'),
+                                        trailing: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Items: ${prod.quantity}',
+                                              style:
+                                                  const TextStyle(fontSize: 14),
+                                            ),
+                                            Text(
+                                              'Price: \$${prod.pricePerUnit}',
+                                              style:
+                                                  const TextStyle(fontSize: 14),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    );
-                                  }),
-                            ],
-                          ),
+                                        onTap: () {
+                                          Navigator.of(context).pushNamed(
+                                              RouteName.productDetailScreen,
+                                              arguments: {
+                                                'productId': prod.productId
+                                              });
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }),
+                          ],
                         ),
                       )
                     ],

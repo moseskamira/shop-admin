@@ -23,7 +23,7 @@ class FeedsProduct extends StatelessWidget {
         child: InkWell(
           onTap: () {
             Navigator.of(context).pushNamed(RouteName.productDetailScreen,
-                arguments: {'productModel': product});
+                arguments: {'productId': product.id});
           },
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

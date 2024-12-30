@@ -37,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
             return IconButton(
               icon: const Icon(
                 Icons.remove_red_eye_sharp,
-                 
               ),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -91,21 +90,35 @@ class _HomeScreenState extends State<HomeScreen> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text("Add Category"),
-                            content:
-                                const Text("Feature to add a new category."),
+                            title: const Text("Add A New Category"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                addNewCategory(context, 'Category Icon'),
+                                const TextField(
+                                  decoration: InputDecoration(
+                                      hintText: 'Type a category name..'),
+                                ),
+                              ],
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: const Text("Close"),
+                                child: const Text("CANCEL"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("ADD"),
                               ),
                             ],
                           ),
                         );
                       },
-                      child: addNewCategory(context),
+                      child: addNewCategory(context, 'New Category'),
                     );
                   }
                   return Category(category: categories[index - 1]);
@@ -125,7 +138,7 @@ extension CategoryList on List<CategoryModel> {
   }
 }
 
-Widget addNewCategory(BuildContext context) {
+Widget addNewCategory(BuildContext context, String name) {
   double imageSize = 70;
   return SizedBox(
     width: 100,
@@ -148,9 +161,9 @@ Widget addNewCategory(BuildContext context) {
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
-          'New Category',
-          style: TextStyle(
+        Text(
+          name,
+          style: const TextStyle(
               color: Colors.black, fontWeight: FontWeight.w500, fontSize: 15),
         ),
       ],

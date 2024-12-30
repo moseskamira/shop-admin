@@ -41,10 +41,10 @@ class Routes {
             builder: (BuildContext context) => const ForgotPasswordScreen());
       case RouteName.productDetailScreen:
         Map<String, Object>? args = settings.arguments as Map<String, Object>;
-        ProductModel productModel = args['productModel'] as ProductModel;
+        String productId = args['productId'] as String;
         return MaterialPageRoute(
             builder: (BuildContext context) => ProductDetailScreen(
-                  detailsOfProduct: productModel,
+                  productId: productId,
                 ));
 
       case RouteName.updateProductScreen:

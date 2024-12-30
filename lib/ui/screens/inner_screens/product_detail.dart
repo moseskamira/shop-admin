@@ -3,30 +3,45 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/view_models/products_provider.dart';
-import 'package:shop_owner_app/ui/routes/route_name.dart';
-import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/widgets/products_images_list_on_details_view.dart';
+import 'package:sizer/sizer.dart';
+ 
 
 class ProductDetailScreen extends StatefulWidget {
-  final ProductModel? detailsOfProduct;
-  const ProductDetailScreen({super.key, required this.detailsOfProduct});
+  final String productId; // Pass productId instead of ProductModel
+  const ProductDetailScreen({super.key, required this.productId});
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   bool loadingOnDeletion = false;
+
   @override
   Widget build(BuildContext context) {
     final productsProvider = Provider.of<ProductsProvider>(context);
-    return ModalProgressHUD(
+
+    return StreamBuilder<ProductModel?>(
+      stream: productsProvider.fetchProductById(widget.productId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: SpinKitFadingCircle(color: Colors.green),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const Center(
+            child: Text('Product not found'),
+          );
+        }
+
+        final product = snapshot.data!;
+
+        return ModalProgressHUD(
       inAsyncCall: loadingOnDeletion,
       progressIndicator: Center(
         child: SpinKitFadingCircle(
@@ -49,7 +64,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: ProductImagesListWidget(
                         productImgList:
-                            widget.detailsOfProduct?.imageUrls ?? []),
+                             product.imageUrls ?? []),
                   ),
                   const SizedBox(
                     height: 20,
@@ -70,7 +85,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               children: [
                                 //Product Name
                                 Text(
-                                  widget.detailsOfProduct?.name ?? "",
+                                  product.name,
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                   style: Theme.of(context)
@@ -82,7 +97,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 //Product Price
 
                                 Text(
-                                  '\$ ${widget.detailsOfProduct?.price}',
+                                  '\$ ${product.price}',
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
                                     fontSize: 16,
@@ -108,18 +123,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _detailsRow('Brand',
-                                      widget.detailsOfProduct?.brand ?? ""),
+                                      product.brand),
                                   _detailsRow(
                                       'Quatity',
-                                      widget.detailsOfProduct?.quantity
-                                              .toString() ??
-                                          ""),
+                                      product.quantity
+                                              .toString()),
                                   _detailsRow('Category',
-                                      widget.detailsOfProduct?.category ?? ""),
+                                      product.category),
                                   _detailsRow(
                                       'Popularity',
-                                      (widget.detailsOfProduct?.isPopular ??
-                                              true)
+                                      (product.isPopular
+                                              )
                                           ? 'Popular'
                                           : 'Not Popular'),
 
@@ -130,8 +144,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   SizedBox(
                                       width: 90.w,
                                       child: Text(
-                                        widget.detailsOfProduct?.description ??
-                                            "",
+                                        product.description ,
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 17),
@@ -172,9 +185,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 });
                                 await productsProvider
                                     .deleteProduct(
-                                        id: widget.detailsOfProduct!.id,
-                                        imageUrlsOnFirebaseStorage: widget
-                                                .detailsOfProduct!.imageUrls ??
+                                        id: product.id,
+                                        imageUrlsOnFirebaseStorage: product.imageUrls ??
                                             [])
                                     .then((value) {
                                   setState(() {
@@ -220,7 +232,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 Navigator.of(context).pushNamed(
                                     RouteName.updateProductScreen,
                                     arguments: {
-                                      'productModel': widget.detailsOfProduct!,
+                                      'productModel': product,
                                     });
                               },
                               child: const Row(
@@ -249,33 +261,65 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             )),
       ),
     );
+      
+      },
+    );
+  }
+
+
+
+
+  Widget _actionButton({
+    required String label,
+    required Color color,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(label, style: const TextStyle(color: Colors.white)),
+                const SizedBox(width: 10),
+                Icon(icon, color: Colors.white),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _sectionContainer(String title, Widget child) {
     return Container(
-      color: Theme.of(context).cardColor,
       margin: const EdgeInsets.only(top: 10),
-      width: MediaQuery.of(context).size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Text(
               title.toUpperCase(),
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
-          const SizedBox(height: 10),
           child,
-          const SizedBox(height: 10),
         ],
       ),
     );
   }
 
   Widget _detailsRow(String key, String value) {
-    return Container(
+    return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [

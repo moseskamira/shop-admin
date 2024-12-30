@@ -99,7 +99,7 @@ class MyUsersScreen extends StatelessWidget {
                               Text('Name: ${user.fullName}'),
                               Text('Email: ${user.email}'),
                               Text('Mobile: ${user.phoneNumber}'),
-                              Text('Addr: ${user.address}'),
+                              Text('Addr: ${user.address}'.truncate(45)),
                             ],
                           ),
                         ],
@@ -118,5 +118,12 @@ class MyUsersScreen extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+extension on String {
+  String truncate(int maxLength, {String suffix = '...'}) {
+    if (length <= maxLength) return this;
+    return '${substring(0, maxLength)}$suffix';
   }
 }
