@@ -121,7 +121,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   child: Column(
                     children: [
                       // Email TextFormField
-                      ReusableTextField(
+                     ReusableTextField(
                         controller: email,
                         focusNode: _emailFocusNode,
                         valueKey: 'Email',
@@ -136,6 +136,7 @@ class _LogInScreenState extends State<LogInScreen> {
                             FocusScope.of(context).requestFocus(_passwordNode),
                         onSaved: (value) => _user.email = value!,
                       ),
+
 
                       // Password TextFormField
                       PasswordTextField(

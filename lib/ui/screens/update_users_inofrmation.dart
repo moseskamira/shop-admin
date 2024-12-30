@@ -1,12 +1,10 @@
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
+import 'package:shop_owner_app/core/view_models/picture_provider.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/widgets/reusable_text_field.dart';
-
 import '../widgets/update_image_preview.dart';
 
 class UpdateUsersInformation extends StatefulWidget {
@@ -62,40 +60,38 @@ class _UpdateUsersInformationState extends State<UpdateUsersInformation> {
       _formKey.currentState!.save();
       final userDataProvider =
           Provider.of<UserDataProvider>(context, listen: false);
+      final pictureProvider =
+          Provider.of<PicturesProvider>(context, listen: false);
       setState(() => _isLoading = true);
       if (initialImagePath != widget.userModel.imageUrl) {
         if (initialImagePath.contains('firebasestorage')) {
-          final FirebaseStorage _storage = FirebaseStorage.instance;
-          final reference = _storage.refFromURL(initialImagePath);
-          await reference.delete();
-          final ref = FirebaseStorage.instance
-              .ref()
-              .child('userimages')
-              .child(widget.userModel.id + '.jpg');
-          await ref
-              .putFile(File(widget.userModel.imageUrl))
-              .then((_) async => ref.getDownloadURL())
-              .then((imageUrl) => widget.userModel.imageUrl = imageUrl)
-              .catchError((e) {
-            throw e.toString();
+
+        await  pictureProvider.deleteSinglePicture(url: initialImagePath);
+         await pictureProvider
+              .uploadSinglePicture(
+            fileLocationinDevice: widget.userModel.imageUrl,
+          )
+              .then((fileUrl) {
+           setState(() {
+              widget.userModel.imageUrl = fileUrl;
+           });
           });
         } else {
-          final ref = FirebaseStorage.instance
-              .ref()
-              .child('userimages')
-              .child(widget.userModel.id + '.jpg');
-          await ref
-              .putFile(File(widget.userModel.imageUrl))
-              .then((_) async => ref.getDownloadURL())
-              .then((imageUrl) => widget.userModel.imageUrl = imageUrl)
-              .catchError((e) {
-            throw e.toString();
+         await pictureProvider
+              .uploadSinglePicture(
+            fileLocationinDevice: widget.userModel.imageUrl,
+          )
+              .then((url) {
+            widget.userModel.imageUrl = url;
+            setState(() {
+              
+            });
           });
         }
       } else {
         widget.userModel.imageUrl = initialImagePath;
       }
-      userDataProvider.updateUserData(widget.userModel).then((_) {
+     await userDataProvider.updateUserData(widget.userModel).then((_) {
         if (Navigator.canPop(context)) Navigator.pop(context);
       }).catchError((error) {
         if (error.toString().toLowerCase().contains('network')) {

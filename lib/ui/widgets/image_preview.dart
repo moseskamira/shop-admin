@@ -1,9 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-/// Custom widget to show the preview of image from the device memory
 
 class ImagePreview extends StatelessWidget {
   final String imagePath;
@@ -28,10 +25,14 @@ class ImagePreview extends StatelessWidget {
         color: Colors.grey[200],
         image: imagePath.isNotEmpty && !kIsWeb
             ? DecorationImage(
-                image: FileImage(File(imagePath)), fit: BoxFit.cover)
+                image: FileImage(File(imagePath)),
+                fit: BoxFit.fill,
+              )
             : imagePath.isNotEmpty && kIsWeb
                 ? DecorationImage(
-                    image: NetworkImage(imagePath), fit: BoxFit.cover)
+                    image: NetworkImage(imagePath),
+                    fit: BoxFit.cover,
+                  )
                 : null,
       ),
     );

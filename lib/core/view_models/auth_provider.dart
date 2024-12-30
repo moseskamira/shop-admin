@@ -1,12 +1,11 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
+import 'package:shop_owner_app/core/view_models/picture_provider.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -27,20 +26,13 @@ class AuthProvider with ChangeNotifier {
         password: password,
       );
       userModel.id = _auth.currentUser?.uid ?? '';
-      // upload user image to firebase storage and get the url
       if (userModel.imageUrl.isNotEmpty) {
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child('userimages')
-            .child(userModel.id + '.jpg');
-
-        await ref
-            .putFile(File(userModel.imageUrl))
-            .then((_) async => ref.getDownloadURL())
-            .then((imageUrl) => userModel.imageUrl = imageUrl)
-            .catchError((e) {
-          throw Exception(e.toString());
-        });
+        final imageUploader = PicturesProvider();
+        final imageUrl = await imageUploader.uploadSinglePicture(
+          fileLocationinDevice: userModel.imageUrl,
+        );
+        userModel.imageUrl = imageUrl;
+        notifyListeners();
       }
 
       await UserDataProvider().uploadUserData(userModel);

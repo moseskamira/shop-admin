@@ -5,8 +5,9 @@ import 'dart:io';
 class UpdateImagePreViewer extends StatefulWidget {
   final String? imagePath;
   const UpdateImagePreViewer({super.key, required this.imagePath});
+
   @override
-   State<UpdateImagePreViewer> createState() => _UpdateImagePreViewerState();
+  State<UpdateImagePreViewer> createState() => _UpdateImagePreViewerState();
 }
 
 class _UpdateImagePreViewerState extends State<UpdateImagePreViewer> {
@@ -27,15 +28,22 @@ class _UpdateImagePreViewerState extends State<UpdateImagePreViewer> {
           width: 2,
         ),
         color: Colors.grey[200],
-        image: DecorationImage(
-          image: _isNetworkImage(widget.imagePath)
-              ? CachedNetworkImageProvider(widget.imagePath!)
-              : FileImage(File(widget.imagePath!)),
-          fit: BoxFit.cover,
-        ),
       ),
-
-      // Show local file image
+      child: widget.imagePath == null || widget.imagePath!.isEmpty
+          ? const Icon(
+              Icons.image,
+              size: 50,
+              color: Colors.grey,
+            )
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image(
+                image: _isNetworkImage(widget.imagePath)
+                    ? CachedNetworkImageProvider(widget.imagePath!)
+                    : FileImage(File(widget.imagePath!)) as ImageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
     );
   }
 }

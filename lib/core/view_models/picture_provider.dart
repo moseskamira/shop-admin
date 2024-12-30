@@ -9,23 +9,24 @@ class PicturesProvider with ChangeNotifier {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Method to upload multiple pictures
-  Future<List<ImageToUpload>> uploadPictures(
-      {required List<ImageToUpload> picturesList,
-      required String productsName,
-      required int lengthOfImages,
-      }) async {
+  Future<List<ImageToUpload>> uploadPictures({
+    required List<ImageToUpload> picturesList,
+    required String productsName,
+    required int lengthOfImages,
+  }) async {
     List<ImageToUpload> pictureUrls = [];
-
 
     try {
       for (var picture in picturesList) {
         String filename = "${const Uuid().v4()}_$lengthOfImages";
         final Reference storageRef =
             _storage.ref().child('productimages/$filename');
-        final TaskSnapshot uploadTask = await storageRef.putFile(File(picture.urlOfTheImage));
-        final String downloadUrl = await uploadTask.ref.getDownloadURL();//
-        pictureUrls.add(ImageToUpload(isThumbNail: picture.isThumbNail, urlOfTheImage: downloadUrl));
-        lengthOfImages --;
+        final TaskSnapshot uploadTask =
+            await storageRef.putFile(File(picture.urlOfTheImage));
+        final String downloadUrl = await uploadTask.ref.getDownloadURL(); //
+        pictureUrls.add(ImageToUpload(
+            isThumbNail: picture.isThumbNail, urlOfTheImage: downloadUrl));
+        lengthOfImages--;
       }
 
       return pictureUrls;
@@ -40,5 +41,30 @@ class PicturesProvider with ChangeNotifier {
       await reference.delete();
     }
     notifyListeners();
+  }
+
+  Future<void> deleteSinglePicture({required String url}) async {
+    final reference = _storage.refFromURL(url);
+    await reference.delete();
+  }
+
+  Future<String> uploadSinglePicture({
+    required String fileLocationinDevice,
+  
+  }) async {
+    try {
+           String filename = const Uuid().v4();
+      final ref = _storage.ref().child('userimages').child(filename);
+
+      final uploadTask = await ref.putFile(File(fileLocationinDevice));
+      if (uploadTask.state == TaskState.success) {
+        final imageUrl = await ref.getDownloadURL();
+        return imageUrl;
+      } else {
+        throw 'Upload failed. Task state: ${uploadTask.state}';
+      }
+    } catch (e) {
+      throw 'Error uploading image: $e';
+    }
   }
 }

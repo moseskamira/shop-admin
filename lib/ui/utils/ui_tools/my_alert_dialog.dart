@@ -64,10 +64,10 @@ class MyAlertDialog {
                   builder: (_, authProvider, __) => TextButton(
                       onPressed: () async {
                         await authProvider.signOut(context).then((_) {
-                          Navigator.pop(context);
+                       //   Navigator.pop(context);
                           Navigator.of(context).pushNamedAndRemoveUntil(
                             RouteName.logInScreen,
-                            (Route<dynamic> route) => true,
+                            (Route<dynamic> route) => false,
                           );
                         });
                       },

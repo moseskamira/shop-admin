@@ -58,7 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       setState(() => _isLoading = true);
 
-      authProvider
+      await authProvider
           .signUp(
         email: _userModel.email.toLowerCase().trim(),
         password: _password.trim(),
@@ -107,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Center(
                   child: Stack(
                     children: [
-                      //TODO fixing image picker.....
+                       
                       ImagePreview(imagePath: _pickedImagePath),
                       Positioned(
                         right: 0,
