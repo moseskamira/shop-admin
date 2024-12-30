@@ -40,7 +40,7 @@ class MyUsersScreen extends StatelessWidget {
                 child: Text('No users found.'),
               );
             }
-
+            users.sort((a, b) => a.fullName.compareTo(b.fullName));
             return ListView.builder(
               itemCount: users.length,
               itemBuilder: (context, index) {

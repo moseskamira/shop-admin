@@ -79,114 +79,90 @@ class OrdersList extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              InkWell(
+                              ListTile(
+                                title:
+                                    Text('${index + 1}. ${userData.fullName}'),
+                                leading: Icon(
+                                  Icons.person,
+                                  color: Theme.of(context).iconTheme.color,
+                                ),
                                 onTap: () {
                                   Navigator.of(context).pushNamed(
                                     RouteName.userDetailsScreen,
                                     arguments: {'user': userData},
                                   );
                                 },
-                                child: Row(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '${index + 1}. ${userData.fullName}',
-                                          style: const TextStyle(
-                                            color: Colors.blue,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                              ),
+                              ListTile(
+                                title: const Text('Order Status'),
+                                leading: Icon(
+                                  Icons.swap_horiz,
+                                  color: Theme.of(context).iconTheme.color,
+                                ),
+                                trailing: DropdownButton<String>(
+                                  value: order.status,
+                                  items: <String>[
+                                    'Pending',
+                                    'Received',
+                                    'Confirmed',
+                                    'Delivered',
+                                    if (order.status == 'confirmedByCustomer')
+                                      'confirmedByCustomer',
+                                  ].map((String value) {
+                                    String displayValue = value == 'Confirmed'
+                                        ? 'On the way'
+                                        : value == 'confirmedByCustomer'
+                                            ? 'Confirmed by Customer'
+                                            : value;
+
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(displayValue),
+                                    );
+                                  }).toList(),
+                                  onChanged: order.status ==
+                                          'confirmedByCustomer'
+                                      ? null // Disable dropdown interaction for 'confirmedByCustomer'
+                                      : (String? newValue) async {
+                                          if (newValue != null) {
+                                            final FirebaseFirestore fireStore =
+                                                FirebaseFirestore.instance;
+
+                                            try {
+                                              await fireStore
+                                                  .collection('orders')
+                                                  .doc(order.orderId)
+                                                  .update({
+                                                'status': newValue,
+                                                'updatedAt': DateTime.now()
+                                                    .toIso8601String(),
+                                              });
+                                            } catch (e) {
+                                              rethrow;
+                                            }
+                                          }
+                                        },
                                 ),
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  const Text("Order Status:",
-                                      style: TextStyle(fontSize: 16)),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  DropdownButton<String>(
-                                    value: order.status,
-                                    items: <String>[
-                                      'Pending',
-                                      'Received',
-                                      'Confirmed',
-                                      'Delivered',
-                                      if (order.status == 'confirmedByCustomer')
-                                        'confirmedByCustomer',
-                                    ].map((String value) {
-                                      String displayValue = value == 'Confirmed'
-                                          ? 'On the way'
-                                          : value == 'confirmedByCustomer'
-                                              ? 'Confirmed by Customer'
-                                              : value;
-
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(displayValue),
-                                      );
-                                    }).toList(),
-                                    onChanged: order.status ==
-                                            'confirmedByCustomer'
-                                        ? null // Disable dropdown interaction for 'confirmedByCustomer'
-                                        : (String? newValue) async {
-                                            if (newValue != null) {
-                                              final FirebaseFirestore
-                                                  fireStore =
-                                                  FirebaseFirestore.instance;
-
-                                              try {
-                                                await fireStore
-                                                    .collection('orders')
-                                                    .doc(order.orderId)
-                                                    .update({
-                                                  'status': newValue,
-                                                  'updatedAt': DateTime.now()
-                                                      .toIso8601String(),
-                                                });
-                                              } catch (e) {
-                                                rethrow;
-                                              }
-                                            }
-                                          },
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text("Total amount: \$${order.totalAmount}",
-                                  style: const TextStyle(fontSize: 16)),
-                              const SizedBox(
-                                height: 10,
+                              iconAndText(
+                                icon: Icons.attach_money,
+                                text: "Total amount: \$${order.totalAmount}",
+                                context: context,
                               ),
                               iconAndText(
                                 icon: Icons.calendar_month_outlined,
                                 text: order.createdAt.formattedDate(),
-                              ),
-                              const SizedBox(
-                                height: 7,
+                                context: context,
                               ),
                               iconAndText(
                                 icon: Icons.phone_android,
                                 text: userData.phoneNumber,
-                              ),
-                              const SizedBox(
-                                height: 7,
+                                context: context,
                               ),
                               iconAndText(
                                 icon: mShippingAddress,
                                 text: userData.address,
-                              ),
-                              const SizedBox(
-                                height: 7,
+                                context: context,
                               ),
                               ListView.builder(
                                   itemCount: order.products.length,
@@ -197,10 +173,26 @@ class OrdersList extends StatelessWidget {
                                     return Column(
                                       children: [
                                         const Divider(),
-                                        ordersDetails(
-                                          '${index + 1}. ${prod.productName}'
-                                              .truncate(20),
-                                          '(${prod.quantity.toString()})',
+                                        ListTile(
+                                          title: Text(
+                                              '${index + 1}. ${prod.productName}'),
+                                          trailing: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Items: ${prod.quantity}',
+                                                style: const TextStyle(
+                                                    fontSize: 14),
+                                              ),
+                                              Text(
+                                                'Price: \$${prod.pricePerUnit}',
+                                                style: const TextStyle(
+                                                    fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     );
@@ -220,18 +212,16 @@ class OrdersList extends StatelessWidget {
     );
   }
 
-  Row iconAndText({required String text, required IconData icon}) {
-    return Row(
-      children: [
-        Icon(icon),
-        const SizedBox(
-          width: 4,
-        ),
-        Text(
-          text.truncate(45),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
-      ],
+  ListTile iconAndText(
+      {required String text,
+      required IconData icon,
+      required BuildContext context}) {
+    return ListTile(
+      title: Text(text),
+      leading: Icon(
+        icon,
+        color: Theme.of(context).iconTheme.color,
+      ),
     );
   }
 }

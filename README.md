@@ -85,14 +85,12 @@ If you found an issue or would like to submit an improvement to this project,
 please submit an issue using the issues tab above. If you would like to submit a PR with a fix, reference the issue you created!
 
 ##  Known Issues and Future Work
-* **Fetching category from network:** Future improvements could include fetching the product categories from the network.
-* **Facebook Auth:** Facebook Auth is not configured. 
+* **CRUD for product category:** Future improvements could include fetching the product categories from the network.
+ * **Image uploding:** Making the images dragable for arranging and re-arranging.
 * **Improved Error Handling:** The current implementation focuses on successful responses. Implementing comprehensive error handling for failed network requests would make the app more robust.
-* **Review on products:** Making review on product funtional. 
+ 
 * **Adding payment method:** Online payment integrations. 
-* **Pull-to-Refresh :**
-* **Improving recomendation algorithm:** Storing user's interections with different products and based on that recomending products to specific user.
-
+  
 ## Author
 
 - [@abdulawalarif](https://github.com/abdulawalarif) 

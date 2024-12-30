@@ -38,9 +38,9 @@ class _UserDetailsState extends State<UserDetails> {
   Widget build(BuildContext context) {
     UserModel user = widget.user;
     double latitude =
-        23.88843664456423; //double.tryParse(user.latitude) ?? 51.509364;
+       double.tryParse(user.latitude) ?? 51.509364;
     double longitude =
-        90.39065949603635; //double.tryParse(user.longitude) ?? -0.128928;
+       double.tryParse(user.longitude) ?? -0.128928;
 
     return SafeArea(
       child: Scaffold(
