@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/category_model.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
@@ -148,139 +149,116 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /// image section
-                        Consumer<UpdateImageProvider>(
-                          builder: (context, imageListUpdate, child) {
-                            return GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                              ),
-                              shrinkWrap: true,
-                              itemCount: imageListUpdate.images.isEmpty
-                                  ? 1
-                                  : imageListUpdate.images.length +
-                                      1, // +1 for the "Add Image" widget
-                              itemBuilder: (context, index) {
-                                if (index == 0) {
-                                  // "Add Image" widget
-                                  return Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          const placeHolder.ImagePreview(
-                                            imagePath:
-                                                '', // Empty or default image
-                                            height: 50,
-                                            width: 50,
-                                          ),
-                                          Center(
-                                            child: InkWell(
-                                              onTap: () async {
-                                                final pickedImagePath =
-                                                    await MyAlertDialog
-                                                        .imagePicker(context);
+                        /// 
+                        /// 
+                        /// 
+                        /// 
+                        /// 
+                        
 
-                                                if (pickedImagePath != null) {
-                                                  if (pickedImagePath
-                                                      is List<String>) {
-                                                    imageListUpdate.addAll(
-                                                        pickedImagePath);
-                                                  } else if (pickedImagePath
-                                                      is String) {
-                                                    imageListUpdate
-                                                        .add(pickedImagePath);
-                                                  }
-                                                  MySnackBar().showSnackBar(
-                                                    'New picture of the product is added',
-                                                    context,
-                                                    duration: const Duration(
-                                                        milliseconds: 300),
-                                                  );
-                                                }
-                                              },
-                                              child: const Icon(
-                                                Icons.add_circle,
-                                                size: 30,
-                                                color: Colors.black45,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  // Display actual images
-                                  final imageIndex = index -
-                                      1; // Adjust index due to "Add Image" widget
-                                  return Padding(
+
+
+
+                      Consumer<UpdateImageProvider>(
+                        builder: (context, imageList, child) {
+                          return ReorderableGridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                            ),
+                            shrinkWrap: true,
+                            itemCount: imageList.images.isEmpty
+                                ? 1
+                                : imageList.images.length +
+                                    1, // +1 for the "Add Image" widget
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return Center(
+                                  key: const ValueKey('add_image'),
+                                  child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5),
-                                    child: Container(
-                                      decoration: imageListUpdate
-                                              .images[imageIndex].isThumbNail
-                                          ? BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.black,
-                                                  width: 4),
-                                            )
-                                          : null,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              imageListUpdate
-                                                  .setThumbnail(imageIndex);
-                                            },
-                                            child: ImagePreview(
-                                              imagePath: imageListUpdate
-                                                  .images[imageIndex]
-                                                  .urlOfTheImage,
-                                              height: 190,
-                                              width: 190,
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top: 15,
-                                            right: 5,
-                                            child: InkWell(
-                                              onTap: () {
-                                                imageListUpdate
-                                                    .remove(imageIndex);
-                                              },
-                                              child: Container(
-                                                height: 25,
-                                                width: 25,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.black45,
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                                child: const Center(
-                                                  child: Icon(
-                                                    Icons.close,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          InkWell(
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        const ImagePreview(
+                                          imagePath: '',
+                                          height: 50,
+                                          width: 50,
+                                        ),
+                                        Center(
+                                          child: InkWell(
                                             onTap: () async {
                                               final pickedImagePath =
                                                   await MyAlertDialog
                                                       .imagePicker(context);
 
                                               if (pickedImagePath != null) {
-                                                imageListUpdate.replaceImage(
-                                                    imageIndex,
-                                                    pickedImagePath);
+                                                if (pickedImagePath
+                                                    is List<String>) {
+                                                  imageList
+                                                      .addAll(pickedImagePath);
+                                                } else if (pickedImagePath
+                                                    is String) {
+                                                  imageList
+                                                      .add(pickedImagePath);
+                                                }
+                                                MySnackBar().showSnackBar(
+                                                  'New picture of the product is added',
+                                                  context,
+                                                  duration: const Duration(
+                                                      milliseconds: 300),
+                                                );
                                               }
+                                            },
+                                            child: const Icon(
+                                              Icons.add_circle,
+                                              size: 30,
+                                              color: Colors.black45,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                final imageIndex = index - 1;
+                                return Padding(
+                                  key: ValueKey(imageList.images[imageIndex]),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: Container(
+                                    decoration:
+                                        imageList.images[imageIndex].isThumbNail
+                                            ? BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 4),
+                                              )
+                                            : null,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            imageList.setThumbnail(imageIndex);
+                                          },
+                                          child: ImagePreview(
+                                            imagePath: imageList
+                                                .images[imageIndex]
+                                                .urlOfTheImage,
+                                            height: 190,
+                                            width: 190,
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 15,
+                                          right: 5,
+                                          child: InkWell(
+                                            onTap: () {
+                                              imageList.remove(imageIndex);
                                             },
                                             child: Container(
                                               height: 25,
@@ -292,21 +270,219 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                               ),
                                               child: const Center(
                                                 child: Icon(
-                                                  Icons.image_search_rounded,
+                                                  Icons.close,
                                                   color: Colors.white,
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        InkWell(
+                                          onTap: () async {
+                                            final pickedImagePath =
+                                                await MyAlertDialog.imagePicker(
+                                                    context);
+
+                                            if (pickedImagePath != null) {
+                                              imageList.replaceImage(
+                                                  imageIndex, pickedImagePath);
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 25,
+                                            width: 25,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black45,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.image_search_rounded,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        ),
+                                  ),
+                                );
+                              }
+                            },
+                            onReorder: (oldIndex, newIndex) {
+                              imageList.reorderImages(
+                                  oldIndex - 1, newIndex - 1);
+                            },
+                          );
+                        },
+                      ),
+
+
+
+
+                       
+                        // Consumer<UpdateImageProvider>(
+                        //   builder: (context, imageListUpdate, child) {
+                        //     return GridView.builder(
+                        //       physics: const NeverScrollableScrollPhysics(),
+                        //       gridDelegate:
+                        //           const SliverGridDelegateWithFixedCrossAxisCount(
+                        //         crossAxisCount: 3,
+                        //       ),
+                        //       shrinkWrap: true,
+                        //       itemCount: imageListUpdate.images.isEmpty
+                        //           ? 1
+                        //           : imageListUpdate.images.length +
+                        //               1, // +1 for the "Add Image" widget
+                        //       itemBuilder: (context, index) {
+                        //         if (index == 0) {
+                        //           // "Add Image" widget
+                        //           return Center(
+                        //             child: Padding(
+                        //               padding: const EdgeInsets.symmetric(
+                        //                   horizontal: 5),
+                        //               child: Stack(
+                        //                 alignment: Alignment.center,
+                        //                 children: [
+                        //                   const placeHolder.ImagePreview(
+                        //                     imagePath:
+                        //                         '', // Empty or default image
+                        //                     height: 50,
+                        //                     width: 50,
+                        //                   ),
+                        //                   Center(
+                        //                     child: InkWell(
+                        //                       onTap: () async {
+                        //                         final pickedImagePath =
+                        //                             await MyAlertDialog
+                        //                                 .imagePicker(context);
+
+                        //                         if (pickedImagePath != null) {
+                        //                           if (pickedImagePath
+                        //                               is List<String>) {
+                        //                             imageListUpdate.addAll(
+                        //                                 pickedImagePath);
+                        //                           } else if (pickedImagePath
+                        //                               is String) {
+                        //                             imageListUpdate
+                        //                                 .add(pickedImagePath);
+                        //                           }
+                        //                           MySnackBar().showSnackBar(
+                        //                             'New picture of the product is added',
+                        //                             context,
+                        //                             duration: const Duration(
+                        //                                 milliseconds: 300),
+                        //                           );
+                        //                         }
+                        //                       },
+                        //                       child: const Icon(
+                        //                         Icons.add_circle,
+                        //                         size: 30,
+                        //                         color: Colors.black45,
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           );
+                        //         } else {
+                        //           // Display actual images
+                        //           final imageIndex = index -
+                        //               1; // Adjust index due to "Add Image" widget
+                        //           return Padding(
+                        //             padding: const EdgeInsets.symmetric(
+                        //                 horizontal: 5),
+                        //             child: Container(
+                        //               decoration: imageListUpdate
+                        //                       .images[imageIndex].isThumbNail
+                        //                   ? BoxDecoration(
+                        //                       border: Border.all(
+                        //                           color: Colors.black,
+                        //                           width: 4),
+                        //                     )
+                        //                   : null,
+                        //               child: Stack(
+                        //                 alignment: Alignment.center,
+                        //                 children: [
+                        //                   InkWell(
+                        //                     onTap: () {
+                        //                       imageListUpdate
+                        //                           .setThumbnail(imageIndex);
+                        //                     },
+                        //                     child: ImagePreview(
+                        //                       imagePath: imageListUpdate
+                        //                           .images[imageIndex]
+                        //                           .urlOfTheImage,
+                        //                       height: 190,
+                        //                       width: 190,
+                        //                     ),
+                        //                   ),
+                        //                   Positioned(
+                        //                     top: 15,
+                        //                     right: 5,
+                        //                     child: InkWell(
+                        //                       onTap: () {
+                        //                         imageListUpdate
+                        //                             .remove(imageIndex);
+                        //                       },
+                        //                       child: Container(
+                        //                         height: 25,
+                        //                         width: 25,
+                        //                         decoration: BoxDecoration(
+                        //                           color: Colors.black45,
+                        //                           borderRadius:
+                        //                               BorderRadius.circular(20),
+                        //                         ),
+                        //                         child: const Center(
+                        //                           child: Icon(
+                        //                             Icons.close,
+                        //                             color: Colors.white,
+                        //                           ),
+                        //                         ),
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                   InkWell(
+                        //                     onTap: () async {
+                        //                       final pickedImagePath =
+                        //                           await MyAlertDialog
+                        //                               .imagePicker(context);
+
+                        //                       if (pickedImagePath != null) {
+                        //                         imageListUpdate.replaceImage(
+                        //                             imageIndex,
+                        //                             pickedImagePath);
+                        //                       }
+                        //                     },
+                        //                     child: Container(
+                        //                       height: 25,
+                        //                       width: 25,
+                        //                       decoration: BoxDecoration(
+                        //                         color: Colors.black45,
+                        //                         borderRadius:
+                        //                             BorderRadius.circular(20),
+                        //                       ),
+                        //                       child: const Center(
+                        //                         child: Icon(
+                        //                           Icons.image_search_rounded,
+                        //                           color: Colors.white,
+                        //                         ),
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           );
+                        //         }
+                        //       },
+                        //     );
+                        //   },
+                        // ),
+
+
 
                         // all the fields
                         fields(),

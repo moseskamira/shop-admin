@@ -1,7 +1,7 @@
 
 # E-commerce app with Flutter Dart and Firebase
 
-## This E-commerce project is for user app and there is another app for admin to manage the shop [Admin app](https://github.com/abdulawalarif/shop_owner_app.git)
+## This E-commerce project is for the admin and there is another app for user to interect with the shop [user app](https://github.com/abdulawalarif/user_app.git)
   
 **It's a fully fledged application for small business**
 
@@ -10,15 +10,20 @@
 ## Features
 * **Authentication:** Google And Email Password. 
 * **Products :**
-  - Caterorized  
+  - Product (CRUD)
+  - Caterorizing product
   - Deatailed view
-  - Recomendations
+  - Multiple image and choosing thumnail and editing it later
+  - Effecient data handeling in storage during delete and update
 
-* **Order Placing**
-* **Cart**  
-* **Favourite products**
+* **Order Management**
+  - Sending different status of product to the client app.
+* **User management :**
+- Users details view with map by geo location(lat and lon)
+
 * **Theaming :**   
   - Dark and Light 
+
 
 ## File structure
 
@@ -35,7 +40,10 @@
     │   ├── main.dart                  
      
  
-<img src="ProjectSnap/light_theme/12.png" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/13.png" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/14.png" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/44.png" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/26.png" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/21.png" width="15%" alt="OrderPlacing first step" /><img src="ProjectSnap/light_theme/49.png" width="15%" alt="order confirmed" /><img src="ProjectSnap/dark_theme/40.png" width="15%" alt="Registration Form" /><img src="ProjectSnap/dark_theme/33.png" width="15%" alt="Demo of this application" /><img src="ProjectSnap/dark_theme/39.png" width="15%" alt="Demo of this application" />
+<img src="ProjectSnap/light_theme/1.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/2.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/3.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/4.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/5.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/6.jpg" width="15%" alt="OrderPlacing first step" /><img src="ProjectSnap/light_theme/7.jpg" width="15%" alt="order confirmed" /><img src="ProjectSnap/light_theme/8.jpg" width="15%" alt="Registration Form" /><img src="ProjectSnap/light_theme/9.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/10.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/11.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/12.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/13.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/14.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/15.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/16.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/17.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/18.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/19.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/20.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/21.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/22.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/23.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/24.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/25.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/26.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/27.jpg" width="15%" alt="Demo of this application" />
+
+
+<img src="ProjectSnap/light_theme/28.jpg" width="15%" alt="Demo of this application" />
 </br>
 
  

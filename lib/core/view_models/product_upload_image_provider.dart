@@ -68,6 +68,12 @@ class ImageListProductUpload with ChangeNotifier {
 
     notifyListeners();
   }
+   void reorderImages(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) newIndex--; // Adjust for moving down
+    final movedImage = images.removeAt(oldIndex);
+    images.insert(newIndex, movedImage);
+    notifyListeners(); // Notify the listeners to update the UI
+  }
 
   void replaceImage(int index, String image) {
     if (index >= 0 && index < _images.length) {

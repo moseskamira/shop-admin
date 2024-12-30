@@ -10,6 +10,7 @@ import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_snackbar.dart';
 import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 import 'package:uuid/uuid.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 class UploadProductScreen extends StatefulWidget {
   const UploadProductScreen({super.key});
@@ -123,7 +124,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                     children: [
                       Consumer<ImageListProductUpload>(
                         builder: (context, imageList, child) {
-                          return GridView.builder(
+                          return ReorderableGridView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
@@ -136,8 +137,8 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                     1, // +1 for the "Add Image" widget
                             itemBuilder: (context, index) {
                               if (index == 0) {
-                                // "Add Image" widget
                                 return Center(
+                                  key: const ValueKey('add_image'),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5),
@@ -145,8 +146,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                       alignment: Alignment.center,
                                       children: [
                                         const ImagePreview(
-                                          imagePath:
-                                              '', // Empty or default image
+                                          imagePath: '',
                                           height: 50,
                                           width: 50,
                                         ),
@@ -189,6 +189,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                               } else {
                                 final imageIndex = index - 1;
                                 return Padding(
+                                  key: ValueKey(imageList.images[imageIndex]),
                                   padding:
                                       const EdgeInsets.symmetric(horizontal: 5),
                                   child: Container(
@@ -271,6 +272,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                   ),
                                 );
                               }
+                            },
+                            onReorder: (oldIndex, newIndex) {
+                              imageList.reorderImages(
+                                  oldIndex - 1, newIndex - 1);
                             },
                           );
                         },
