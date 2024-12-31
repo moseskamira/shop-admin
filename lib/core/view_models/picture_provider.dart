@@ -33,6 +33,9 @@ class PicturesProvider with ChangeNotifier {
       rethrow;
     }
   }
+  
+  
+  
   Future<List<ImageToUpload>> updatePictures({
     required List<ImageToUpload> picturesList,
     required String productsName,
@@ -49,7 +52,7 @@ class PicturesProvider with ChangeNotifier {
             await storageRef.putFile(File(picture.urlOfTheImage));
         final String downloadUrl = await uploadTask.ref.getDownloadURL(); //
         pictureUrls.add(ImageToUpload(
-            isThumbNail: picture.isThumbNail, urlOfTheImage: downloadUrl));
+            index: picture.index, urlOfTheImage: downloadUrl));
         lengthOfImages--;
       }
 
@@ -59,6 +62,9 @@ class PicturesProvider with ChangeNotifier {
     }
   }
 
+  
+  
+  
   Future<void> deletePictures({required List<String> picturePaths}) async {
     for (final url in picturePaths) {
       final reference = _storage.refFromURL(url);

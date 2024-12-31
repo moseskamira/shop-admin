@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
- 
+
 class ImageListProductUpload with ChangeNotifier {
-  
   final List<String> _images = [];
 
 // TODO filtering selected image so that user is don't get to select the same image again
   List<String> get images => _images;
- 
 
   void add(String image) {
     _images.add(image);
@@ -16,15 +14,12 @@ class ImageListProductUpload with ChangeNotifier {
 
   void addAll(List<String> images) {
     for (final image in images) {
-      
       _images.add(image);
       notifyListeners();
     }
-    
+
     notifyListeners();
   }
-
- 
 
   void setThumbnail(int index) {
     if (index >= 0 && index < _images.length) {
@@ -55,8 +50,8 @@ class ImageListProductUpload with ChangeNotifier {
 
   void reorderImages(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) newIndex--; // Adjust for moving down
-    final movedImage = images.removeAt(oldIndex);
-    images.insert(newIndex, movedImage);
+    final movedImage = _images.removeAt(oldIndex);
+    _images.insert(newIndex, movedImage);
     notifyListeners(); // Notify the listeners to update the UI
   }
 

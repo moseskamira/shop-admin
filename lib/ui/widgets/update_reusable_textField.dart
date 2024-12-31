@@ -20,7 +20,7 @@ class CustomTextField extends StatelessWidget {
     required this.focusNode,
     this.maxLines = 1,
     this.textCapitalization = TextCapitalization.none,
-    this.textInputAction = TextInputAction.done,
+    this.textInputAction = TextInputAction.next,
     this.enabledBorder,
     this.nextFocusNode,
     this.validator,

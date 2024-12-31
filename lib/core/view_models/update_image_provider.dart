@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UpdateImageProvider with ChangeNotifier {
-  bool _thumbNaiCalled = false;
-  bool _isFirstTime = true;
-  //TODO removing this initial image
+   //TODO removing this initial image
 
   final List<ImageToUpload> _images = [];
   final List<ImageToUpload> _firstImages = [];
@@ -24,77 +22,51 @@ class UpdateImageProvider with ChangeNotifier {
           !_images.any((image) => image.urlOfTheImage == element.urlOfTheImage))
       .toList();
 
-
-List<String> get urlofThemimagesToDeleteFromStorage => imagesToDeleteFromStorage
-    .map((image) => image.urlOfTheImage) // Extract only the URL
-    .toList();
-
+  List<String> get urlofThemimagesToDeleteFromStorage =>
+      imagesToDeleteFromStorage
+          .map((image) => image.urlOfTheImage) // Extract only the URL
+          .toList();
 
   void add(String image) {
-    final inst = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
+    print('Add length: ${_images.length}');
+    final inst = ImageToUpload(index: _images.length, urlOfTheImage: image);
     _images.add(inst);
-    setfirstImageThumnNail(image);
+ 
 
     notifyListeners();
   }
 
   void addAll(List<String> images) {
     for (final image in images) {
-      final inst = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
+      print('Add ALL length: ${_images.length}');
+      final inst = ImageToUpload(index: _images.length, urlOfTheImage: image);
       _images.add(inst);
-      notifyListeners();
-    }
-    if (!_thumbNaiCalled && images.isNotEmpty) {
-      setfirstImageThumnNail(images[0]);
-    }
+     }
+   
     notifyListeners();
 
-    if (_isFirstTime) {
-      for (final image in images) {
-        final inst = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
-        _firstImages.add(inst);
-        notifyListeners();
-      }
-    }
-    _isFirstTime = false;
-    notifyListeners();
-  }
+   
+   }
 
-
-
-
-   void reorderImages(int oldIndex, int newIndex) {
+  void reorderImages(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) newIndex--; // Adjust for moving down
-    final movedImage = images.removeAt(oldIndex);
-    images.insert(newIndex, movedImage);
+    final movedImage = _images.removeAt(oldIndex);
+    _images.insert(newIndex, movedImage);
     notifyListeners(); // Notify the listeners to update the UI
   }
 
-  void setfirstImageThumnNail(String urlOfTheImage) {
-    if (!_thumbNaiCalled) {
-      if (_images.length > 1) {
-        _images[0] =
-            ImageToUpload(isThumbNail: true, urlOfTheImage: urlOfTheImage);
-        _thumbNaiCalled = true;
-        notifyListeners();
-      }
-    }
-  }
+ 
 
   void setThumbnail(int index) {
     if (index >= 0 && index < _images.length) {
-      for (var img in _images) {
-        img.isThumbNail = false;
-      }
       final selectedImage = _images[index];
-      selectedImage.isThumbNail = true;
+      selectedImage.index = 0;
       _images.removeAt(index);
-      if (_images.isNotEmpty) {
-        _images.insert(0, selectedImage);
-      } else {
-        _images.add(selectedImage);
+      _images.insert(0, selectedImage);
+      for (var i = 0; i < _images.length; i++) {
+        _images[i].index = i;
       }
-      _thumbNaiCalled = true;
+     
       notifyListeners();
     }
   }
@@ -109,59 +81,45 @@ List<String> get urlofThemimagesToDeleteFromStorage => imagesToDeleteFromStorage
   void clear() {
     _images.clear();
     notifyListeners();
-    _images.add(ImageToUpload(isThumbNail: false, urlOfTheImage: ''));
+
     notifyListeners();
   }
 
-  void replaceImage(int index, String image) {
-    if (index >= 0 && index < _images.length) {
-      _images[index] = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
-      if (index == 1) {
-        setThumbnail(1);
-      }
-    } else {
-      _images.add(ImageToUpload(isThumbNail: false, urlOfTheImage: image));
-    }
-    notifyListeners();
-  }
+  // void replaceImage(int index, String image) {
+  //   if (index >= 0 && index < _images.length) {
+  //     _images[index] = ImageToUpload(isThumbNail: false, urlOfTheImage: image);
+  //     if (index == 1) {
+  //       setThumbnail(1);
+  //     }
+  //   } else {
+  //     _images.add(ImageToUpload(isThumbNail: false, urlOfTheImage: image));
+  //   }
+  //   notifyListeners();
+  // }
 
   void reset() {
-    _thumbNaiCalled = false;
-    _isFirstTime = true;
+ 
     _images.clear();
     _firstImages.clear();
     notifyListeners();
   }
 
-
-
-
-
-List<String> mergeAndRearrangeAsList(
-     {required List<ImageToUpload> oldData,required List<ImageToUpload> recentUploads}) {
-  List<ImageToUpload> mergedList = [...oldData, ...recentUploads];
-
-  int thumbnailIndex = mergedList.indexWhere((item) => item.isThumbNail);
-
-  if (thumbnailIndex != -1) {
-    ImageToUpload thumbnailItem = mergedList.removeAt(thumbnailIndex);
-    mergedList.insert(0, thumbnailItem);
+  List<String> mergeAndRearrangeAsList({
+    required List<ImageToUpload> oldData,
+    required List<ImageToUpload> recentUploads,
+  }) {
+    final mergedList = [...oldData, ...recentUploads];
+    mergedList.sort((a, b) => a.index.compareTo(b.index));
+    return mergedList.map((item) => item.urlOfTheImage).toList();
   }
-
-  // Convert the merged list to a list of strings (URLs only)
-  return mergedList.map((item) => item.urlOfTheImage).toList();
-}
-
-
-
-
-
-
 }
 
 class ImageToUpload {
   final String urlOfTheImage;
-  bool isThumbNail;
+  int index;
 
-  ImageToUpload({required this.urlOfTheImage, required this.isThumbNail});
+  ImageToUpload({
+    required this.urlOfTheImage,
+    required this.index,
+  });
 }
