@@ -72,7 +72,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
               productsName: _productModel.name)
           .then((img) {
         for (int i = 0; i < img.length; i++) {
-          images.add(img[i].urlOfTheImage);
+          images.add(img[i]);
         }
       });
 
@@ -194,7 +194,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                       const EdgeInsets.symmetric(horizontal: 5),
                                   child: Container(
                                     decoration:
-                                        imageList.images[imageIndex].isThumbNail
+                                        imageIndex==0
                                             ? BoxDecoration(
                                                 border: Border.all(
                                                     color: Colors.black,
@@ -211,7 +211,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                           child: ImagePreview(
                                             imagePath: imageList
                                                 .images[imageIndex]
-                                                .urlOfTheImage,
+                                                ,
                                             height: 190,
                                             width: 190,
                                           ),
@@ -236,33 +236,6 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                                   Icons.close,
                                                   color: Colors.white,
                                                 ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () async {
-                                            final pickedImagePath =
-                                                await MyAlertDialog.imagePicker(
-                                                    context);
-
-                                            if (pickedImagePath != null) {
-                                              imageList.replaceImage(
-                                                  imageIndex, pickedImagePath);
-                                            }
-                                          },
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            decoration: BoxDecoration(
-                                              color: Colors.black45,
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: const Center(
-                                              child: Icon(
-                                                Icons.image_search_rounded,
-                                                color: Colors.white,
                                               ),
                                             ),
                                           ),

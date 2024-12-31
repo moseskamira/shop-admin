@@ -9,7 +9,31 @@ class PicturesProvider with ChangeNotifier {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Method to upload multiple pictures
-  Future<List<ImageToUpload>> uploadPictures({
+  Future<List<String>> uploadPictures({
+    required List<String> picturesList,
+    required String productsName,
+    required int lengthOfImages,
+  }) async {
+    List<String> pictureUrls = [];
+
+    try {
+      for (var picture in picturesList) {
+        String filename = "${const Uuid().v4()}_$lengthOfImages";
+        final Reference storageRef =
+            _storage.ref().child('productimages/$filename');
+        final TaskSnapshot uploadTask =
+            await storageRef.putFile(File(picture));
+        final String downloadUrl = await uploadTask.ref.getDownloadURL(); //
+        pictureUrls.add(downloadUrl);
+        lengthOfImages--;
+      }
+
+      return pictureUrls;
+    } catch (error) {
+      rethrow;
+    }
+  }
+  Future<List<ImageToUpload>> updatePictures({
     required List<ImageToUpload> picturesList,
     required String productsName,
     required int lengthOfImages,

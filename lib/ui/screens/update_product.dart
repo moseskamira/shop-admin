@@ -564,7 +564,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
                             if (imageProvider.newImagesToUpload.isNotEmpty) {
                               await uploadingPictureProvider
-                                  .uploadPictures(
+                                  .updatePictures(
                                       lengthOfImages:
                                           imageProvider.images.length,
                                       picturesList:
