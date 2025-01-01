@@ -138,31 +138,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
   bool loadingOnUpload = false;
 
-  Future<bool> _onWillPop(BuildContext context) async {
-    if (_isFormChanged(context)) {
-      final shouldDiscard = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Discard Changes?"),
-          content: const Text(
-              "You have unsaved changes. Are you sure you want to discard them?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text("Discard"),
-            ),
-          ],
-        ),
-      );
-      return shouldDiscard ?? false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     final productsProvider = Provider.of<ProductsProvider>(context);

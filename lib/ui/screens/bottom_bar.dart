@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shop_owner_app/ui/constants/app_consntants.dart';
+import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/screens/feeds.dart';
 import 'package:shop_owner_app/ui/screens/home.dart';
 import 'package:shop_owner_app/ui/screens/my_users_screen.dart';
 import 'package:shop_owner_app/ui/screens/orders_list.dart';
-import 'package:shop_owner_app/ui/screens/upload_product.dart';
 
 class BottomBarScreen extends StatefulWidget {
   const BottomBarScreen({super.key});
@@ -27,7 +27,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     _pages = [
       {'page': const HomeScreen(), 'title': 'Home'},
       {'page': const FeedsScreen(), 'title': 'Feeds'},
-      {'page': const UploadProductScreen(), 'title': 'Search'},
+      // {'page': const UploadProductScreen(), 'title': 'Search'},
       {'page': const MyUsersScreen(), 'title': 'MyUsers'},
       {'page': const OrdersList(), 'title': 'Orders'},
     ];
@@ -79,8 +79,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(null),
-                label: 'Search',
-                tooltip: 'Search',
+                label: ' ',
+                tooltip: ' ',
               ),
               BottomNavigationBarItem(
                 icon: Icon(mUserIcon),
@@ -99,7 +99,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
             FloatingActionButtonLocation.miniCenterDocked,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _selectedPages(2);
+            Navigator.of(context).pushNamed(RouteName.uploadProductScreen);
           },
           elevation: 2,
           splashColor: Theme.of(context).primaryColor.withAlpha(2),
