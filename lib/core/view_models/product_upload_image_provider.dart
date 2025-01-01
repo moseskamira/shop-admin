@@ -45,8 +45,7 @@ class ImageListProductUpload with ChangeNotifier {
     _images.clear();
     notifyListeners();
 
-    notifyListeners();
-  }
+   }
 
   void reorderImages(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) newIndex--; // Adjust for moving down

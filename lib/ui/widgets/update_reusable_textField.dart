@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final FocusNode focusNode;
+  
 
   const CustomTextField({
     super.key,
@@ -36,6 +37,7 @@ Widget build(BuildContext context) {
     keyboardType: keyboardType ?? (maxLines > 1 ? TextInputType.multiline : TextInputType.text),
     focusNode: focusNode,
     maxLines: maxLines,
+    //  keyboardType: TextInputType.multiline,
     decoration: InputDecoration(
       hintText: hintText,
       enabledBorder: enabledBorder ?? MyBorder.underlineInputBorder(context),

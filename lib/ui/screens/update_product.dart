@@ -37,11 +37,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   late final FocusNode _descriptionFocusNode;
   late final ProductModel _productModel;
   late bool _isPopular;
-  late final TextEditingController productNameController;
-  late final TextEditingController productBrandController;
-  late final TextEditingController productPriceEditingController;
-  late final TextEditingController productQuantityEditingController;
-  late final TextEditingController productDescriptionEditingController;
+  late final TextEditingController _nameController;
+  late final TextEditingController _brandController;
+  late final TextEditingController _priceController;
+  late final TextEditingController _quantityController;
+  late final TextEditingController _descriptionController;
   final _formKey = GlobalKey<FormState>();
   late ProductModel? _initialData;
   @override
@@ -55,11 +55,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     _categoryFocusNode = FocusNode();
     _descriptionFocusNode = FocusNode();
     _productModel = ProductModel();
-    productNameController = TextEditingController();
-    productBrandController = TextEditingController();
-    productPriceEditingController = TextEditingController();
-    productQuantityEditingController = TextEditingController();
-    productDescriptionEditingController = TextEditingController();
+    _nameController = TextEditingController();
+    _brandController = TextEditingController();
+    _priceController = TextEditingController();
+    _quantityController = TextEditingController();
+    _descriptionController = TextEditingController();
     setUpPreloadedData();
 
     Future.microtask(() {
@@ -79,11 +79,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     _quantityFocusNode.dispose();
     _categoryFocusNode.dispose();
     _descriptionFocusNode.dispose();
-    productNameController.dispose();
-    productBrandController.dispose();
-    productPriceEditingController.dispose();
-    productQuantityEditingController.dispose();
-    productDescriptionEditingController.dispose();
+    _nameController.dispose();
+    _brandController.dispose();
+    _priceController.dispose();
+    _quantityController.dispose();
+    _descriptionController.dispose();
     // Provider.of<UpdateImageProvider>(context, listen: false).reset();
   }
 
@@ -95,12 +95,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     } else {
       _isPopular = false;
     }
-    productNameController.text = data?.name.toString() ?? "";
-    productBrandController.text = data?.brand.toString() ?? "";
-    productPriceEditingController.text = data?.price.toString() ?? "";
-    productQuantityEditingController.text = data?.quantity.toString() ?? "";
-    productDescriptionEditingController.text =
-        data?.description.toString() ?? "";
+    _nameController.text = data?.name.toString() ?? "";
+    _brandController.text = data?.brand.toString() ?? "";
+    _priceController.text = data?.price.toString() ?? "";
+    _quantityController.text = data?.quantity.toString() ?? "";
+    _descriptionController.text = data?.description.toString() ?? "";
     int index = 0;
     for (int i = 0; i < _categories.length; i++) {
       if (_categories[i].title == data?.category.toString()) {
@@ -113,12 +112,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   }
 
   bool _isFormChanged(BuildContext context) {
-    return productNameController.text != _initialData?.name ||
-        productBrandController.text != _initialData?.brand ||
-        productPriceEditingController.text != _initialData?.price.toString() ||
-        productQuantityEditingController.text !=
-            _initialData?.quantity.toString() ||
-        productDescriptionEditingController.text != _initialData?.description ||
+    return _nameController.text != _initialData?.name ||
+        _brandController.text != _initialData?.brand ||
+        _priceController.text != _initialData?.price.toString() ||
+        _quantityController.text != _initialData?.quantity.toString() ||
+        _descriptionController.text != _initialData?.description ||
         _isPopular != (_initialData?.isPopular ?? true) ||
         haveImagesChanged(context);
   }
@@ -390,24 +388,21 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 loadingOnUpload = true;
                               });
                               _productModel.name =
-                                  productNameController.text.toString();
+                                  _nameController.text.toString();
                               _productModel.brand =
-                                  productBrandController.text.toString();
+                                  _brandController.text.toString();
 
                               _productModel.description =
-                                  productDescriptionEditingController.text
-                                      .toString();
+                                  _descriptionController.text.toString();
                               _productModel.isPopular = _isPopular;
                               _productModel.imageUrls =
                                   widget.singleProductDtaforUpdate?.imageUrls;
                               _productModel.price = double.tryParse(
-                                      productPriceEditingController.text
-                                          .toString()) ??
+                                      _priceController.text.toString()) ??
                                   0;
 
                               _productModel.quantity = int.tryParse(
-                                      productQuantityEditingController.text
-                                          .toString()) ??
+                                      _quantityController.text.toString()) ??
                                   0;
                               _productModel.imageUrls = imageProvider.images
                                   .map((item) => item.urlOfTheImage)
@@ -478,7 +473,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         _sectionTitle('Name'),
         CustomTextField(
           maxLines: 4,
-          controller: productNameController,
+          controller: _nameController,
           focusNode: _titleFocusNode,
           hintText: 'Add product name...',
           validator: (value) => value!.isEmpty ? 'Required' : null,
@@ -488,7 +483,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         /// Brand Section
         _sectionTitle('Brand'),
         CustomTextField(
-          controller: productBrandController,
+          controller: _brandController,
           focusNode: _brandFocusNode,
           hintText: 'Add product brand...',
           validator: (value) => value!.isEmpty ? 'Required' : null,
@@ -498,7 +493,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         /// Price Section
         _sectionTitle('Price'),
         CustomTextField(
-          controller: productPriceEditingController,
+          controller: _priceController,
           focusNode: _priceFocusNode,
           hintText: 'Add product price...',
           keyboardType: TextInputType.number,
@@ -518,7 +513,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         _sectionTitle('Quantity'),
 
         CustomTextField(
-          controller: productQuantityEditingController,
+          controller: _quantityController,
           focusNode: _quantityFocusNode,
           hintText: 'Add product quantity...',
           keyboardType: TextInputType.number,
@@ -584,7 +579,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         const SizedBox(height: 10),
 
         CustomTextField(
-          controller: productDescriptionEditingController,
+          controller: _descriptionController,
           focusNode: _descriptionFocusNode,
           maxLines: 10,
           hintText: 'Add product description...',

@@ -9,6 +9,7 @@ import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_snackbar.dart';
 import 'package:shop_owner_app/ui/widgets/image_preview.dart';
+import 'package:shop_owner_app/ui/widgets/update_reusable_textField.dart';
 import 'package:uuid/uuid.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
@@ -21,19 +22,33 @@ class UploadProductScreen extends StatefulWidget {
 
 class _UploadProductScreenState extends State<UploadProductScreen> {
   final _categories = CategoryModel().getCategories();
+
+  late final TextEditingController _nameController;
+  late final TextEditingController _brandController;
+  late final TextEditingController _priceController;
+  late final TextEditingController _quantityController;
+  late final TextEditingController _categoryController;
+  late final TextEditingController _descriptionController;
+  late final FocusNode _nameFocusNode;
   late final FocusNode _brandFocusNode;
   late final FocusNode _priceFocusNode;
   late final FocusNode _quantityFocusNode;
   late final FocusNode _categoryFocusNode;
   late final FocusNode _descriptionFocusNode;
-  late final ProductModel _productModel = ProductModel();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _productModel.category = _categories[0].title;
+    _nameController = TextEditingController();
+    _brandController = TextEditingController();
+    _priceController = TextEditingController();
+    _quantityController = TextEditingController();
+    _categoryController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _categoryController.text = _categories[0].title;
+    _nameFocusNode = FocusNode();
     _brandFocusNode = FocusNode();
     _priceFocusNode = FocusNode();
     _quantityFocusNode = FocusNode();
@@ -49,16 +64,25 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
     _quantityFocusNode.dispose();
     _categoryFocusNode.dispose();
     _descriptionFocusNode.dispose();
+    _nameController.dispose();
+    _brandController.dispose();
+    _priceController.dispose();
+    _quantityController.dispose();
+    _categoryController.dispose();
+    _descriptionController.dispose();
   }
 
   void _submitForm() async {
+    ProductModel _productModel = ProductModel();
     FocusScope.of(context).unfocus();
     final uploadingPictureProvider =
         Provider.of<PicturesProvider>(context, listen: false);
+
     final isValid = _formKey.currentState!.validate();
     final imageList =
         Provider.of<ImageListProductUpload>(context, listen: false);
-    if (imageList.images.length == 1) {
+
+    if (imageList.images.isEmpty) {
       MySnackBar().showSnackBar('Please select at least one image', context,
           duration: const Duration(seconds: 2));
     } else if (isValid) {
@@ -69,27 +93,36 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
           .uploadPictures(
               lengthOfImages: imageList.images.length,
               picturesList: imageList.images,
-              productsName: _productModel.name)
+              productsName: _nameController.text.toString())
           .then((img) {
         for (int i = 0; i < img.length; i++) {
           images.add(img[i]);
         }
       });
+      _productModel.imageUrls = images;
+      _productModel.id = const Uuid().v4();
+      _productModel.name = _nameController.text.toString();
+      _productModel.brand = _brandController.text.toString();
+      _productModel.price =
+          double.tryParse(_priceController.text.toString()) ?? 0;
+      _productModel.quantity =
+          int.tryParse(_quantityController.text.toString()) ?? 0;
+      _productModel.category = _categoryController.text.toString();
+      _productModel.description = _descriptionController.text.toString();
 
-      setState(() {
-        _productModel.imageUrls = images;
-        _productModel.isPopular = _isPopular;
-      });
+      _productModel.isPopular = _isPopular;
 
       _formKey.currentState!.save();
-      _productModel.id = const Uuid().v4();
+
+      setState(() {});
       final productProvider =
           Provider.of<ProductsProvider>(context, listen: false);
       await productProvider.addProduct(_productModel).then((_) {
         MySnackBar().showSnackBar('Success', context);
         setState(() {
-          _productModel.imageUrls?.clear();
+          _productModel = ProductModel();
           _formKey.currentState?.reset();
+
           imageList.clear();
         });
       }).catchError((error) {
@@ -99,19 +132,19 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
   }
 
   bool _isPopular = false;
+bool _isFormChanged(BuildContext context) {
+  final imageList =
+      Provider.of<ImageListProductUpload>(context, listen: false).images;
 
-  bool _isFormChanged(BuildContext context) {
-    return Provider.of<ImageListProductUpload>(context, listen: false)
-            .images
-            .isNotEmpty ||
-        _productModel.name.isNotEmpty ||
-        _productModel.brand.isNotEmpty ||
-        _productModel.description.isNotEmpty ||
-        _productModel.id.isNotEmpty ||
-        _productModel.price.toString().isNotEmpty ||
-        _productModel.description.isNotEmpty ||
-        _productModel.quantity.toString().isNotEmpty;
-  }
+  // If there are images or any of the fields have been filled, the form has changed
+  return imageList.isNotEmpty || 
+         _nameController.text.isNotEmpty ||
+         _brandController.text.isNotEmpty ||
+         _priceController.text.isNotEmpty ||
+         _quantityController.text.isNotEmpty ||
+         _isPopular || 
+         _descriptionController.text.isNotEmpty;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +164,12 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                     child: const Text('Cancel'),
                   ),
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                      Provider.of<ImageListProductUpload>(context,
+                              listen: false)
+                          .clear();
+                    },
                     child: const Text('Discard'),
                   ),
                 ],
@@ -295,84 +333,75 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
 
                         // Name Section
                         _sectionTitle('Name'),
-                        TextFormField(
+
+                        CustomTextField(
+                          controller: _nameController,
+                          maxLines: 4,
                           textCapitalization: TextCapitalization.words,
-                          textInputAction: TextInputAction.next,
                           validator: (value) =>
                               value!.isEmpty ? 'Required' : null,
-                          decoration: InputDecoration(
-                            hintText: 'Add product name...',
-                            enabledBorder:
-                                MyBorder.underlineInputBorder(context),
-                          ),
-                          onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(_brandFocusNode),
-                          onSaved: (value) => _productModel.name = value!,
+                          hintText: 'Add product name...',
+                          nextFocusNode: _brandFocusNode,
+                          focusNode: _nameFocusNode,
                         ),
 
                         // Brand Section
                         _sectionTitle('Brand'),
-                        TextFormField(
-                          textCapitalization: TextCapitalization.words,
-                          textInputAction: TextInputAction.next,
+                        CustomTextField(
+                          controller: _brandController,
                           focusNode: _brandFocusNode,
+                          textCapitalization: TextCapitalization.words,
                           validator: (value) =>
-                              value!.isEmpty ? 'Requiered' : null,
-                          decoration: InputDecoration(
-                            hintText: 'Add product brand...',
-                            enabledBorder:
-                                MyBorder.underlineInputBorder(context),
-                          ),
-                          onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(_priceFocusNode),
-                          onSaved: (value) => _productModel.brand = value!,
+                              value!.isEmpty ? 'Required' : null,
+                          hintText: 'Add product brand...',
+                          nextFocusNode: _priceFocusNode,
                         ),
 
                         // Price Section
                         _sectionTitle('Price'),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
+                        CustomTextField(
+                          controller: _priceController,
                           focusNode: _priceFocusNode,
-                          // inputFormatters: [
-                          //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          // ],
-                          validator: (value) =>
-                              value!.isEmpty ? 'Required' : null,
-                          decoration: InputDecoration(
-                            hintText: 'Add product price...',
-                            enabledBorder:
-                                MyBorder.underlineInputBorder(context),
-                          ),
-                          onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(_quantityFocusNode),
-                          onSaved: (value) =>
-                              _productModel.price = double.parse(value!),
+                          //  textCapitalization: TextCapitalization.words,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter a price";
+                            }
+                            if (double.tryParse(value) == null) {
+                              return "Please enter a valid price";
+                            }
+                            return null;
+                          },
+                          hintText: 'Add product price...',
+                          nextFocusNode: _quantityFocusNode,
+                          keyboardType: TextInputType.number,
                         ),
 
                         // Quantity Section
                         _sectionTitle('Quantity'),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
+
+                        CustomTextField(
+                          controller: _quantityController,
                           focusNode: _quantityFocusNode,
-                          validator: (value) =>
-                              value!.isEmpty ? 'Requiered' : null,
-                          decoration: InputDecoration(
-                            hintText: 'Add product quantity...',
-                            enabledBorder:
-                                MyBorder.underlineInputBorder(context),
-                          ),
-                          onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(_categoryFocusNode),
-                          onSaved: (value) =>
-                              _productModel.quantity = int.parse(value!),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter a quantity";
+                            }
+                            if (int.tryParse(value) == null) {
+                              return "Please enter a valid integer";
+                            }
+                            return null;
+                          },
+                          hintText: 'Add product quantity...',
+                          nextFocusNode: _categoryFocusNode,
+                          keyboardType: TextInputType.number,
                         ),
 
                         // Category section
                         _sectionTitle('Category'),
                         DropdownButtonFormField(
                           focusNode: _categoryFocusNode,
+
                           onTap: () {
                             FocusScope.of(context)
                                 .requestFocus(_descriptionFocusNode);
@@ -385,10 +414,11 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                 ),
                               )
                               .toList(),
-                          value: _productModel.category,
+                          //will check this what it is
+                          value: _categoryController.text,
                           onChanged: (String? value) {
                             setState(() {
-                              _productModel.category = value.toString();
+                              _categoryController.text = value.toString();
                             });
                           },
                           decoration: InputDecoration(
@@ -400,21 +430,17 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                         // Description Section
                         _sectionTitle('Description'),
                         const SizedBox(height: 10),
-                        TextFormField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 10,
+
+                        CustomTextField(
+                          controller: _descriptionController,
+                          focusNode: _descriptionFocusNode,
+                          textCapitalization: TextCapitalization.sentences,
                           validator: (value) =>
                               value!.isEmpty ? 'Required' : null,
-                          textCapitalization: TextCapitalization.sentences,
+                          hintText: 'Add product description...',
                           textInputAction: TextInputAction.done,
-                          focusNode: _descriptionFocusNode,
-                          decoration: InputDecoration(
-                            hintText: 'Add product description...',
-                            border: const OutlineInputBorder(),
-                            enabledBorder: MyBorder.outlineInputBorder(context),
-                          ),
-                          onSaved: (value) =>
-                              _productModel.description = value!,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 10,
                         ),
                       ],
                     ),
@@ -428,8 +454,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                       SwitchListTile(
                         title: const Text(
                           'Is popular',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.black),
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         value: _isPopular,
                         onChanged: (bool value) {
