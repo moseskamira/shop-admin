@@ -44,38 +44,70 @@ class MyAlertDialog {
   }
 
   /// Show sign out dialog
-  static Future<void> signOut(context) async {
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: Text(
-                'Sign Out'.toUpperCase(),
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w500,
-                ),
+static Future<void> signOut(BuildContext context) async {
+  bool isLoading = false;
+
+  showDialog(
+    context: context,
+    barrierDismissible: false, // Prevent dismissing while processing
+    builder: (context) => StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          title: Text(
+            'Sign Out'.toUpperCase(),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          content: isLoading
+              ? const SizedBox(
+                  height: 50,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : const Text('Do you want to sign out?'),
+          actions: [
+            if (!isLoading)
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'.toUpperCase()),
               ),
-              content: const Text('Do you want to sign out?'),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel'.toUpperCase())),
-                Consumer<AuthProvider>(
-                  builder: (_, authProvider, __) => TextButton(
-                      onPressed: () async {
-                        await authProvider.signOut(context).then((_) {
-                       //   Navigator.pop(context);
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                            RouteName.logInScreen,
-                            (Route<dynamic> route) => false,
-                          );
+            TextButton(
+              onPressed: isLoading
+                  ? null
+                  : () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+
+                      final authProvider = Provider.of<AuthProvider>(
+                        context,
+                        listen: false,
+                      );
+
+                      await authProvider.signOut(context).then((_) {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          RouteName.logInScreen,
+                          (Route<dynamic> route) => false,
+                        );
+                      }).catchError((error) {
+                        // Handle errors if needed
+                        setState(() {
+                          isLoading = false;
                         });
-                      },
-                      child: Text('Sign Out'.toUpperCase())),
-                ),
-              ],
-            ));
-  }
+                      });
+                    },
+              child: Text(isLoading ? '' : 'Sign Out'.toUpperCase()),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
+
 
   /// Display [AlertDialog] to pick image with [ImagePicker] and return the
   /// picked image path.

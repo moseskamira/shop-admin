@@ -16,6 +16,7 @@ import 'dart:io';
 import '../../core/view_models/update_image_provider.dart';
 import '../widgets/update_reusable_textField.dart';
 import 'package:shop_owner_app/ui/widgets/image_preview.dart' as placeHolder;
+import 'package:collection/collection.dart';
 
 // ignore: must_be_immutable
 class UpdateProductScreen extends StatefulWidget {
@@ -42,6 +43,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   late final TextEditingController productQuantityEditingController;
   late final TextEditingController productDescriptionEditingController;
   final _formKey = GlobalKey<FormState>();
+  late ProductModel? _initialData;
   @override
   void initState() {
     super.initState();
@@ -86,6 +88,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   }
 
   setUpPreloadedData() {
+    _initialData = widget.singleProductDtaforUpdate;
     ProductModel? data = widget.singleProductDtaforUpdate;
     if (data?.isPopular ?? true) {
       _isPopular = true;
@@ -109,303 +112,380 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     //loading data..
   }
 
+  bool _isFormChanged(BuildContext context) {
+    return productNameController.text != _initialData?.name ||
+        productBrandController.text != _initialData?.brand ||
+        productPriceEditingController.text != _initialData?.price.toString() ||
+        productQuantityEditingController.text !=
+            _initialData?.quantity.toString() ||
+        productDescriptionEditingController.text != _initialData?.description ||
+        _isPopular != (_initialData?.isPopular ?? true) ||
+        haveImagesChanged(context);
+  }
+
+  bool haveImagesChanged(BuildContext context) {
+    final initialImageUrls = _initialData?.imageUrls ?? [];
+    final updatedImageUrls =
+        Provider.of<UpdateImageProvider>(context, listen: false)
+            .images
+            .map((image) => image.urlOfTheImage)
+            .toList();
+
+    // Use ListEquality to compare both length and content
+    const listEquality = ListEquality();
+    return !listEquality.equals(initialImageUrls, updatedImageUrls);
+  }
+
   bool loadingOnUpload = false;
+
+  Future<bool> _onWillPop(BuildContext context) async {
+    if (_isFormChanged(context)) {
+      final shouldDiscard = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Discard Changes?"),
+          content: const Text(
+              "You have unsaved changes. Are you sure you want to discard them?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text("Discard"),
+            ),
+          ],
+        ),
+      );
+      return shouldDiscard ?? false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
     final productsProvider = Provider.of<ProductsProvider>(context);
     final uploadingPictureProvider = Provider.of<PicturesProvider>(context);
 
-    return ModalProgressHUD(
-      inAsyncCall: loadingOnUpload,
-      progressIndicator: SpinKitFadingCircle(
-        itemBuilder: (BuildContext context, int index) {
-          return DecoratedBox(
-            decoration: BoxDecoration(
-              color: index.isEven ? Colors.white : Colors.green,
-            ),
+    return WillPopScope(
+      onWillPop: () async {
+        if (_isFormChanged(context)) {
+          final shouldDiscard = await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Discard changes?'),
+                content: const Text(
+                    'You have unsaved changes. Are you sure you want to discard them?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text('Discard'),
+                  ),
+                ],
+              );
+            },
           );
-        },
-      ),
-      dismissible: false,
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Update Product"),
-            centerTitle: true,
-          ),
-          body: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        
 
-                        Consumer<UpdateImageProvider>(
-                          builder: (context, imageList, child) {
-                            return ReorderableGridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                              ),
-                              shrinkWrap: true,
-                              itemCount: imageList.images.isEmpty
-                                  ? 1
-                                  : imageList.images.length +
-                                      1, // +1 for the "Add Image" widget
-                              itemBuilder: (context, index) {
-                                if (index == 0) {
-                                  return Center(
-                                    key: const ValueKey('add_image'),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          const placeHolder.ImagePreview(
-                                            imagePath: '',
-                                            height: 50,
-                                            width: 50,
-                                          ),
-                                          Center(
-                                            child: InkWell(
-                                              onTap: () async {
-                                                final pickedImagePath =
-                                                    await MyAlertDialog
-                                                        .imagePicker(context);
+          return shouldDiscard ?? false;
+        }
 
-                                                if (pickedImagePath != null) {
-                                                  if (pickedImagePath
-                                                      is List<String>) {
-                                                    imageList.addAll(
-                                                        pickedImagePath);
-                                                  } else if (pickedImagePath
-                                                      is String) {
-                                                    imageList
-                                                        .add(pickedImagePath);
+        return true;
+      },
+      child: ModalProgressHUD(
+        inAsyncCall: loadingOnUpload,
+        progressIndicator: SpinKitFadingCircle(
+          itemBuilder: (BuildContext context, int index) {
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                color: index.isEven ? Colors.white : Colors.green,
+              ),
+            );
+          },
+        ),
+        dismissible: false,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text("Update Product"),
+              centerTitle: true,
+            ),
+            body: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Consumer<UpdateImageProvider>(
+                            builder: (context, imageList, child) {
+                              return ReorderableGridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                ),
+                                shrinkWrap: true,
+                                itemCount: imageList.images.isEmpty
+                                    ? 1
+                                    : imageList.images.length +
+                                        1, // +1 for the "Add Image" widget
+                                itemBuilder: (context, index) {
+                                  if (index == 0) {
+                                    return Center(
+                                      key: const ValueKey('add_image'),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            const placeHolder.ImagePreview(
+                                              imagePath: '',
+                                              height: 50,
+                                              width: 50,
+                                            ),
+                                            Center(
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  final pickedImagePath =
+                                                      await MyAlertDialog
+                                                          .imagePicker(context);
+
+                                                  if (pickedImagePath != null) {
+                                                    if (pickedImagePath
+                                                        is List<String>) {
+                                                      imageList.addAll(
+                                                          pickedImagePath);
+                                                    } else if (pickedImagePath
+                                                        is String) {
+                                                      imageList
+                                                          .add(pickedImagePath);
+                                                    }
+                                                    MySnackBar().showSnackBar(
+                                                      'New picture of the product is added',
+                                                      context,
+                                                      duration: const Duration(
+                                                          milliseconds: 300),
+                                                    );
                                                   }
-                                                  MySnackBar().showSnackBar(
-                                                    'New picture of the product is added',
-                                                    context,
-                                                    duration: const Duration(
-                                                        milliseconds: 300),
-                                                  );
-                                                }
-                                              },
-                                              child: const Icon(
-                                                Icons.add_circle,
-                                                size: 30,
-                                                color: Colors.black45,
+                                                },
+                                                child: const Icon(
+                                                  Icons.add_circle,
+                                                  size: 30,
+                                                  color: Colors.black45,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                } else {
-                                  final imageIndex = index - 1;
-                                  return Padding(
-                                    key: ValueKey(imageList.images[imageIndex]),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Container(
-                                      decoration: index == 1
-                                          ? BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.black,
-                                                  width: 4),
-                                            )
-                                          : null,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              imageList
-                                                  .setThumbnail(imageIndex);
-                                            },
-                                            child: ImagePreview(
-                                              imagePath: imageList
-                                                  .images[imageIndex]
-                                                  .urlOfTheImage,
-                                              height: 190,
-                                              width: 190,
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top: 15,
-                                            right: 5,
-                                            child: InkWell(
+                                    );
+                                  } else {
+                                    final imageIndex = index - 1;
+                                    return Padding(
+                                      key: ValueKey(
+                                          imageList.images[imageIndex]),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Container(
+                                        decoration: index == 1
+                                            ? BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 4),
+                                              )
+                                            : null,
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            InkWell(
                                               onTap: () {
-                                                imageList.remove(imageIndex);
+                                                imageList
+                                                    .setThumbnail(imageIndex);
                                               },
-                                              child: Container(
-                                                height: 25,
-                                                width: 25,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.black45,
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                                child: const Center(
-                                                  child: Icon(
-                                                    Icons.close,
-                                                    color: Colors.white,
+                                              child: ImagePreview(
+                                                imagePath: imageList
+                                                    .images[imageIndex]
+                                                    .urlOfTheImage,
+                                                height: 190,
+                                                width: 190,
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 15,
+                                              right: 5,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  imageList.remove(imageIndex);
+                                                },
+                                                child: Container(
+                                                  height: 25,
+                                                  width: 25,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.black45,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                  child: const Center(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }
-                              },
-                              onReorder: (oldIndex, newIndex) {
-                                imageList.reorderImages(
-                                    oldIndex - 1, newIndex - 1);
-                              },
-                            );
+                                    );
+                                  }
+                                },
+                                onReorder: (oldIndex, newIndex) {
+                                  imageList.reorderImages(
+                                      oldIndex - 1, newIndex - 1);
+                                },
+                              );
+                            },
+                          ),
+
+                          // all the fields
+                          fields(),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 1.5.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0)),
+                          label: const Text(
+                            'Cancel',
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                letterSpacing: 3.0,
+                                color: Colors.white),
+                          ),
+                          icon: const Icon(Icons.close,
+                              size: 24, color: Colors.white),
+                        ),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 30.0)),
+                          label: const Text(
+                            'Save',
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                letterSpacing: 3.0,
+                                color: Colors.white),
+                          ),
+                          icon: const Icon(Icons.save_as,
+                              size: 24, color: Colors.white),
+                          onPressed: () async {
+                            final isValid = _formKey.currentState!.validate();
+                            FocusScope.of(context).unfocus();
+                            final imageProvider =
+                                Provider.of<UpdateImageProvider>(context,
+                                    listen: false);
+
+                            if (isValid) {
+                              setState(() {
+                                loadingOnUpload = true;
+                              });
+                              _productModel.name =
+                                  productNameController.text.toString();
+                              _productModel.brand =
+                                  productBrandController.text.toString();
+
+                              _productModel.description =
+                                  productDescriptionEditingController.text
+                                      .toString();
+                              _productModel.isPopular = _isPopular;
+                              _productModel.imageUrls =
+                                  widget.singleProductDtaforUpdate?.imageUrls;
+                              _productModel.price = double.tryParse(
+                                      productPriceEditingController.text
+                                          .toString()) ??
+                                  0;
+
+                              _productModel.quantity = int.tryParse(
+                                      productQuantityEditingController.text
+                                          .toString()) ??
+                                  0;
+                              _productModel.imageUrls = imageProvider.images
+                                  .map((item) => item.urlOfTheImage)
+                                  .toList();
+
+                              if (imageProvider.newImagesToUpload.isNotEmpty) {
+                                await uploadingPictureProvider
+                                    .updatePictures(
+                                        lengthOfImages:
+                                            imageProvider.images.length,
+                                        picturesList:
+                                            imageProvider.newImagesToUpload,
+                                        productsName: _productModel.name)
+                                    .then((val) {
+                                  _productModel.imageUrls =
+                                      imageProvider.mergeAndRearrangeAsList(
+                                          oldData: imageProvider.backedUpImages,
+                                          recentUploads: val);
+                                  setState(() {});
+                                });
+                              }
+
+                              if (imageProvider.isDeletedPreviousImage) {
+                                await uploadingPictureProvider.deletePictures(
+                                    picturePaths: imageProvider
+                                        .urlofThemimagesToDeleteFromStorage);
+                              }
+
+                              _productModel.id =
+                                  widget.singleProductDtaforUpdate!.id;
+                              productsProvider
+                                  .updateProduct(_productModel,
+                                      widget.singleProductDtaforUpdate!.id)
+                                  .then((value) {
+                                setState(() {
+                                  loadingOnUpload = false;
+                                });
+
+                                MySnackBar().showSnackBar(
+                                    'Updated Successfully', context,
+                                    duration: const Duration(seconds: 2));
+                                Navigator.of(context).pop();
+                              });
+                            } else {}
                           },
                         ),
-
-                        // all the fields
-                        fields(),
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 1.5.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0)),
-                        label: const Text(
-                          'Cancel',
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              letterSpacing: 3.0,
-                              color: Colors.white),
-                        ),
-                        icon: const Icon(Icons.close,
-                            size: 24, color: Colors.white),
-                      ),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 30.0)),
-                        label: const Text(
-                          'Save',
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              letterSpacing: 3.0,
-                              color: Colors.white),
-                        ),
-                        icon: const Icon(Icons.save_as,
-                            size: 24, color: Colors.white),
-                        onPressed: () async {
-                          final isValid = _formKey.currentState!.validate();
-                          FocusScope.of(context).unfocus();
-                          final imageProvider =
-                              Provider.of<UpdateImageProvider>(context,
-                                  listen: false);
-
-                          if (isValid) {
-                            setState(() {
-                              loadingOnUpload = true;
-                            });
-                            _productModel.name =
-                                productNameController.text.toString();
-                            _productModel.brand =
-                                productBrandController.text.toString();
-
-                            _productModel.description =
-                                productDescriptionEditingController.text
-                                    .toString();
-                            _productModel.isPopular = _isPopular;
-                            _productModel.imageUrls =
-                                widget.singleProductDtaforUpdate?.imageUrls;
-                            _productModel.price = double.tryParse(
-                                    productPriceEditingController.text
-                                        .toString()) ??
-                                0;
-
-                            _productModel.quantity = int.tryParse(
-                                    productQuantityEditingController.text
-                                        .toString()) ??
-                                0;
-                            _productModel.imageUrls = imageProvider.images
-                                .map((item) => item.urlOfTheImage)
-                                .toList();
-
-                            if (imageProvider.newImagesToUpload.isNotEmpty) {
-                              await uploadingPictureProvider
-                                  .updatePictures(
-                                      lengthOfImages:
-                                          imageProvider.images.length,
-                                      picturesList:
-                                          imageProvider.newImagesToUpload,
-                                      productsName: _productModel.name)
-                                  .then((val) {
-                                _productModel.imageUrls =
-                                    imageProvider.mergeAndRearrangeAsList(
-                                        oldData: imageProvider.backedUpImages,
-                                        recentUploads: val);
-                                setState(() {});
-                              });
-                            }
-
-                            if (imageProvider.isDeletedPreviousImage) {
-                              await uploadingPictureProvider.deletePictures(
-                                  picturePaths: imageProvider
-                                      .urlofThemimagesToDeleteFromStorage);
-                            }
-
-                           
-
-                            _productModel.id =
-                                widget.singleProductDtaforUpdate!.id;
-                            productsProvider
-                                .updateProduct(_productModel,
-                                    widget.singleProductDtaforUpdate!.id)
-                                .then((value) {
-                              setState(() {
-                                loadingOnUpload = false;
-                              });
-
-                              MySnackBar().showSnackBar(
-                                  'Updated Successfully', context,
-                                  duration: const Duration(seconds: 2));
-                              Navigator.of(context).pop();
-                            });
-                          } else {}
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  )
-                ],
+                    const SizedBox(
+                      height: 50,
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -422,6 +502,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         // Name Section
         _sectionTitle('Name'),
         CustomTextField(
+          maxLines: 4,
           controller: productNameController,
           focusNode: _titleFocusNode,
           hintText: 'Add product name...',
@@ -455,6 +536,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
             }
             return null;
           },
+          nextFocusNode: _quantityFocusNode,
         ),
 
         // Quantity Section
@@ -530,7 +612,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           controller: productDescriptionEditingController,
           focusNode: _descriptionFocusNode,
           maxLines: 10,
-          
           hintText: 'Add product description...',
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.sentences,

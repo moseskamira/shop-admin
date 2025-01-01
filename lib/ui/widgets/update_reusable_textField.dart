@@ -28,26 +28,26 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      textCapitalization: textCapitalization,
-      textInputAction: textInputAction,
-      keyboardType: keyboardType,
-      focusNode: focusNode,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        hintText: hintText,
-        enabledBorder: enabledBorder ?? MyBorder.underlineInputBorder(context),
-      ),
-      onEditingComplete: () {
-        if (nextFocusNode != null) {
-          FocusScope.of(context).requestFocus(nextFocusNode);
-        } else {
-          focusNode.unfocus();
-        }
-      },
-      validator: validator,
-    );
-  }
+Widget build(BuildContext context) {
+  return TextFormField(
+    controller: controller,
+    textCapitalization: textCapitalization,
+    textInputAction: maxLines > 1 ? TextInputAction.newline : textInputAction,
+    keyboardType: keyboardType ?? (maxLines > 1 ? TextInputType.multiline : TextInputType.text),
+    focusNode: focusNode,
+    maxLines: maxLines,
+    decoration: InputDecoration(
+      hintText: hintText,
+      enabledBorder: enabledBorder ?? MyBorder.underlineInputBorder(context),
+    ),
+    onEditingComplete: () {
+      if (maxLines == 1 && nextFocusNode != null) {
+        FocusScope.of(context).requestFocus(nextFocusNode);
+      } else {
+        focusNode.unfocus();
+      }
+    },
+    validator: validator,
+  );
+}
 }
