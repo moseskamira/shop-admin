@@ -6,7 +6,6 @@ import 'package:shop_owner_app/core/models/orders_model.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/orders_provider.dart';
 import 'package:shop_owner_app/ui/constants/app_consntants.dart';
-
 import '../routes/route_name.dart';
 
 class OrdersList extends StatelessWidget {
@@ -37,33 +36,36 @@ class OrdersList extends StatelessWidget {
           }
 
           final ordersWithUsers = snapshot.data!;
-          // Filter and sort orders
-          final List<Map<String, dynamic>> nonCustomerConfirmedOrders =
-              ordersWithUsers
-                  .where(
-                      (order) => order['order'].status != 'confirmedByCustomer')
-                  .toList()
-                ..sort((a, b) {
-                  DateTime dateA = DateTime.parse(a['order'].createdAt);
-                  DateTime dateB = DateTime.parse(b['order'].createdAt);
-                  return dateA.compareTo(dateB);
-                });
 
-          final List<Map<String, dynamic>> customerConfirmedOrders =
-              ordersWithUsers
-                  .where(
-                      (order) => order['order'].status == 'confirmedByCustomer')
-                  .toList();
+          const statusPriority = {
+            'Pending': 1,
+            'Received': 2,
+            'Confirmed': 3,
+            'Delivered': 4,
+            'confirmedByCustomer': 5,
+          };
 
-          var orders = [
-            ...nonCustomerConfirmedOrders,
-            ...customerConfirmedOrders,
-          ];
+          ordersWithUsers.sort((a, b) {
+            OrdersModel orderA = a['order'];
+            OrdersModel orderB = b['order'];
+
+            int priorityA = statusPriority[orderA.status] ?? 100;
+            int priorityB = statusPriority[orderB.status] ?? 100;
+
+            if (priorityA != priorityB) {
+              return priorityA.compareTo(priorityB);
+            }
+
+            DateTime dateA = DateTime.parse(orderA.createdAt);
+            DateTime dateB = DateTime.parse(orderB.createdAt);
+
+            return dateA.compareTo(dateB);
+          });
 
           return ListView.builder(
-            itemCount: orders.length,
+            itemCount: ordersWithUsers.length,
             itemBuilder: (context, index) {
-              final orderDataWithUser = orders[index];
+              final orderDataWithUser = ordersWithUsers[index];
               final OrdersModel order = orderDataWithUser['order'];
               final UserModel userData = orderDataWithUser['user'];
 
@@ -165,45 +167,47 @@ class OrdersList extends StatelessWidget {
                               context: context,
                             ),
                             ListView.builder(
-                                itemCount: order.products.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final prod = order.products[index];
-                                  return Column(
-                                    children: [
-                                      const Divider(),
-                                      ListTile(
-                                        title: Text(
-                                            '${index + 1}. ${prod.productName}'),
-                                        trailing: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Items: ${prod.quantity}',
-                                              style:
-                                                  const TextStyle(fontSize: 14),
-                                            ),
-                                            Text(
-                                              'Price: \$${prod.pricePerUnit}',
-                                              style:
-                                                  const TextStyle(fontSize: 14),
-                                            ),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          Navigator.of(context).pushNamed(
-                                              RouteName.productDetailScreen,
-                                              arguments: {
-                                                'productId': prod.productId
-                                              });
-                                        },
+                              itemCount: order.products.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final prod = order.products[index];
+                                return Column(
+                                  children: [
+                                    const Divider(),
+                                    ListTile(
+                                      title: Text(
+                                          '${index + 1}. ${prod.productName}'),
+                                      trailing: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Items: ${prod.quantity}',
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
+                                          Text(
+                                            'Price: \$${prod.pricePerUnit}',
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  );
-                                }),
+                                      onTap: () {
+                                        Navigator.of(context).pushNamed(
+                                          RouteName.productDetailScreen,
+                                          arguments: {
+                                            'productId': prod.productId,
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ],
                         ),
                       )
@@ -218,10 +222,11 @@ class OrdersList extends StatelessWidget {
     );
   }
 
-  ListTile iconAndText(
-      {required String text,
-      required IconData icon,
-      required BuildContext context}) {
+  ListTile iconAndText({
+    required String text,
+    required IconData icon,
+    required BuildContext context,
+  }) {
     return ListTile(
       title: Text(text),
       leading: Icon(
@@ -241,32 +246,4 @@ extension on String {
       return 'Invalid date';
     }
   }
-}
-
-extension on String {
-  String truncate(int maxLength, {String suffix = '...'}) {
-    if (length <= maxLength) return this;
-    return '${substring(0, maxLength)}$suffix';
-  }
-}
-
-Widget ordersDetails(String label, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
-        const Spacer(),
-        Text(
-          'Total Items: $value',
-          textAlign: TextAlign.right,
-          style: const TextStyle(fontSize: 14),
-        ),
-      ],
-    ),
-  );
 }
