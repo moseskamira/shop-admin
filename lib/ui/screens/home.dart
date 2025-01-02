@@ -164,7 +164,7 @@ Widget addNewCategory(BuildContext context, String name) {
         Text(
           name,
           style: const TextStyle(
-              color: Colors.black, fontWeight: FontWeight.w500, fontSize: 15),
+                fontWeight: FontWeight.w500, fontSize: 15),
         ),
       ],
     ),

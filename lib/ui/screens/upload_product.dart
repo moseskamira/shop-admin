@@ -119,12 +119,18 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
           Provider.of<ProductsProvider>(context, listen: false);
       await productProvider.addProduct(_productModel).then((_) {
         MySnackBar().showSnackBar('Success', context);
-        setState(() {
-          _productModel = ProductModel();
-          _formKey.currentState?.reset();
+        setState(() {});
+        _productModel = ProductModel();
+        _formKey.currentState?.reset();
 
-          imageList.clear();
-        });
+        imageList.clear();
+        _nameController.clear();
+        _brandController.clear();
+        _priceController.clear();
+        _quantityController.clear();
+        _categoryController.text = _categories[0].title;
+        _descriptionController.clear();
+        _isPopular = false;
       }).catchError((error) {
         MyAlertDialog.error(context, error.message);
       }).whenComplete(() => setState(() => _isLoading = false));
@@ -132,55 +138,39 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
   }
 
   bool _isPopular = false;
-bool _isFormChanged(BuildContext context) {
-  final imageList =
-      Provider.of<ImageListProductUpload>(context, listen: false).images;
+  bool _isFormChanged(BuildContext context) {
+    final imageList =
+        Provider.of<ImageListProductUpload>(context, listen: false).images;
 
-  // If there are images or any of the fields have been filled, the form has changed
-  return imageList.isNotEmpty || 
-         _nameController.text.isNotEmpty ||
-         _brandController.text.isNotEmpty ||
-         _priceController.text.isNotEmpty ||
-         _quantityController.text.isNotEmpty ||
-         _isPopular || 
-         _descriptionController.text.isNotEmpty;
-}
+    // If there are images or any of the fields have been filled, the form has changed
+    return imageList.isNotEmpty ||
+        _nameController.text.isNotEmpty ||
+        _brandController.text.isNotEmpty ||
+        _priceController.text.isNotEmpty ||
+        _quantityController.text.isNotEmpty ||
+        _isPopular ||
+        _descriptionController.text.isNotEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_isFormChanged(context)) {
-          final shouldDiscard = await showDialog<bool>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Discard changes?'),
-                content: const Text(
-                    'You have unsaved changes. Are you sure you want to discard them?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-                      Provider.of<ImageListProductUpload>(context,
-                              listen: false)
-                          .clear();
-                    },
-                    child: const Text('Discard'),
-                  ),
-                ],
-              );
-            },
-          );
-
-          return shouldDiscard ?? false;
+    return PopScope<void>(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, void result) async {
+        if (didPop) {
+          return;
         }
+        final bool hasChanges = _isFormChanged(context);
 
-        return true;
+        if (hasChanges) {
+          final bool shouldPop =
+              await MyAlertDialog.showDiscardDialog(context) ?? false;
+          if (context.mounted && shouldPop) {
+            Navigator.pop(context);
+          }
+        } else {
+          Navigator.pop(context);
+        }
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -337,7 +327,7 @@ bool _isFormChanged(BuildContext context) {
                         CustomTextField(
                           controller: _nameController,
                           maxLines: 4,
-                          textCapitalization: TextCapitalization.words,
+                          // textCapitalization: TextCapitalization.words,
                           validator: (value) =>
                               value!.isEmpty ? 'Required' : null,
                           hintText: 'Add product name...',

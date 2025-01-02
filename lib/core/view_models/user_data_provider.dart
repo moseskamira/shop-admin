@@ -44,10 +44,7 @@ Stream<UserModel> fetchUserData() async* {
         await _fireStore
             .collection('adminUsers')
             .doc(userModel.id)
-            .set(userModel.toJson())
-            .then((_) async {
-          await fetchUserData();
-        });
+            .set(userModel.toJson());
       } else {
         throw Exception('No authenticated user found');
       }

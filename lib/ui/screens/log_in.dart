@@ -53,7 +53,7 @@ class _LogInScreenState extends State<LogInScreen> {
       _formKey.currentState!.save();
       setState(() => _isLoading = true);
 
-      authProvider.signIn(email: _user.email, password: _password).then((_) {
+    await  authProvider.signIn(email: _user.email, password: _password).then((_) {
        Navigator.of(context).pushNamedAndRemoveUntil(RouteName.bottomBarScreen,  (Route<dynamic> route) => false, );
       }).catchError((e) {
         if (e.toString().contains('wrong-password') ||
@@ -73,7 +73,7 @@ class _LogInScreenState extends State<LogInScreen> {
   void _googleSignIn() async {
     setState(() => _isLoading = true);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.googleSignIn().then((_) {
+  await  authProvider.googleSignIn().then((_) {
       Navigator.of(context).pushNamedAndRemoveUntil(RouteName.bottomBarScreen,  (Route<dynamic> route) => false, );
     }).whenComplete(() => setState(() => _isLoading = false));
   }

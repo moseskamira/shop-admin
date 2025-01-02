@@ -185,10 +185,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             imageUrlsOnFirebaseStorage:
                                                 product.imageUrls ?? [])
                                         .then((value) {
-                                      setState(() {
-                                        loadingOnDeletion = false;
-                                      });
                                       Navigator.pop(context);
+                                      loadingOnDeletion = false;
+                                      setState(() {});
                                     });
                                   },
                                   child: const Row(

@@ -18,6 +18,9 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   late int _selectedIndex;
 
   void _selectedPages(int index) {
+    if (index == 2) {
+      return;
+    }
     setState(() => _selectedIndex = index);
   }
 
@@ -27,12 +30,31 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     _pages = [
       {'page': const HomeScreen(), 'title': 'Home'},
       {'page': const FeedsScreen(), 'title': 'Feeds'},
-      // {'page': const UploadProductScreen(), 'title': 'Search'},
+      {},
       {'page': const MyUsersScreen(), 'title': 'MyUsers'},
       {'page': const OrdersList(), 'title': 'Orders'},
     ];
     _selectedIndex = 0;
   }
+
+// PopScope<void>(
+//       canPop: false,
+//       onPopInvokedWithResult: (bool didPop, void result) async {
+//         if (didPop) {
+//           return;
+//         }
+//         if (_selectedIndex != 0) {
+//           setState(() {
+//             _selectedIndex = 0;
+//           });
+//           return;
+//         }
+//         if (context.mounted) {
+//         Navigator.of(context).pop();
+//          // Navigator.pop(context);
+//          //auth navigation.....
+//         }
+//       },
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +87,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
             type: BottomNavigationBarType.fixed,
             showUnselectedLabels: false,
             showSelectedLabels: false,
+            iconSize: 23,
             backgroundColor: Theme.of(context).cardColor,
             items: const [
               BottomNavigationBarItem(
@@ -79,8 +102,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(null),
-                label: ' ',
-                tooltip: ' ',
+                label: '',
+                tooltip: '',
               ),
               BottomNavigationBarItem(
                 icon: Icon(mUserIcon),

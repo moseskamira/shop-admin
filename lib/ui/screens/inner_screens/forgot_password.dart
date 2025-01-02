@@ -22,7 +22,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       _formKey.currentState!.save();
       setState(() => _isLoading = true);
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      authProvider
+    await  authProvider
           .resetPassword(email: _email)
           .then((value) => setState(() {
                 _noticeText =

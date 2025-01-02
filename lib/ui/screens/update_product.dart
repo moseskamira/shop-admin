@@ -141,34 +141,23 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     final productsProvider = Provider.of<ProductsProvider>(context);
     final uploadingPictureProvider = Provider.of<PicturesProvider>(context);
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (_isFormChanged(context)) {
-          final shouldDiscard = await showDialog<bool>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Discard changes?'),
-                content: const Text(
-                    'You have unsaved changes. Are you sure you want to discard them?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('Discard'),
-                  ),
-                ],
-              );
-            },
-          );
-
-          return shouldDiscard ?? false;
+    return PopScope<void>(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, void result) async {
+        if (didPop) {
+          return;
         }
+        final bool hasChanges = _isFormChanged(context);
 
-        return true;
+        if (hasChanges) {
+          final bool shouldPop =
+              await MyAlertDialog.showDiscardDialog(context) ?? false;
+          if (context.mounted && shouldPop) {
+            Navigator.pop(context);
+          }
+        } else {
+          Navigator.pop(context);
+        }
       },
       child: ModalProgressHUD(
         inAsyncCall: loadingOnUpload,

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/view_models/auth_provider.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
 
+import '../../../core/view_models/product_upload_image_provider.dart';
+
 class MyAlertDialog {
   void removeItem(context, Function() func) {
     _showDialog(
@@ -109,6 +111,33 @@ static Future<void> signOut(BuildContext context) async {
 }
 
 
+
+static   Future<bool?> showDiscardDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Discard changes?'),
+          content: const Text(
+              'You have unsaved changes. Are you sure you want to discard them?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                Provider.of<ImageListProductUpload>(context, listen: false)
+                    .clear();
+              },
+              child: const Text('Discard'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   /// Display [AlertDialog] to pick image with [ImagePicker] and return the
   /// picked image path.
 
