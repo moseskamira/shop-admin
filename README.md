@@ -1,26 +1,25 @@
 #  Flutter & Dart E-commerce admin app with Firebase
 
-## This E-commerce project is for the admin and there is another app for user to interect with the shop [user app](https://github.com/abdulawalarif/user_app.git)
+## This E-commerce project is for the admin and there is another app for users to interact with the shop [user app](https://github.com/abdulawalarif/user_app.git)
 
-**It's a fully fledged application for small business**
+**It's a fully-fledged application for small business**
 
 ## Features
 
 - **Authentication:** Google And Email Password.
 - **Products :**
-  - Caterorizing product
-  - Deatailed view
-  - Multiple image
-  - Effecient data handeling in storage during delete and update of storage file
+  - Categorizing product
+  - Detailed view
+  - Multiple images
+  - Efficient data handling in storage during deletion and update of storage file
 
 - **Order Management**
-  - Sending different status of product to the client app.
-- **User management :**
+  - Send different product statuses to the client app.
+- **User Management:**
 
-* Users details view with map by geo location(lat and lon)
-
-- **Theaming :**
-  - Dark and Light
+  * User details view with map by geolocation(lat and lon) 
+- **Theming :** 
+- Dark and Light
 
 ## File structure
 
@@ -28,7 +27,7 @@
     │   ├── core
     │   │  ├── models
     │   │  ├── services
-    │   │  ├── view_models // all the interections with database
+    │   │  ├── view_models // All the interactions with the database
     │   │── ui
     │   │  ├── constants
     │   │  ├── routes
@@ -69,14 +68,14 @@ Connect a physical device or start a virtual device on your machine
   flutter run
 ```
 
-## How to tweak this project for your own uses
+## How to tweak this project for your uses
 
 - **Setup Firebase:** Insert some data for testing..
 
 ## Reporting Bugs or Requesting Features?
 
 If you found an issue or would like to submit an improvement to this project,
-please submit an issue using the issues tab above. If you would like to submit a PR with a fix, reference the issue you created!
+please submit an issue using the issues tab above. If you want to submit a PR with a fix, reference the issue you created!
 
 ## Known Issues and Future Work
 
@@ -86,7 +85,7 @@ please submit an issue using the issues tab above. If you would like to submit a
 
 - **Adding payment method:** Online payment integrations.
 
-- **FCM:** Firebase push notification for new orders placement with deep linking.
+- **FCM:** Firebase push notification for new order placement with deep linking.
 
 ## Author
 
