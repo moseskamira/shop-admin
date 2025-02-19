@@ -48,6 +48,11 @@ class ReusableTextField extends StatelessWidget {
         decoration: CommonFunctions.customInputDecoration(
             labelText, hintText, context, null),
         onEditingComplete: onEditingComplete,
+        style: CommonFunctions.appTextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          textColor: Colors.black,
+        ),
       ),
     );
   }

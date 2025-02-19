@@ -1,0 +1,27 @@
+{
+  "app": "app",
+  "email": "Email",
+  "pleaseEnterValidEmail": "Please enter a valid email address",
+  "emailAddress": "Email Address",
+  "enterYourEmailAddress": "Enter your Email Address",
+  "password": "Password",
+  "passwordLimit": "Password must be at least 6 characters",
+  "forgotPassword": "Forgot password ?",
+  "login": "Log In",
+  "shopApp": "ShopApp",
+  "signUp": "Sign up",
+  "doNotHaveAccount": "Don't have an account ?",
+  "fullName": "Full Name",
+  "enterYourFullName": "Enter your full name",
+  "pleaseEnterYourFullName": "Please enter your full name",
+  "phoneNumber": "Phone Number",
+  "enterYourPhoneNumber": "Enter your phone number",
+  "pleaseEnterValidPhoneNumber": "Please enter a valid phone number",
+  "address": "Address",
+  "enterFullAddress": "Enter your full address",
+  "pleaseEnterFullAddress": "Please enter a full address",
+  "emailExistsText": "This email already exists. You can reset your password from the login page.",
+  "alreadyHaveAccount": "Already have an account?"
+
+
+}

@@ -6,15 +6,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/picture_provider.dart';
-import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 
 import '../../ui/routes/route_name.dart';
 import '../../ui/utils/ui_tools/my_alert_dialog.dart';
-
-enum AuthStates { idle, loginLoading, loginSuccess, loginError, wrongCreds }
+import '../enums/app_enums.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   final _googleSignIn = GoogleSignIn();
   AuthStates _authState = AuthStates.idle;
 
@@ -22,30 +21,62 @@ class AuthProvider with ChangeNotifier {
       _firebaseAuth.currentUser != null &&
       !_firebaseAuth.currentUser!.isAnonymous;
 
-  get loginState => _authState;
+  get authState => _authState;
 
   Future<void> signUp({
     required String email,
     required String password,
     required UserModel userModel,
+    required BuildContext ctx,
   }) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      _authState = AuthStates.signupLoading;
+      notifyListeners();
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      userModel.id = _firebaseAuth.currentUser?.uid ?? '';
+      userModel.id = userCredential.user?.uid ?? '';
       if (userModel.imageUrl.isNotEmpty) {
         final imageUploader = PicturesProvider();
-        final imageUrl = await imageUploader.uploadSinglePicture(
+        userModel.imageUrl = await imageUploader.uploadSinglePicture(
           fileLocationinDevice: userModel.imageUrl,
         );
-        userModel.imageUrl = imageUrl;
-        notifyListeners();
       }
-
-      await UserDataProvider().uploadUserData(userModel);
-      notifyListeners();
+      final formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+      userModel.joinedAt = formattedDate;
+      userModel.createdAt = Timestamp.now();
+      await _fireStore
+          .collection('adminUsers')
+          .doc(userModel.id)
+          .set(userModel.toJson());
+      if (ctx.mounted) {
+        _authState = AuthStates.signupSuccess;
+        Navigator.of(ctx).pushNamedAndRemoveUntil(
+          RouteName.bottomBarScreen,
+          (route) => false,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      _authState = AuthStates.signupError;
+      if (ctx.mounted) {
+        if (e.code.contains('email-already-in-use')) {
+          _authState = AuthStates.signupEmailExists;
+        } else if (e.code.contains('email')) {
+          MyAlertDialog.error(ctx, "Invalid email format.");
+        } else if (e.code.contains('network')) {
+          MyAlertDialog.connectionError(ctx);
+        } else {
+          MyAlertDialog.error(
+              ctx, e.message ?? "Signup failed. Please try again.");
+        }
+      }
+    } catch (error) {
+      _authState = AuthStates.signupError;
+      if (ctx.mounted) {
+        MyAlertDialog.error(ctx, error.toString());
+      }
     } finally {
       notifyListeners();
     }
@@ -83,56 +114,6 @@ class AuthProvider with ChangeNotifier {
     }).whenComplete(() {
       notifyListeners();
     });
-  }
-
-  Future<void> googleSignIn() async {
-    try {
-      final googleAccount = await _googleSignIn.signIn();
-      if (googleAccount != null) {
-        final googleAuth = await googleAccount.authentication;
-        if (googleAuth.accessToken != null && googleAuth.idToken != null) {
-          final credential = GoogleAuthProvider.credential(
-              accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-
-          final userCredential =
-              await _firebaseAuth.signInWithCredential(credential);
-          final user = userCredential.user;
-
-          if (user != null) {
-            final userDoc = await FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid)
-                .get();
-
-            if (!userDoc.exists) {
-              UserModel userModel = UserModel(
-                id: user.uid,
-                email: user.email ?? '',
-                fullName: user.displayName ?? '',
-                imageUrl: user.photoURL ?? '',
-                phoneNumber: user.phoneNumber ?? '',
-                createdAt: Timestamp.now(),
-                joinedAt:
-                    DateFormat('EEEE, MMMM d, yyyy').format(DateTime.now()),
-              );
-
-              // Upload user data only if the document doesn't exist
-              await UserDataProvider()
-                  .uploadUserData(userModel)
-                  .then((_) => print('Done Uploading'));
-            } else {
-              print('User already exists. No need to upload data.');
-            }
-
-            notifyListeners();
-          }
-        }
-      }
-    } catch (e) {
-      throw Exception(e.toString());
-    } finally {
-      notifyListeners();
-    }
   }
 
   Future<void> resetPassword({required String email}) async {

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/auth_provider.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
-import 'package:shop_owner_app/ui/screens/sign_up.dart';
+import 'package:shop_owner_app/ui/utils/common_functions.dart';
 import 'package:shop_owner_app/ui/widgets/reusable_text_field.dart';
 
+import '../../core/enums/app_enums.dart';
 import '../widgets/password_text_field.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -52,6 +54,7 @@ class _LogInScreenState extends State<LogInScreen> {
   }
 
   Widget _buildLoginForm(AuthProvider authProvider, Size mediaQuery) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return Form(
       key: _formKey,
       child: Column(
@@ -59,14 +62,14 @@ class _LogInScreenState extends State<LogInScreen> {
           ReusableTextField(
             controller: _emailController,
             focusNode: _emailFocusNode,
-            valueKey: 'Email',
+            valueKey: appLocalizations.email,
             validator: (value) =>
-                value == null || !EmailValidator.validateEmail(value)
-                    ? 'Please enter a valid email address'
+                value == null || !CommonFunctions.validateEmail(value)
+                    ? appLocalizations.pleaseEnterValidEmail
                     : null,
             maxLines: 1,
-            labelText: 'Email Address',
-            hintText: 'Enter your email',
+            labelText: appLocalizations.emailAddress,
+            hintText: appLocalizations.enterYourEmailAddress,
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.emailAddress,
             onEditingComplete: () =>
@@ -75,47 +78,43 @@ class _LogInScreenState extends State<LogInScreen> {
           ),
           PasswordTextField(
             focusNode: _passwordNode,
-            label: 'Password',
+            label: appLocalizations.password,
             validator: (value) => value != null && value.length < 6
-                ? 'Password must be at least 6 characters'
+                ? appLocalizations.passwordLimit
                 : null,
             onSaved: (value) => _password = value!,
           ),
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    RouteName.forgotPasswordScreen,
-                  );
-                },
-                child: Text(
-                  'Forgot password ?',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                  ),
-                )),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  RouteName.forgotPasswordScreen,
+                );
+              },
+              child: Text(
+                appLocalizations.forgotPassword,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
           ),
           SizedBox(height: mediaQuery.height * 0.02),
           SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: () =>
-                  authProvider.loginState == AuthStates.loginLoading
-                      ? null
-                      : _submitForm(authProvider),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  authProvider.loginState == AuthStates.loginLoading
-                      ? CircularProgressIndicator(
-                          color: Theme.of(context).primaryColor,
-                        )
-                      : const Text('Log In'),
-                ],
-              ),
+              onPressed: () => authProvider.authState == AuthStates.loginLoading
+                  ? null
+                  : _submitForm(authProvider),
+              child: authProvider.authState == AuthStates.loginLoading
+                  ? CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                      strokeWidth: 2,
+                    )
+                  : Text(appLocalizations.login),
             ),
           ),
         ],
@@ -125,6 +124,7 @@ class _LogInScreenState extends State<LogInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.sizeOf(context);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -144,31 +144,24 @@ class _LogInScreenState extends State<LogInScreen> {
                           size: 32,
                           color: Theme.of(context).primaryColor,
                         ),
-                        const Text(
-                          ' ShopApp',
-                          style: TextStyle(fontSize: 22),
+                        Text(
+                          appLocalizations.shopApp,
+                          style: CommonFunctions.appTextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.blue,
+                          ),
                         )
                       ],
                     ),
                     SizedBox(height: mediaQuery.height * 0.1),
-                    Visibility(
-                      visible: authProvider.loginState == AuthStates.wrongCreds,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'The email or password you entered did not match our records. Please double check and try again',
-                          style: TextStyle(color: Colors.redAccent),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
                     _buildLoginForm(authProvider, mediaQuery),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Don\'t have an account? ',
+                          appLocalizations.doNotHaveAccount,
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         TextButton(
@@ -176,7 +169,7 @@ class _LogInScreenState extends State<LogInScreen> {
                             Navigator.popAndPushNamed(
                                 context, RouteName.signUpScreen);
                           },
-                          child: const Text('Sign up'),
+                          child: Text(appLocalizations.signUp),
                         ),
                       ],
                     ),
