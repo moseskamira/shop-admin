@@ -9,11 +9,12 @@ import 'package:shop_owner_app/core/view_models/picture_provider.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 
 class AuthProvider with ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final _googleSignIn = GoogleSignIn();
 
   bool get isLoggedIn =>
-      _auth.currentUser != null && !_auth.currentUser!.isAnonymous;
+      _firebaseAuth.currentUser != null &&
+      !_firebaseAuth.currentUser!.isAnonymous;
 
   Future<void> signUp({
     required String email,
@@ -21,11 +22,11 @@ class AuthProvider with ChangeNotifier {
     required UserModel userModel,
   }) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
+      await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      userModel.id = _auth.currentUser?.uid ?? '';
+      userModel.id = _firebaseAuth.currentUser?.uid ?? '';
       if (userModel.imageUrl.isNotEmpty) {
         final imageUploader = PicturesProvider();
         final imageUrl = await imageUploader.uploadSinglePicture(
@@ -44,7 +45,8 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> signIn({required String email, required String password}) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
       notifyListeners();
     } catch (e) {
       throw Exception(e.toString());
@@ -53,7 +55,6 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Google sign in
   Future<void> googleSignIn() async {
     try {
       final googleAccount = await _googleSignIn.signIn();
@@ -63,7 +64,8 @@ class AuthProvider with ChangeNotifier {
           final credential = GoogleAuthProvider.credential(
               accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
-          final userCredential = await _auth.signInWithCredential(credential);
+          final userCredential =
+              await _firebaseAuth.signInWithCredential(credential);
           final user = userCredential.user;
 
           if (user != null) {
@@ -103,11 +105,10 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  //Reset Password
-
   Future<void> resetPassword({required String email}) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email.trim().toLowerCase());
+      await _firebaseAuth.sendPasswordResetEmail(
+          email: email.trim().toLowerCase());
     } catch (e) {
       throw Exception(e.toString());
     } finally {
@@ -117,15 +118,12 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> signOut(BuildContext context) async {
     try {
-      // Check if it's not on web app
       if (!kIsWeb) {
-        // Check if user is signed in with google sign in
         if (await _googleSignIn.isSignedIn()) {
           await _googleSignIn.disconnect();
         }
       }
-      await _auth.signOut().then((_) {
-        // signInAnonymously();
+      await _firebaseAuth.signOut().then((_) {
         notifyListeners();
       });
     } catch (e) {

@@ -46,18 +46,20 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1034039902236',
     projectId: 'store-app-d038a',
     authDomain: 'store-app-d038a.firebaseapp.com',
-    databaseURL: 'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'store-app-d038a.appspot.com',
     measurementId: 'G-NKWQC23R9X',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCJZZYZucxPAsxykYdymwfrYtwilBKO-ck',
-    appId: '1:1034039902236:android:ebe549a991801d0235dfd9',
-    messagingSenderId: '1034039902236',
-    projectId: 'store-app-d038a',
-    databaseURL: 'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'store-app-d038a.appspot.com',
+    apiKey: 'AIzaSyBvn7JSNamhKFvDqh-72vN0bzvd7Zki9OQ',
+    appId: '1:1003395419363:android:c3adc64d35ce43855dc9d6',
+    messagingSenderId: '1003395419363',
+    projectId: 'shop-2e262',
+    databaseURL:
+        'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'shop-2e262.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -65,10 +67,13 @@ class DefaultFirebaseOptions {
     appId: '1:1034039902236:ios:7d57918532b1361335dfd9',
     messagingSenderId: '1034039902236',
     projectId: 'store-app-d038a',
-    databaseURL: 'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'store-app-d038a.appspot.com',
-    androidClientId: '1034039902236-21vk3ilcd70jmfqsm6qr79ine6t9d80l.apps.googleusercontent.com',
-    iosClientId: '1034039902236-q9tj408mbhkr5gsvchten5l1e9iskk54.apps.googleusercontent.com',
+    androidClientId:
+        '1034039902236-21vk3ilcd70jmfqsm6qr79ine6t9d80l.apps.googleusercontent.com',
+    iosClientId:
+        '1034039902236-q9tj408mbhkr5gsvchten5l1e9iskk54.apps.googleusercontent.com',
     iosBundleId: 'com.example.shopOwnerApp',
   );
 
@@ -77,10 +82,13 @@ class DefaultFirebaseOptions {
     appId: '1:1034039902236:ios:7d57918532b1361335dfd9',
     messagingSenderId: '1034039902236',
     projectId: 'store-app-d038a',
-    databaseURL: 'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'store-app-d038a.appspot.com',
-    androidClientId: '1034039902236-21vk3ilcd70jmfqsm6qr79ine6t9d80l.apps.googleusercontent.com',
-    iosClientId: '1034039902236-q9tj408mbhkr5gsvchten5l1e9iskk54.apps.googleusercontent.com',
+    androidClientId:
+        '1034039902236-21vk3ilcd70jmfqsm6qr79ine6t9d80l.apps.googleusercontent.com',
+    iosClientId:
+        '1034039902236-q9tj408mbhkr5gsvchten5l1e9iskk54.apps.googleusercontent.com',
     iosBundleId: 'com.example.shopOwnerApp',
   );
 
@@ -90,7 +98,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1034039902236',
     projectId: 'store-app-d038a',
     authDomain: 'store-app-d038a.firebaseapp.com',
-    databaseURL: 'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://store-app-d038a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'store-app-d038a.appspot.com',
     measurementId: 'G-YZHXQPZ6DQ',
   );
