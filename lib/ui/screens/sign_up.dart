@@ -7,6 +7,7 @@ import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 import 'package:shop_owner_app/ui/widgets/reusable_text_field.dart';
 
 import '../../core/models/user_model.dart';
+import '../widgets/password_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
