@@ -8,13 +8,21 @@ import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/picture_provider.dart';
 import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 
+import '../../ui/routes/route_name.dart';
+import '../../ui/utils/ui_tools/my_alert_dialog.dart';
+
+enum AuthStates { idle, loginLoading, loginSuccess, loginError, wrongCreds }
+
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final _googleSignIn = GoogleSignIn();
+  AuthStates _authState = AuthStates.idle;
 
   bool get isLoggedIn =>
       _firebaseAuth.currentUser != null &&
       !_firebaseAuth.currentUser!.isAnonymous;
+
+  get loginState => _authState;
 
   Future<void> signUp({
     required String email,
@@ -43,16 +51,38 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> signIn({required String email, required String password}) async {
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+  Future<void> signIn({
+    required String email,
+    required String password,
+    required BuildContext ctx,
+  }) async {
+    _authState = AuthStates.loginLoading;
+    notifyListeners();
+    await _firebaseAuth
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((_) {
+      _authState = AuthStates.loginSuccess;
+      if (ctx.mounted) {
+        Navigator.of(ctx).pushNamedAndRemoveUntil(
+          RouteName.bottomBarScreen,
+          (Route<dynamic> route) => false,
+        );
+      }
+    }).onError((e, stackStress) {
+      _authState = AuthStates.loginError;
+      if (ctx.mounted) {
+        if (e.toString().contains('wrong-password') ||
+            e.toString().contains('user-not-found')) {
+          _authState = AuthStates.wrongCreds;
+        } else if (e.toString().toLowerCase().contains('network')) {
+          MyAlertDialog.connectionError(ctx);
+        } else {
+          MyAlertDialog.error(ctx, e.toString());
+        }
+      }
+    }).whenComplete(() {
       notifyListeners();
-    } catch (e) {
-      throw Exception(e.toString());
-    } finally {
-      notifyListeners();
-    }
+    });
   }
 
   Future<void> googleSignIn() async {
