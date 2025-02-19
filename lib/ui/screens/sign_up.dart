@@ -5,6 +5,7 @@ import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 import 'package:shop_owner_app/ui/widgets/reusable_text_field.dart';
+
 import '../../core/models/user_model.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -27,9 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late bool _isEmailValid;
   late bool _isLoading;
 
-  @override
-  void initState() {
-    super.initState();
+  void initializeValues() {
     _userModel = UserModel();
     _isLoading = false;
     _isEmailValid = true;
@@ -40,13 +39,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _addressNode = FocusNode();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  void disposeValues() {
     _passwordNode.dispose();
     _emailNode.dispose();
     _phoneNumberNode.dispose();
     _addressNode.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeValues();
+  }
+
+  @override
+  void dispose() {
+    disposeValues();
+    super.dispose();
   }
 
   void _submitForm() async {
@@ -84,7 +93,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -107,7 +115,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Center(
                   child: Stack(
                     children: [
-                       
                       ImagePreview(imagePath: _pickedImagePath),
                       Positioned(
                         right: 0,
