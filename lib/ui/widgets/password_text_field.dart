@@ -38,27 +38,33 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         maxLines: 1,
         keyboardType: TextInputType.visiblePassword,
         decoration: CommonFunctions.customInputDecoration(
-            widget.label,
-            widget.label,
-            context,
-            SizedBox(
-              height: 32,
-              width: 28,
-              child: IconButton(
-                onPressed: () {
-                  setState(() {
-                    _passwordIsVisible = !_passwordIsVisible;
-                  });
-                },
-                splashRadius: 18,
-                iconSize: 18,
-                icon: Icon(
-                  _passwordIsVisible
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
-                ),
+          widget.label,
+          widget.label,
+          context,
+          SizedBox(
+            height: 32,
+            width: 28,
+            child: IconButton(
+              onPressed: () {
+                setState(() {
+                  _passwordIsVisible = !_passwordIsVisible;
+                });
+              },
+              splashRadius: 18,
+              iconSize: 18,
+              icon: Icon(
+                _passwordIsVisible
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
               ),
-            )),
+            ),
+          ),
+        ),
+        style: CommonFunctions.appTextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          textColor: Colors.black,
+        ),
       ),
     );
   }

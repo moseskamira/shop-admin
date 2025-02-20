@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Styles {
-  static const MaterialColor _primaryColor = Colors.deepPurple;
+class AppTheme {
+  static const MaterialColor _primaryColor = Colors.blue;
+
   static ThemeData getThemeData(bool isDarkTheme) {
-    return isDarkTheme ? darkTheme : lightTheme;
+    return isDarkTheme ? darkThemeData : lightThemeData;
   }
 
-  static ThemeData lightTheme = ThemeData(
+  static ThemeData lightThemeData = ThemeData(
     primarySwatch: _primaryColor,
     primaryColor: _primaryColor,
     primaryTextTheme: const TextTheme(
@@ -30,33 +31,44 @@ class Styles {
     ),
     textTheme: TextTheme(
       bodyLarge: const TextStyle(
-          fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
       bodyMedium: TextStyle(
-          fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey[800]),
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: Colors.grey[800],
+      ),
       headlineSmall: TextStyle(
-          color: Colors.grey[900],
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.8),
+        color: Colors.grey[900],
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0.8,
+      ),
       headlineMedium: const TextStyle(
-          color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
-      headlineLarge: const TextStyle(
-          color: _primaryColor, fontWeight: FontWeight.w600),
+        color: Colors.black,
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+      ),
+      headlineLarge:
+          const TextStyle(color: _primaryColor, fontWeight: FontWeight.w600),
       titleLarge: TextStyle(color: Colors.grey[700], fontSize: 14),
       titleMedium: TextStyle(color: Colors.grey[700]),
       titleSmall:
-      TextStyle(color: Colors.grey[600], fontWeight: FontWeight.normal),
+          TextStyle(color: Colors.grey[600], fontWeight: FontWeight.normal),
       labelSmall:
-      TextStyle(fontSize: 12.0, color: Colors.grey[600], letterSpacing: 1),
+          TextStyle(fontSize: 12.0, color: Colors.grey[600], letterSpacing: 1),
       bodySmall: TextStyle(fontSize: 12, color: Colors.grey[600]),
     ),
     appBarTheme: const AppBarTheme(
-        elevation: 0.0, iconTheme: IconThemeData(color: _primaryColor)),
+      elevation: 0.0,
+      iconTheme: IconThemeData(color: _primaryColor),
+    ),
     iconTheme: IconThemeData(color: Colors.grey[700]),
   );
 
-
-  static ThemeData darkTheme = ThemeData(
+  static ThemeData darkThemeData = ThemeData(
     primarySwatch: _primaryColor,
     primaryColor: _primaryColor,
     colorScheme: ColorScheme.dark(
@@ -91,17 +103,17 @@ class Styles {
           letterSpacing: 0.8),
       headlineMedium: const TextStyle(
           color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-      headlineLarge: const TextStyle(color: _primaryColor, fontWeight: FontWeight.w600),
+      headlineLarge:
+          const TextStyle(color: _primaryColor, fontWeight: FontWeight.w600),
       titleLarge: TextStyle(color: Colors.grey[300], fontSize: 14),
       titleMedium: TextStyle(color: Colors.grey[300]),
       titleSmall:
-      TextStyle(color: Colors.grey[350], fontWeight: FontWeight.normal),
+          TextStyle(color: Colors.grey[350], fontWeight: FontWeight.normal),
       labelSmall:
-      TextStyle(fontSize: 12.0, color: Colors.grey[500], letterSpacing: 1),
+          TextStyle(fontSize: 12.0, color: Colors.grey[500], letterSpacing: 1),
       bodySmall: TextStyle(fontSize: 12, color: Colors.grey[400]),
     ),
     appBarTheme: const AppBarTheme(elevation: 0.0),
     iconTheme: IconThemeData(color: Colors.grey[300]),
   );
-
 }

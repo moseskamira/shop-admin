@@ -37,29 +37,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     _selectedIndex = 0;
   }
 
-// PopScope<void>(
-//       canPop: false,
-//       onPopInvokedWithResult: (bool didPop, void result) async {
-//         if (didPop) {
-//           return;
-//         }
-//         if (_selectedIndex != 0) {
-//           setState(() {
-//             _selectedIndex = 0;
-//           });
-//           return;
-//         }
-//         if (context.mounted) {
-//         Navigator.of(context).pop();
-//          // Navigator.pop(context);
-//          //auth navigation.....
-//         }
-//       },
-
   @override
   Widget build(BuildContext context) {
-    ///TODO fixing the deprications
-
     return WillPopScope(
       onWillPop: () async {
         if (_selectedIndex != 0) {

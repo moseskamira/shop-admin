@@ -6,25 +6,19 @@ part of 'product_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ProductModel _$ProductModelFromJson(Map<String, dynamic> json) {
- /// print(json['imageUrls'].length);
-  List<String>imageUrlOfProductsForFetching=[];
-  imageUrlOfProductsForFetching.clear();
-  for(int i =0; i<json['imageUrls'].length; i++){
-    imageUrlOfProductsForFetching.add(json['imageUrls'][i]);
-  }
-  return ProductModel(
-    id: json['id'] as String,
-    name: json['name'] as String,
-    price: (json['price'] as num).toDouble(),
-    brand: json['brand'] as String,
-    description: json['description'] as String,
-    imageUrls: imageUrlOfProductsForFetching,
-    category: json['category'] as String,
-    quantity: json['quantity'] as int,
-     isPopular: json['isPopular'] as bool,
-   );
-}
+ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0,
+      brand: json['brand'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      imageUrls: (json['imageUrls'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      category: json['category'] as String? ?? '',
+      quantity: (json['quantity'] as num?)?.toInt() ?? 0,
+      isPopular: json['isPopular'] as bool? ?? false,
+    );
 
 Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
     <String, dynamic>{
@@ -36,5 +30,5 @@ Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
       'imageUrls': instance.imageUrls,
       'category': instance.category,
       'quantity': instance.quantity,
-       'isPopular': instance.isPopular,
-     };
+      'isPopular': instance.isPopular,
+    };
