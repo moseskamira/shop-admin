@@ -40,14 +40,12 @@
 <img src="ProjectSnap/light_theme/1.1.jpg" width="15.3%" alt="details view of a products" /><img src="ProjectSnap/light_theme/7.jpg" width="15%" alt="order confirmed" /><img src="ProjectSnap/light_theme/8.jpg" width="15%" alt="Registration Form" /><img src="ProjectSnap/light_theme/9.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/10.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/11.jpg" width="9.4%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/12.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/13.jpg" width="5.4%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/14.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/15.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/16.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/17.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/17.1.jpg" width="15%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/19.jpg" width="9%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/20.jpg" width="8.5%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/21.jpg" width="18%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/22.jpg" width="13%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/23.jpg" width="12%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/25.jpg" width="12.1%" alt="Demo of this application" /><img src="ProjectSnap/light_theme/28.jpg" width="18%" alt="Demo of this application" /><img src="ProjectSnap/dark_theme/20.jpg" width="13%" alt="Demo of this application" /><img src="ProjectSnap/dark_theme/12.jpg" width="15%" alt="Product popup" />
 </br>
 
-# You can take a Look at the project [More Images here..](images.md).
-
 ## Run Locally
 
 Clone the project
 
 ```bash
-  git clone https://github.com/abdulawalarif/shop_owner_app.git
+  git clone https://github.com/moseskamira/shop-admin.git
 ```
 
 Go to the project directory
@@ -72,26 +70,4 @@ Connect a physical device or start a virtual device on your machine
 
 - **Setup Firebase:** Insert some data for testing..
 
-## Reporting Bugs or Requesting Features?
 
-If you found an issue or would like to submit an improvement to this project,
-please submit an issue using the issues tab above. If you want to submit a PR with a fix, reference the issue you created!
-
-## Known Issues and Future Work
-
-- **CRUD for product category:** Pushing product category to the network.
- 
-- **Improved Error Handling:** Implementing comprehensive error handling.
-
-- **Adding payment method:** Online payment integrations.
-
-- **FCM:** Firebase push notification for new order placement with deep linking.
-
-## Author
-
-- [@abdulawalarif](https://github.com/abdulawalarif)
- 
-
-## License
-
-The MIT License [MIT](https://choosealicense.com/licenses/mit/). Please view the [License](LICENSE) File for more information.
