@@ -4,7 +4,7 @@ class CategoryModel {
 
   CategoryModel({this.title = '', this.image = ''});
 
-  List<CategoryModel> getCategories() {
+  static List<CategoryModel> getCategories() {
     return [
       CategoryModel(
           title: 'Phone', image: 'assets/images/categories/phone.png'),

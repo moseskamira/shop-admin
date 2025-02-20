@@ -7,49 +7,28 @@ class UserDataProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
-   
-  
-Stream<UserModel> fetchUserData() async* {
-  final user = _auth.currentUser;
-  if (user != null) {
-    final uid = user.uid;
-    if (!user.isAnonymous) {
-      yield* _fireStore.collection('adminUsers').doc(uid).snapshots().map((snapshot) {
-        if (snapshot.exists) {
-          return UserModel.fromJson(snapshot.data()!);
-        } else {
-          return UserModel();  
-        }
-      });
-    } else {
-      yield UserModel(); 
-    }
-  } else {
-    yield UserModel();  
-  }
-}
 
-
-  Future<void> uploadUserData(UserModel userModel) async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        userModel.id = user.uid;
-        var date = DateTime.now().toString();
-        var dateparse = DateTime.parse(date);
-        var formattedDate =
-            '${dateparse.day}-${dateparse.month}-${dateparse.year}';
-        userModel.joinedAt = formattedDate;
-        userModel.createdAt = Timestamp.now();
-        await _fireStore
+  Stream<UserModel> fetchUserData() async* {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final uid = user.uid;
+      if (!user.isAnonymous) {
+        yield* _fireStore
             .collection('adminUsers')
-            .doc(userModel.id)
-            .set(userModel.toJson());
+            .doc(uid)
+            .snapshots()
+            .map((snapshot) {
+          if (snapshot.exists) {
+            return UserModel.fromJson(snapshot.data()!);
+          } else {
+            return UserModel();
+          }
+        });
       } else {
-        throw Exception('No authenticated user found');
+        yield UserModel();
       }
-    } catch (e) {
-      rethrow;
+    } else {
+      yield UserModel();
     }
   }
 
