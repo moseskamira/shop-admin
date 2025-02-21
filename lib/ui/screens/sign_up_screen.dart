@@ -83,9 +83,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Sign Up',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  Text(
+                    appLocalizations.signUp,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.07),
                   Center(
@@ -127,10 +130,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   if (authProvider.authState == AuthStates.signupEmailExists)
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
                         appLocalizations.emailExistsText,
-                        style: TextStyle(color: Colors.redAccent),
+                        style: const TextStyle(color: Colors.redAccent),
                       ),
                     ),
                   const SizedBox(height: 20),

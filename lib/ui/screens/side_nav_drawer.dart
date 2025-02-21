@@ -170,32 +170,17 @@ class SideNavDrawer extends StatelessWidget {
               title: const Text('My Profile'),
               onTap: (() {}),
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.policy_sharp),
-              title: const Text('Privacy Policies'),
-              onTap: (() async {}),
-            ),
-            ListTile(
-              leading: const Icon(Icons.description),
-              title: const Text('Terms Of Use'),
-              onTap: (() async {}),
-            ),
             Card(
-              child: Column(
-                children: [
-                  SwitchListTile(
-                    title: const Text('Dark Theme'),
-                    secondary: Icon(
-                      Icons.dark_mode,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                    value: themeChange.isDarkTheme,
-                    onChanged: (bool value) {
-                      themeChange.isDarkTheme = value;
-                    },
-                  ),
-                ],
+              child: SwitchListTile(
+                title: const Text('Dark Theme'),
+                secondary: Icon(
+                  Icons.dark_mode,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                value: themeChange.isDarkTheme,
+                onChanged: (bool value) {
+                  themeChange.isDarkTheme = value;
+                },
               ),
             ),
             ListTile(
