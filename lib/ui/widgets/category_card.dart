@@ -22,6 +22,7 @@ class CategoryCard extends StatelessWidget {
             child: Center(
               child: Image.asset(
                 category.image,
+                color: Colors.blue,
               ),
             ),
           ),

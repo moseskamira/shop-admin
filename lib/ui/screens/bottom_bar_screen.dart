@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_owner_app/core/view_models/bottom_nav_index_provider.dart';
 import 'package:shop_owner_app/ui/constants/app_consntants.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/screens/feeds.dart';
@@ -22,25 +24,19 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     {'page': const OrdersList(), 'title': 'Orders'},
   ];
 
-  int _selectedIndex = 0;
-
-  void _selectedPages(int index) {
-    if (index == 2 || index == _selectedIndex) return;
-    setState(() => _selectedIndex = index);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final bottomNavIndexProvider = context.watch<BottomNavIndexProvider>();
     return PopScope(
-      canPop: _selectedIndex == 0,
+      canPop: bottomNavIndexProvider.selectedIndex == 0,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
-          setState(() => _selectedIndex = 0);
+          bottomNavIndexProvider.reset(0);
         }
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: _pages[_selectedIndex]['page'],
+        body: _pages[bottomNavIndexProvider.selectedIndex]['page'],
         bottomNavigationBar: BottomAppBar(
           elevation: 10,
           notchMargin: 6,
@@ -48,8 +44,13 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           clipBehavior: Clip.antiAlias,
           shape: const CircularNotchedRectangle(),
           child: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _selectedPages,
+            currentIndex: bottomNavIndexProvider.selectedIndex,
+            onTap: (index) {
+              if (index == 2 || index == bottomNavIndexProvider.selectedIndex) {
+                return;
+              }
+              bottomNavIndexProvider.reset(index);
+            },
             type: BottomNavigationBarType.fixed,
             unselectedItemColor: Theme.of(context).unselectedWidgetColor,
             selectedItemColor: Theme.of(context).primaryColor,

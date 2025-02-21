@@ -9,6 +9,7 @@ import 'package:sizer/sizer.dart';
 
 import 'core/l10n/l10n.dart';
 import 'core/view_models/auth_provider.dart';
+import 'core/view_models/bottom_nav_index_provider.dart';
 import 'core/view_models/orders_provider.dart';
 import 'core/view_models/picture_provider.dart';
 import 'core/view_models/product_upload_image_provider.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => UpdateImageProvider()),
             ChangeNotifierProvider(create: (_) => OrdersProvider()),
             ChangeNotifierProvider(create: (_) => SearchProvider()),
+            ChangeNotifierProvider(create: (_) => BottomNavIndexProvider()),
             ChangeNotifierProvider(
               create: (_) => ThemeChangeProvider(isDarkTheme),
             ),
