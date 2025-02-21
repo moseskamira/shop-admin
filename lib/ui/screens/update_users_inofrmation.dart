@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_owner_app/core/enums/app_enums.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
 import 'package:shop_owner_app/core/view_models/picture_provider.dart';
-import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
+import 'package:shop_owner_app/core/view_models/profile_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
+import 'package:shop_owner_app/ui/utils/ui_tools/my_snackbar.dart';
 import 'package:shop_owner_app/ui/widgets/reusable_text_field.dart';
+
 import '../widgets/update_image_preview.dart';
 
 class UpdateUsersInformation extends StatefulWidget {
   final UserModel userModel;
+
   const UpdateUsersInformation({super.key, required this.userModel});
+
   @override
   State<UpdateUsersInformation> createState() => _UpdateUsersInformationState();
 }
@@ -20,7 +25,6 @@ class _UpdateUsersInformationState extends State<UpdateUsersInformation> {
   late final FocusNode _addressNode;
   final _formKey = GlobalKey<FormState>();
   String initialImagePath = '';
-  bool _isLoading = false;
   late final TextEditingController fullNameEditingController;
   late final TextEditingController phoneNumberController;
   late final TextEditingController addressEditingController;
@@ -53,55 +57,54 @@ class _UpdateUsersInformationState extends State<UpdateUsersInformation> {
     addressEditingController.dispose();
   }
 
-  void _submitForm() async {
-    final isValid = _formKey.currentState!.validate();
+  void _submitForm(ProfileProvider provider, BuildContext ctx) async {
+    if (!_formKey.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
-    if (isValid) {
-      _formKey.currentState!.save();
-      final userDataProvider =
-          Provider.of<UserDataProvider>(context, listen: false);
-      final pictureProvider =
-          Provider.of<PicturesProvider>(context, listen: false);
-      setState(() => _isLoading = true);
-      if (initialImagePath != widget.userModel.imageUrl) {
-        if (initialImagePath.contains('firebasestorage')) {
-
-        await  pictureProvider.deleteSinglePicture(url: initialImagePath);
-         await pictureProvider
-              .uploadSinglePicture(
-            fileLocationinDevice: widget.userModel.imageUrl,
-          )
-              .then((fileUrl) {
-           setState(() {
-              widget.userModel.imageUrl = fileUrl;
-           });
+    _formKey.currentState!.save();
+    final pictureProvider =
+        Provider.of<PicturesProvider>(context, listen: false);
+    if (initialImagePath != widget.userModel.imageUrl) {
+      if (initialImagePath.contains('firebasestorage')) {
+        await pictureProvider.deleteSinglePicture(url: initialImagePath);
+        await pictureProvider
+            .uploadSinglePicture(
+          fileLocationinDevice: widget.userModel.imageUrl,
+        )
+            .then((fileUrl) {
+          setState(() {
+            widget.userModel.imageUrl = fileUrl;
           });
-        } else {
-         await pictureProvider
-              .uploadSinglePicture(
-            fileLocationinDevice: widget.userModel.imageUrl,
-          )
-              .then((url) {
-            widget.userModel.imageUrl = url;
-            setState(() {
-              
-            });
-          });
-        }
+        });
       } else {
-        widget.userModel.imageUrl = initialImagePath;
+        await pictureProvider
+            .uploadSinglePicture(
+          fileLocationinDevice: widget.userModel.imageUrl,
+        )
+            .then((url) {
+          widget.userModel.imageUrl = url;
+          setState(() {});
+        });
       }
-     await userDataProvider.updateUserData(widget.userModel).then((_) {
-        if (Navigator.canPop(context)) Navigator.pop(context);
-      }).catchError((error) {
-        if (error.toString().toLowerCase().contains('network')) {
-          MyAlertDialog.connectionError(context);
-        } else {
-          MyAlertDialog.error(context, error.message.toString());
-        }
-      }).whenComplete(() {
-        setState(() => _isLoading = false);
-      });
+    } else {
+      widget.userModel.imageUrl = initialImagePath;
+    }
+    await provider.updateProfile(widget.userModel);
+    if (provider.userState == ProfileStates.updateError && ctx.mounted) {
+      MySnackBar().showSnackBar(
+        content: provider.updateError,
+        context: ctx,
+        backgroundColor: Colors.black12,
+        duration: const Duration(seconds: 4),
+      );
+    }
+
+    if (provider.userState == ProfileStates.updateSuccess && ctx.mounted) {
+      MySnackBar().showSnackBar(
+        content: 'Profile updated successfully',
+        context: ctx,
+        backgroundColor: Colors.blue,
+        duration: const Duration(seconds: 4),
+      );
     }
   }
 
@@ -212,7 +215,6 @@ class _UpdateUsersInformationState extends State<UpdateUsersInformation> {
                           validator: (value) => value!.isEmpty
                               ? 'Please enter a valid Address'
                               : null,
-                          onEditingComplete: () => _submitForm(),
                           onSaved: (value) => widget.userModel.address = value!,
                         ),
 
@@ -246,36 +248,41 @@ class _UpdateUsersInformationState extends State<UpdateUsersInformation> {
                               ),
                             ),
                             const Spacer(),
-                            SizedBox(
-                              height: 50,
-                              width: 100,
-                              child: Material(
-                                color: Theme.of(context).primaryColor,
-                                child: InkWell(
-                                  onTap: _isLoading
-                                      ? () {}
-                                      : () {
-                                          _submitForm();
-                                          FocusScope.of(context).unfocus();
-                                        },
-                                  child: Center(
-                                    child: !_isLoading
-                                        ? Text(
-                                            'Update !'.toUpperCase(),
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 0.5,
-                                            ),
-                                          )
-                                        : const CircularProgressIndicator(
-                                            color: Colors.white,
-                                          ),
+                            Consumer<ProfileProvider>(
+                                builder: (context, userDataProvider, child) {
+                              return SizedBox(
+                                height: 50,
+                                width: 100,
+                                child: Material(
+                                  color: Theme.of(context).primaryColor,
+                                  child: InkWell(
+                                    onTap: userDataProvider.userState ==
+                                            ProfileStates.updateLoading
+                                        ? () {}
+                                        : () {
+                                            _submitForm(
+                                                userDataProvider, context);
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                    child: Center(
+                                        child: userDataProvider.userState ==
+                                                ProfileStates.updateLoading
+                                            ? const CircularProgressIndicator(
+                                                color: Colors.orange,
+                                              )
+                                            : Text(
+                                                'Update !'.toUpperCase(),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 0.5,
+                                                ),
+                                              )),
                                   ),
                                 ),
-                              ),
-                            ),
+                              );
+                            }),
                           ],
                         ),
                       ],

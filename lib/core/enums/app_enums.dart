@@ -7,5 +7,15 @@ enum AuthStates {
   signupLoading,
   signupSuccess,
   signupError,
-  signupEmailExists
+  signupEmailExists,
+  resetPasswordLoading,
+  resetPasswordError,
+  resetPasswordSuccess
+}
+
+enum ProfileStates {
+  idle,
+  updateLoading,
+  updateSuccess,
+  updateError,
 }

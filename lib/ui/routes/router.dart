@@ -3,7 +3,7 @@ import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/screens/bottom_bar_screen.dart';
 import 'package:shop_owner_app/ui/screens/feeds.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/category_screen.dart';
-import 'package:shop_owner_app/ui/screens/inner_screens/forgot_password.dart';
+import 'package:shop_owner_app/ui/screens/inner_screens/forgot_password_screen.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/product_detail.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/users_location.dart';
 import 'package:shop_owner_app/ui/screens/log_in_screen.dart';
