@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_owner_app/ui/constants/app_consntants.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
 import 'package:shop_owner_app/ui/screens/feeds.dart';
-import 'package:shop_owner_app/ui/screens/home.dart';
+import 'package:shop_owner_app/ui/screens/home_screen.dart';
 import 'package:shop_owner_app/ui/screens/my_users_screen.dart';
 import 'package:shop_owner_app/ui/screens/orders_list.dart';
 
@@ -14,40 +14,29 @@ class BottomBarScreen extends StatefulWidget {
 }
 
 class _BottomBarScreenState extends State<BottomBarScreen> {
-  late List<Map> _pages;
-  late int _selectedIndex;
+  final List<Map<String, dynamic>> _pages = [
+    {'page': const HomeScreen(), 'title': 'Home'},
+    {'page': const FeedsScreen(), 'title': 'Feeds'},
+    {},
+    {'page': const MyUsersScreen(), 'title': 'My Users'},
+    {'page': const OrdersList(), 'title': 'Orders'},
+  ];
+
+  int _selectedIndex = 0;
 
   void _selectedPages(int index) {
-    if (index == 2) {
-      return;
-    }
+    if (index == 2 || index == _selectedIndex) return;
     setState(() => _selectedIndex = index);
   }
 
   @override
-  void initState() {
-    super.initState();
-    _pages = [
-      {'page': const HomeScreen(), 'title': 'Home'},
-      {'page': const FeedsScreen(), 'title': 'Feeds'},
-      {},
-      {'page': const MyUsersScreen(), 'title': 'MyUsers'},
-      {'page': const OrdersList(), 'title': 'Orders'},
-    ];
-    _selectedIndex = 0;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_selectedIndex != 0) {
-          setState(() {
-            _selectedIndex = 0; // Navigate to the first index (Home)
-          });
-          return false; // Prevent app from closing
+    return PopScope(
+      canPop: _selectedIndex == 0,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          setState(() => _selectedIndex = 0);
         }
-        return true; // Allow app to close if already on the first index
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -59,11 +48,11 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           clipBehavior: Clip.antiAlias,
           shape: const CircularNotchedRectangle(),
           child: BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: _selectedPages,
+            type: BottomNavigationBarType.fixed,
             unselectedItemColor: Theme.of(context).unselectedWidgetColor,
             selectedItemColor: Theme.of(context).primaryColor,
-            onTap: _selectedPages,
-            currentIndex: _selectedIndex,
-            type: BottomNavigationBarType.fixed,
             showUnselectedLabels: false,
             showSelectedLabels: false,
             iconSize: 23,
@@ -80,14 +69,14 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
                 tooltip: 'Feeds',
               ),
               BottomNavigationBarItem(
-                icon: Icon(null),
+                icon: SizedBox.shrink(),
                 label: '',
                 tooltip: '',
               ),
               BottomNavigationBarItem(
                 icon: Icon(mUserIcon),
-                label: 'MyUsers',
-                tooltip: 'MyUsers',
+                label: 'My Users',
+                tooltip: 'My Users',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.pending_actions),
@@ -100,11 +89,10 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
         floatingActionButtonLocation:
             FloatingActionButtonLocation.miniCenterDocked,
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed(RouteName.uploadProductScreen);
-          },
+          onPressed: () =>
+              Navigator.of(context).pushNamed(RouteName.uploadProductScreen),
           elevation: 2,
-          splashColor: Theme.of(context).primaryColor.withAlpha(2),
+          splashColor: Theme.of(context).primaryColor.withAlpha(50),
           child: const Icon(Icons.add),
         ),
       ),

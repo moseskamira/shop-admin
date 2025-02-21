@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
-import 'package:shop_owner_app/ui/screens/bottom_bar.dart';
+import 'package:shop_owner_app/ui/screens/bottom_bar_screen.dart';
 import 'package:shop_owner_app/ui/screens/feeds.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/category_screen.dart';
 import 'package:shop_owner_app/ui/screens/inner_screens/forgot_password.dart';
@@ -24,13 +24,16 @@ class Routes {
     switch (settings.name) {
       case RouteName.mainScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const MainScreen());
+          builder: (BuildContext context) => const MainScreen(),
+        );
       case RouteName.bottomBarScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const BottomBarScreen());
+          builder: (BuildContext context) => const BottomBarScreen(),
+        );
       case RouteName.logInScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const LogInScreen());
+          builder: (BuildContext context) => const LogInScreen(),
+        );
       case RouteName.searchScreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SearchScreen());

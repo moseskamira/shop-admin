@@ -21,7 +21,14 @@
   "enterFullAddress": "Enter your full address",
   "pleaseEnterFullAddress": "Please enter a full address",
   "emailExistsText": "This email already exists. You can reset your password from the login page.",
-  "alreadyHaveAccount": "Already have an account?"
+  "alreadyHaveAccount": "Already have an account?",
+  "addNewCategory": "Add New Category",
+  "categoryIcon": "Category Icon",
+  "typeCategoryName": "Type a category name...",
+  "cancel": "Cancel",
+  "add": "Add",
+  "newCategory": "New Category",
+  "categories": "Categories"
 
 
 }

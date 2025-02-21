@@ -1,22 +1,24 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
-import 'package:sizer/sizer.dart';
 import 'package:shop_owner_app/core/models/category_model.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
-import 'package:shop_owner_app/core/view_models/products_provider.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shop_owner_app/core/view_models/picture_provider.dart';
+import 'package:shop_owner_app/core/view_models/products_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_snackbar.dart';
-import 'dart:io';
+import 'package:shop_owner_app/ui/widgets/image_preview.dart' as placeHolder;
+import 'package:sizer/sizer.dart';
+
 import '../../core/view_models/update_image_provider.dart';
 import '../widgets/update_reusable_textField.dart';
-import 'package:shop_owner_app/ui/widgets/image_preview.dart' as placeHolder;
-import 'package:collection/collection.dart';
 
 // ignore: must_be_immutable
 class UpdateProductScreen extends StatefulWidget {
@@ -28,7 +30,7 @@ class UpdateProductScreen extends StatefulWidget {
 }
 
 class _UpdateProductScreenState extends State<UpdateProductScreen> {
-  final _categories = CategoryModel().getCategories();
+  final _categories = CategoryModel.getCategories();
   late final FocusNode _titleFocusNode;
   late final FocusNode _brandFocusNode;
   late final FocusNode _priceFocusNode;

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_owner_app/core/view_models/product_upload_image_provider.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'package:shop_owner_app/core/models/category_model.dart';
 import 'package:shop_owner_app/core/models/product_model.dart';
-import 'package:shop_owner_app/core/view_models/products_provider.dart';
 import 'package:shop_owner_app/core/view_models/picture_provider.dart';
+import 'package:shop_owner_app/core/view_models/product_upload_image_provider.dart';
+import 'package:shop_owner_app/core/view_models/products_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_border.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_snackbar.dart';
 import 'package:shop_owner_app/ui/widgets/image_preview.dart';
 import 'package:shop_owner_app/ui/widgets/update_reusable_textField.dart';
 import 'package:uuid/uuid.dart';
-import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 class UploadProductScreen extends StatefulWidget {
   const UploadProductScreen({super.key});
@@ -21,7 +21,7 @@ class UploadProductScreen extends StatefulWidget {
 }
 
 class _UploadProductScreenState extends State<UploadProductScreen> {
-  final _categories = CategoryModel().getCategories();
+  final _categories = CategoryModel.getCategories();
 
   late final TextEditingController _nameController;
   late final TextEditingController _brandController;
