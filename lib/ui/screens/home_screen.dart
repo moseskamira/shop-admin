@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shop_owner_app/core/models/category_model.dart';
-import 'package:shop_owner_app/ui/screens/nav_bar.dart';
+import 'package:shop_owner_app/ui/screens/side_nav_drawer.dart';
 import 'package:shop_owner_app/ui/utils/common_functions.dart';
-import 'package:shop_owner_app/ui/widgets/category.dart';
+import 'package:shop_owner_app/ui/widgets/category_card.dart';
 
 import '../routes/route_name.dart';
 import '../widgets/add_category_card.dart';
@@ -50,9 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             TextField(
               decoration: InputDecoration(hintText: appLocal.typeCategoryName),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -71,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return Scaffold(
-      endDrawer: const NavBar(),
+      endDrawer: const SideNavDrawer(),
       appBar: AppBar(
         title: Text(appLocalizations.categories.toUpperCase()),
         centerTitle: true,
@@ -99,11 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: SingleChildScrollView(
           child: GridView.builder(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(10),
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 3,
               mainAxisExtent: 120,
             ),
             itemCount: categories.length + 1,
@@ -117,7 +119,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         name: appLocalizations.newCategory,
                       ),
                     )
-                  : Category(category: categories[index - 1]);
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10.0,
+                        horizontal: 5.0,
+                      ),
+                      child: CategoryCard(category: categories[index - 1]),
+                    );
             },
           ),
         ),

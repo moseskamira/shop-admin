@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProfilePicture extends StatelessWidget {
   final String? imageUrl;
+
   const ProfilePicture({super.key, this.imageUrl});
 
   @override
@@ -14,7 +15,7 @@ class ProfilePicture extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withOpacity(0.7),
+              color: Colors.blue.withOpacity(0.7),
               spreadRadius: -0.01,
               blurRadius: 20,
               offset: const Offset(0, 10),
@@ -22,16 +23,16 @@ class ProfilePicture extends StatelessWidget {
           ],
         ),
         child: CircleAvatar(
-          backgroundColor: Colors.red,
-          radius: 53,
+          backgroundColor: Colors.blue,
+          radius: 40,
           child: CircleAvatar(
-            backgroundColor: Colors.red,
-            radius: 50,
+            backgroundColor: Colors.blue,
+            radius: 40,
             child: ClipOval(
               child: imageUrl == null || imageUrl!.isEmpty
                   ? const Icon(
                       Icons.person_3_outlined,
-                      size: 90,
+                      size: 50,
                       color: Colors.white,
                     )
                   : CachedNetworkImage(
@@ -41,8 +42,8 @@ class ProfilePicture extends StatelessWidget {
                         highlightColor: Colors.grey[100]!,
                         child: Container(
                           color: Colors.grey,
-                          width: 100,
-                          height: 100,
+                          width: 60,
+                          height: 60,
                         ),
                       ),
                       errorWidget: (context, url, error) => const Icon(

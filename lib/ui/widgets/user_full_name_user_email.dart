@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shop_owner_app/ui/utils/common_functions.dart';
 
 class UserFullNameUserName extends StatelessWidget {
   final String fullName;
   final String userName;
+
   const UserFullNameUserName({
     super.key,
     required this.fullName,
@@ -11,38 +13,36 @@ class UserFullNameUserName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: SizedBox(
-            width: 150,
+    return Flexible(
+      flex: 1,
+      fit: FlexFit.loose,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               fullName,
-              style: const TextStyle(
-                color: Colors.white,
+              style: CommonFunctions.appTextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
+                textColor: Colors.black,
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: SizedBox(
-            width: 150,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               userName,
-              style: const TextStyle(
-                color: Color(0xff6D6F7E),
+              style: CommonFunctions.appTextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
+                textColor: const Color(0xff6D6F7E),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
