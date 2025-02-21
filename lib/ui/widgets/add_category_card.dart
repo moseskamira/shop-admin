@@ -13,10 +13,11 @@ class AddCategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: 50,
-          width: 50,
+          height: 40,
+          width: 40,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             border: Border.all(color: Colors.grey),
@@ -42,6 +43,5 @@ class AddCategoryCard extends StatelessWidget {
         ),
       ],
     );
-    ;
   }
 }

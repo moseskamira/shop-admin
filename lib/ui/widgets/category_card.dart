@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shop_owner_app/core/models/category_model.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
 
-class Category extends StatelessWidget {
+class CategoryCard extends StatelessWidget {
   final CategoryModel category;
 
-  const Category({super.key, required this.category});
+  const CategoryCard({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +14,7 @@ class Category extends StatelessWidget {
       onTap: () => Navigator.pushNamed(context, RouteName.categoryScreen,
           arguments: {'cat': category.title}),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
             width: imageSize * 0.65,
@@ -25,9 +26,15 @@ class Category extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            category.title,
-            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+          Flexible(
+            child: Text(
+              category.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 15,
+              ),
+              maxLines: 2,
+            ),
           ),
         ],
       ),

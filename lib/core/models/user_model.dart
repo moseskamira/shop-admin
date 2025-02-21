@@ -1,5 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../../ui/constants/time_stamp_converter.dart';
+
+part 'user_model.g.dart';
+
+@JsonSerializable()
 class UserModel {
   String id;
   String fullName;
@@ -8,7 +14,11 @@ class UserModel {
   String phoneNumber;
   String email;
   String joinedAt;
+
+  @JsonKey(name: 'createdAt')
+  @TimestampConverter()
   Timestamp? createdAt;
+
   String addressLine1;
   String addressLine2;
   String city;
@@ -37,46 +47,13 @@ class UserModel {
     this.longitude = '',
   });
 
-  UserModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        fullName = json['fullName'],
-        email = json['email'],
-        phoneNumber = json['phoneNumber'],
-        imageUrl = json['imageUrl'],
-        address = json['address'],
-        joinedAt = json['joinedAt'],
-        createdAt = json['createdAt'],
-        addressLine1 = json['addressLine1'],
-        addressLine2 = json['addressLine2'],
-        city = json['city'],
-        state = json['state'],
-        postalCode = json['postalCode'],
-        country = json['country'],
-        latitude = json['latitude'].toString(),
-        longitude = json['longitude'].toString();
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'fullName': fullName,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'imageUrl': imageUrl,
-        'address': address,
-        'joinedAt': joinedAt,
-        'createdAt': createdAt,
-        'addressLine1': addressLine1,
-        'addressLine2': addressLine2,
-        'city': city,
-        'state': state,
-        'postalCode': postalCode,
-        'country': country,
-        'latitude': latitude,
-        'longitude': longitude,
-      };
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-
     return UserModel(
       id: data['id'] ?? '',
       fullName: data['fullName'] ?? '',

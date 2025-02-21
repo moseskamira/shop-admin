@@ -28,7 +28,12 @@
   "cancel": "Cancel",
   "add": "Add",
   "newCategory": "New Category",
-  "categories": "Categories"
+  "categories": "Categories",
+  "profile": "Profile",
+  "errorLoadingUserData": "Error loading user data",
+  "noUserdataAvailable": "No user data available",
+  "signOut": "Sign Out"
+
 
 
 }
