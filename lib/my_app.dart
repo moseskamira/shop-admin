@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/ui/constants/app_theme.dart';
 import 'package:shop_owner_app/ui/routes/route_name.dart';
-import 'package:shop_owner_app/ui/routes/router.dart';
+import 'package:shop_owner_app/ui/routes/routes.dart';
 import 'package:sizer/sizer.dart';
 
 import 'core/l10n/l10n.dart';

@@ -55,6 +55,7 @@ class SideNavDrawer extends StatelessWidget {
   }
 
   Widget _buildProfileDetailsRow(UserModel userData) {
+    print(userData.toJson());
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [

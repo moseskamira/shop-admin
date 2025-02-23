@@ -25,6 +25,8 @@
 
     ├── lib
     │   ├── core
+    │   │  ├── enums
+    │   │. ├── l10n
     │   │  ├── models
     │   │  ├── services
     │   │  ├── view_models // All the interactions with the database/ Providers
@@ -35,6 +37,7 @@
     │   │  ├── utils
     │   │  ├── widgets
     │   ├── main.dart
+        ├── my_app.dart
 
 ## Run Locally
 
