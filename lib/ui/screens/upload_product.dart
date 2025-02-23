@@ -83,7 +83,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
         Provider.of<ImageListProductUpload>(context, listen: false);
 
     if (imageList.images.isEmpty) {
-      MySnackBar().showSnackBar('Please select at least one image', context,
+      MySnackBar().showSnackBar(
+          content: 'Please select at least one image',
+          context: context,
+          backgroundColor: Colors.blue,
           duration: const Duration(seconds: 2));
     } else if (isValid) {
       setState(() => _isLoading = true);
@@ -118,7 +121,11 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
       final productProvider =
           Provider.of<ProductsProvider>(context, listen: false);
       await productProvider.addProduct(_productModel).then((_) {
-        MySnackBar().showSnackBar('Success', context);
+        MySnackBar().showSnackBar(
+          content: 'Success',
+          context: context,
+          backgroundColor: Colors.blue,
+        );
         setState(() {});
         _productModel = ProductModel();
         _formKey.currentState?.reset();
@@ -236,8 +243,11 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                                         .add(pickedImagePath);
                                                   }
                                                   MySnackBar().showSnackBar(
-                                                    'New picture of the product is added',
-                                                    context,
+                                                    content:
+                                                        'New picture of the product is added',
+                                                    context: context,
+                                                    backgroundColor:
+                                                        Colors.blue,
                                                     duration: const Duration(
                                                         milliseconds: 300),
                                                   );

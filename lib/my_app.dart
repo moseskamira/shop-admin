@@ -9,14 +9,15 @@ import 'package:sizer/sizer.dart';
 
 import 'core/l10n/l10n.dart';
 import 'core/view_models/auth_provider.dart';
+import 'core/view_models/bottom_nav_index_provider.dart';
 import 'core/view_models/orders_provider.dart';
 import 'core/view_models/picture_provider.dart';
 import 'core/view_models/product_upload_image_provider.dart';
 import 'core/view_models/products_provider.dart';
+import 'core/view_models/profile_provider.dart';
 import 'core/view_models/search_provider.dart';
 import 'core/view_models/theme_change_provider.dart';
 import 'core/view_models/update_image_provider.dart';
-import 'core/view_models/user_data_provider.dart';
 
 class MyApp extends StatelessWidget {
   final bool isDarkTheme;
@@ -37,13 +38,14 @@ class MyApp extends StatelessWidget {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => AuthProvider()),
-            ChangeNotifierProvider(create: (_) => UserDataProvider()),
+            ChangeNotifierProvider(create: (_) => ProfileProvider()),
             ChangeNotifierProvider(create: (_) => ProductsProvider()),
             ChangeNotifierProvider(create: (_) => PicturesProvider()),
             ChangeNotifierProvider(create: (_) => ImageListProductUpload()),
             ChangeNotifierProvider(create: (_) => UpdateImageProvider()),
             ChangeNotifierProvider(create: (_) => OrdersProvider()),
             ChangeNotifierProvider(create: (_) => SearchProvider()),
+            ChangeNotifierProvider(create: (_) => BottomNavIndexProvider()),
             ChangeNotifierProvider(
               create: (_) => ThemeChangeProvider(isDarkTheme),
             ),

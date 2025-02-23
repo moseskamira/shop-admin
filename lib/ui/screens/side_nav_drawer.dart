@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_owner_app/core/models/user_model.dart';
+import 'package:shop_owner_app/core/view_models/profile_provider.dart';
 import 'package:shop_owner_app/core/view_models/theme_change_provider.dart';
-import 'package:shop_owner_app/core/view_models/user_data_provider.dart';
 import 'package:shop_owner_app/ui/utils/ui_tools/my_alert_dialog.dart';
 import 'package:shop_owner_app/ui/widgets/profile_picture.dart';
 import 'package:shop_owner_app/ui/widgets/user_full_name_user_email.dart';
@@ -113,10 +113,10 @@ class SideNavDrawer extends StatelessWidget {
                     color: Colors.black12,
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Consumer<UserDataProvider>(
+                  child: Consumer<ProfileProvider>(
                       builder: (context, userDataProvider, child) {
                     return StreamBuilder<UserModel>(
-                      stream: userDataProvider.fetchUserData(),
+                      stream: userDataProvider.fetchProfile!,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -170,32 +170,17 @@ class SideNavDrawer extends StatelessWidget {
               title: const Text('My Profile'),
               onTap: (() {}),
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.policy_sharp),
-              title: const Text('Privacy Policies'),
-              onTap: (() async {}),
-            ),
-            ListTile(
-              leading: const Icon(Icons.description),
-              title: const Text('Terms Of Use'),
-              onTap: (() async {}),
-            ),
             Card(
-              child: Column(
-                children: [
-                  SwitchListTile(
-                    title: const Text('Dark Theme'),
-                    secondary: Icon(
-                      Icons.dark_mode,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                    value: themeChange.isDarkTheme,
-                    onChanged: (bool value) {
-                      themeChange.isDarkTheme = value;
-                    },
-                  ),
-                ],
+              child: SwitchListTile(
+                title: const Text('Dark Theme'),
+                secondary: Icon(
+                  Icons.dark_mode,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                value: themeChange.isDarkTheme,
+                onChanged: (bool value) {
+                  themeChange.isDarkTheme = value;
+                },
               ),
             ),
             ListTile(

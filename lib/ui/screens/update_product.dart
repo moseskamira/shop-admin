@@ -23,6 +23,7 @@ import '../widgets/update_reusable_textField.dart';
 // ignore: must_be_immutable
 class UpdateProductScreen extends StatefulWidget {
   ProductModel? singleProductDtaforUpdate;
+
   UpdateProductScreen({super.key, this.singleProductDtaforUpdate});
 
   @override
@@ -46,6 +47,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   late final TextEditingController _descriptionController;
   final _formKey = GlobalKey<FormState>();
   late ProductModel? _initialData;
+
   @override
   void initState() {
     super.initState();
@@ -201,8 +203,8 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 shrinkWrap: true,
                                 itemCount: imageList.images.isEmpty
                                     ? 1
-                                    : imageList.images.length +
-                                        1, // +1 for the "Add Image" widget
+                                    : imageList.images.length + 1,
+                                // +1 for the "Add Image" widget
                                 itemBuilder: (context, index) {
                                   if (index == 0) {
                                     return Center(
@@ -236,8 +238,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                                           .add(pickedImagePath);
                                                     }
                                                     MySnackBar().showSnackBar(
-                                                      'New picture of the product is added',
-                                                      context,
+                                                      content:
+                                                          'New picture of the product is added',
+                                                      context: context,
+                                                      backgroundColor:
+                                                          Colors.blue,
                                                       duration: const Duration(
                                                           milliseconds: 300),
                                                     );
@@ -433,7 +438,9 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 });
 
                                 MySnackBar().showSnackBar(
-                                    'Updated Successfully', context,
+                                    content: 'Updated Successfully',
+                                    context: context,
+                                    backgroundColor: Colors.blue,
                                     duration: const Duration(seconds: 2));
                                 Navigator.of(context).pop();
                               });

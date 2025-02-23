@@ -17,6 +17,10 @@ class AuthProvider with ChangeNotifier {
   final _googleSignIn = GoogleSignIn();
   AuthStates _authState = AuthStates.idle;
 
+  String _resetErrorMessage = '';
+
+  get resetPasswordErrorMessage => _resetErrorMessage;
+
   bool get isLoggedIn =>
       _firebaseAuth.currentUser != null &&
       !_firebaseAuth.currentUser!.isAnonymous;
@@ -117,14 +121,18 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> resetPassword({required String email}) async {
-    try {
-      await _firebaseAuth.sendPasswordResetEmail(
-          email: email.trim().toLowerCase());
-    } catch (e) {
-      throw Exception(e.toString());
-    } finally {
+    _authState = AuthStates.resetPasswordLoading;
+    notifyListeners();
+    await _firebaseAuth
+        .sendPasswordResetEmail(email: email.trim().toLowerCase())
+        .then((_) {
+      _authState = AuthStates.resetPasswordSuccess;
+    }).onError((error, stackTrace) {
+      _resetErrorMessage = error.toString();
+      _authState = AuthStates.resetPasswordError;
+    }).whenComplete(() {
       notifyListeners();
-    }
+    });
   }
 
   Future<void> signOut(BuildContext context) async {
