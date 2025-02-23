@@ -36,13 +36,16 @@ class Routes {
         );
       case RouteName.searchScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const SearchScreen());
+          builder: (BuildContext context) => const SearchScreen(),
+        );
       case RouteName.signUpScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const SignUpScreen());
+          builder: (BuildContext context) => const SignUpScreen(),
+        );
       case RouteName.forgotPasswordScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const ForgotPasswordScreen());
+          builder: (BuildContext context) => const ForgotPasswordScreen(),
+        );
       case RouteName.productDetailScreen:
         Map<String, Object>? args = settings.arguments as Map<String, Object>;
         String productId = args['productId'] as String;
@@ -61,28 +64,33 @@ class Routes {
 
       case RouteName.feedsScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const FeedsScreen());
+          builder: (BuildContext context) => const FeedsScreen(),
+        );
       case RouteName.categoryScreen:
         Map<String, Object>? args = settings.arguments as Map<String, Object>;
         String cat = args['cat'] as String;
         return MaterialPageRoute(
-            builder: (BuildContext context) => CategoryScreen(
-                  nameOfCat: cat,
-                ));
+          builder: (BuildContext context) => CategoryScreen(
+            nameOfCat: cat,
+          ),
+        );
       case RouteName.uploadProductScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const UploadProductScreen());
+          builder: (BuildContext context) => const UploadProductScreen(),
+        );
       case RouteName.ordersListScreen:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const OrdersList());
+          builder: (BuildContext context) => const OrdersList(),
+        );
 
       case RouteName.userDetailsScreen:
         Map<String, Object>? args = settings.arguments as Map<String, Object>;
         UserModel user = args['user'] as UserModel;
         return MaterialPageRoute(
-            builder: (BuildContext context) => UserDetails(
-                  user: user,
-                ));
+          builder: (BuildContext context) => UserDetails(
+            user: user,
+          ),
+        );
 
       case RouteName.usersLocation:
         Map<String, dynamic>? args = settings.arguments as Map<String, dynamic>;
@@ -90,18 +98,19 @@ class Routes {
         double lon = args['lon'] as double;
         String name = args['name'] as String; //'name'
         return MaterialPageRoute(
-            builder: (BuildContext context) => UsersLocations(
-                  latitude: lat,
-                  longitude: lon,
-                  name: name,
-                ));
+          builder: (BuildContext context) => UsersLocations(
+            latitude: lat,
+            longitude: lon,
+            name: name,
+          ),
+        );
 
       case RouteName.updateUserInfo:
         final UserModel userModel = settings.arguments as UserModel;
-
         return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                UpdateUsersInformation(userModel: userModel));
+          builder: (BuildContext context) =>
+              UpdateUsersInformation(userModel: userModel),
+        );
 
       default:
         return MaterialPageRoute(builder: (_) {

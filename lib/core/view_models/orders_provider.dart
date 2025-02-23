@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shop_owner_app/core/models/orders_model.dart';
+
 import '../models/user_model.dart';
 
 class OrdersProvider with ChangeNotifier {
@@ -12,7 +13,6 @@ class OrdersProvider with ChangeNotifier {
         List<Map<String, dynamic>> ordersWithUsers = [];
         for (var doc in snapshot.docs) {
           OrdersModel order = OrdersModel.fromJson(doc);
-
           UserModel user;
           if (_userCache.containsKey(order.customerId)) {
             user = _userCache[order.customerId]!;
